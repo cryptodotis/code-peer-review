@@ -25,30 +25,33 @@ if __name__ == "__main__":
 	c.remotes.origin.fetch()
 	c.remotes.origin.pull('master')
 
-	msgs = c.iter_commits()
+	msgs = c.iter_commits(since=unixToGitDateFormat(args.startdate))
 	for m in msgs:
-		date = m.authored_date
+		date = m.committed_date
 		message = cleanUpCommitMessage(m.message)
 		paths = []
+
+		if m.committed_date > args.enddate: continue
 	
-		print "Date:\t\t", date
+		print "Date:\t\t", unixToGitDateFormat(date), "(" + str(date) + ")"
 		print "Log Message:\t", message
+
+		files = m.stats.files.keys()
+		if len(files) > 0: paths.append(files[0]) 
+		for p in files[1:]:
+			paths.append(p)
+		base_paths = getBasePath(paths)
 		
-		#if len(m.data['changed_paths']) > 0: paths.append(m.data['changed_paths'][0].path) 
-		#for p in m.data['changed_paths'][1:]:
-		#	paths.append(p.path)
-		#base_paths = getBasePath(paths)
-		#
-		#if len(base_paths) > 0: 
-		#	if len(base_paths) > 0 and not isinstance(base_paths, basestring):
-		#		print "Base Paths:\t", base_paths[0]
-		#		for p in base_paths[1:]:
-		#			print "\t\t", p
-		#	else:
-		#		print "Base Path:\t", base_paths
-		#if len(paths) > 0: 
-		#	print "Paths:\t\t", paths[0] 
-		#	for p in paths[1:]:
-		#		print "\t\t", p
-		#print "Keywords:\t", ", ".join(getSynonyms(message, paths))
-		#print ""
+		if len(base_paths) > 0: 
+			if len(base_paths) > 0 and not isinstance(base_paths, basestring):
+				print "Base Paths:\t", base_paths[0]
+				for p in base_paths[1:]:
+					print "\t\t", p
+			else:
+				print "Base Path:\t", base_paths
+		if len(paths) > 0: 
+			print "Paths:\t\t", paths[0] 
+			for p in paths[1:]:
+				print "\t\t", p
+		print "Keywords:\t", ", ".join(getSynonyms(message, paths))
+		print ""

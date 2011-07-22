@@ -1,8 +1,12 @@
 #!/usr/bin/python
 
-import time,os,urlparse,re
+import time,os,urlparse,re, datetime
 
 import synonymmapping
+
+def unixToGitDateFormat(t):
+	s = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(t))
+	return s
 
 def getSynonyms(log, paths):
 	log = log.lower()
@@ -49,8 +53,8 @@ def urlToFolder(url):
 
 def fixDates(start, end):
 	try:
-		int(end)
-		int(start)
+		end = int(end)
+		start = int(start)
 	except ValueError:
 		print "Invalid Start or End Date"
 		exit
@@ -62,5 +66,4 @@ def fixDates(start, end):
 		tmp = end
 		end = start
 		start = tmp
-		
 	return start, end
