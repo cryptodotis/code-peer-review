@@ -5,7 +5,11 @@ import pysvn
 import synonymmapping
 
 def getDate(s):
-	return str(s)
+	try:
+		i = int(s)
+		return i
+	except:
+		return -1
 	
 def getSynonyms(log, paths):
 	log = log.lower()
@@ -46,8 +50,23 @@ if __name__ == "__main__":
 	parser.add_argument('enddate', type=getDate)
 	args = parser.parse_args()
 	
-	end_rev = pysvn.Revision(pysvn.opt_revision_kind.date, time.time())
-	start_rev = pysvn.Revision(pysvn.opt_revision_kind.date, time.time() - (6 * 24 * 60 * 60))
+	try:
+		int(args.enddate)
+		int(args.startdate)
+	except ValueError:
+		print "Invalid Start or End Date"
+		exit
+	
+	if args.enddate == 0 and args.startdate < 0:
+		args.enddate = time.time()
+		args.startdate = args.enddate + int(args.startdate)
+	elif args.enddate < args.startdate:
+		tmp = args.enddate
+		args.enddate = args.startdate
+		args.startdate = tmp
+	
+	end_rev = pysvn.Revision(pysvn.opt_revision_kind.date, args.enddate)
+	start_rev = pysvn.Revision(pysvn.opt_revision_kind.date, args.startdate)
 	
 	c = pysvn.Client()
 	msgs = c.log(args.repo, revision_start=start_rev, revision_end=end_rev, discover_changed_paths=True)
