@@ -3,6 +3,7 @@ import argparse, sys, time, os
 import pysvn
 
 from common import *
+from commit import Commit
 
 if __name__ == "__main__":
 	parser = argparse.ArgumentParser(description='Given a repo url, a startdate and enddate, process the commits between.')
@@ -21,27 +22,8 @@ if __name__ == "__main__":
 	msgs.reverse() 
 	for m in msgs:
 		date = m.data['revprops']['svn:date']
-		message = cleanUpCommitMessage(m.data['message'])
-		paths = []
-	
-		print "Date:\t\t", date
-		print "Log Message:\t", message
-		
-		if len(m.data['changed_paths']) > 0: paths.append(m.data['changed_paths'][0].path) 
-		for p in m.data['changed_paths'][1:]:
-			paths.append(p.path)
-		base_paths = getBasePath(paths)
-		
-		if len(base_paths) > 0: 
-			if len(base_paths) > 0 and not isinstance(base_paths, basestring):
-				print "Base Paths:\t", base_paths[0]
-				for p in base_paths[1:]:
-					print "\t\t", p
-			else:
-				print "Base Path:\t", base_paths
-		if len(paths) > 0: 
-			print "Paths:\t\t", paths[0] 
-			for p in paths[1:]:
-				print "\t\t", p
-		print "Keywords:\t", ", ".join(getSynonyms(message, paths))
-		print ""
+		message = m.data['message']
+		paths = [p.path for p in m.data['changed_paths']]
+
+		c = Commit(message, date, paths)
+		c.pprint()
