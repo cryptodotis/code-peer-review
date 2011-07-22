@@ -2,68 +2,16 @@
 import argparse, sys, time, os
 import pysvn
 
-import synonymmapping
-
-def getDate(s):
-	try:
-		i = int(s)
-		return i
-	except:
-		return -1
-	
-def getSynonyms(log, paths):
-	log = log.lower()
-	for i in range(len(paths)):	paths[i] = paths[i].lower()
-	
-	keywords = set()
-	for k in synonymmapping.map:
-		if k in log:
-			keywords.add(k)
-			for v in synonymmapping.map[k]: keywords.add(v)
-		for p in paths:
-			if k in p:
-				keywords.add(k)
-				for v in synonymmapping.map[k]: keywords.add(v)
-	
-	return keywords
-	
-def getBasePath(paths):
-	trunks = [p for p in paths if "/trunk" in p]
-	branches = [p for p in paths if "/branches" in p]
-	tags = [p for p in paths if "/tags" in p]
-	odd = [p for p in paths if p not in trunks and p not in branches and p not in tags]
-	if ((1 if len(trunks) > 0 else 0) + (1 if len(branches) > 0 else 0) + \
-		(1 if len(tags) > 0 else 0) + (1 if len(odd) > 0 else 0)) > 1:
-		ret = []
-		if len(trunks) > 0: ret.append(os.path.commonprefix(trunks))
-		if len(branches) > 0: ret.append(os.path.commonprefix(branches))
-		if len(tags) > 0: ret.append(os.path.commonprefix(tags))
-		if len(odd) > 0: ret.append(os.path.commonprefix(odd))
-		return ret
-	else:
-		return os.path.dirname(os.path.commonprefix(paths))
+from common import *
 
 if __name__ == "__main__":
 	parser = argparse.ArgumentParser(description='Given a repo url, a startdate and enddate, process the commits between.')
 	parser.add_argument('repo')
-	parser.add_argument('startdate', type=getDate)
-	parser.add_argument('enddate', type=getDate)
+	parser.add_argument('startdate')
+	parser.add_argument('enddate')
 	args = parser.parse_args()
 	
-	try:
-		int(args.enddate)
-		int(args.startdate)
-	except ValueError:
-		print "Invalid Start or End Date"
-		exit
-	
-	if args.enddate == 0 and args.startdate < 0:
-		args.enddate = time.time()
-		args.startdate = args.enddate + int(args.startdate)
-	elif args.enddate < args.startdate:
-		tmp = args.enddate
-		args.enddate = args.startdate
-		args.startdate = tmp
+	args.startdate, args.enddate = fixDates(args.startdate, args.enddate)
 	
 	end_rev = pysvn.Revision(pysvn.opt_revision_kind.date, args.enddate)
 	start_rev = pysvn.Revision(pysvn.opt_revision_kind.date, args.startdate)
