@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-import time,os
+import time,os,urlparse,re
 
 import synonymmapping
 
@@ -35,7 +35,18 @@ def getBasePath(paths):
 		return ret
 	else:
 		return os.path.dirname(os.path.commonprefix(paths))
-		
+
+re_gitsvn = re.compile('git-svn-id: \w+://.+ \w{4,12}-\w{4,12}-\w{4,12}-\w{4,12}-\w{4,12}')		
+def cleanUpCommitMessage(msg):
+	msg = re.sub(re_gitsvn, '', msg)
+	return msg.strip()
+
+def urlToFolder(url):
+	scheme, netloc, path, parameters, query, fragment = urlparse.urlparse(url)
+	folder = netloc + path
+	folder = folder.replace('/', '-')
+	return folder
+
 def fixDates(start, end):
 	try:
 		int(end)

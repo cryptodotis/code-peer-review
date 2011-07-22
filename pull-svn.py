@@ -21,7 +21,7 @@ if __name__ == "__main__":
 	msgs.reverse() 
 	for m in msgs:
 		date = m.data['revprops']['svn:date']
-		message = m.data['message'].strip()
+		message = cleanUpCommitMessage(m.data['message'])
 		paths = []
 	
 		print "Date:\t\t", date
