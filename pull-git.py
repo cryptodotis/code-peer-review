@@ -35,5 +35,6 @@ if __name__ == "__main__":
 		files = m.stats.files.keys()
 
 		c = Commit(message, date, files)
+		c.save()
 		c.pprint()
 

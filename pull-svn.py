@@ -26,4 +26,5 @@ if __name__ == "__main__":
 		paths = [p.path for p in m.data['changed_paths']]
 
 		c = Commit(message, date, paths)
+		c.save()
 		c.pprint()
