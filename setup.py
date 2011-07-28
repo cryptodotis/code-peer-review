@@ -117,7 +117,8 @@ if __name__ == "__main__":
 			SELECT 'debian', NULL UNION
 			SELECT 'oaep', 'crypto-padding' UNION
 			SELECT 'oaep', 'asymmetric-crypto' UNION
-			SELECT 'oaep', 'RSA'
+			SELECT 'oaep', 'RSA' UNION
+			SELECT 'vidalia', 'project-tor'
 			"""
                 c.execute(sql)
 

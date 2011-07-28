@@ -49,7 +49,7 @@ class Commit:
         for i in range(len(self.files)): paths.append(self.files[i].lower())
 
         keywords = set()
-        for k in synonymmapping.map:
+        for k in synonymmapping.getMap():
                 if k in log:
                         keywords.add(k)
                         for v in synonymmapping.map[k]: keywords.add(v)
