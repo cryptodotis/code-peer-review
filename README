@@ -1,3 +1,6 @@
 Requirements:
  - pysvn
  - GitPython.  I'm using 0.3.2 RC1, I don't think 0.1 will work
+ - MySQL
+   1. Move config.sample.py to config.py and fill in variables
+   2. Run ./setup.py --populate
