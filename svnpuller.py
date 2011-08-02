@@ -5,6 +5,24 @@ import pysvn
 from common import *
 from commit import Commit
 
+def getCommits(repo, startdate, enddate):
+	end_rev = pysvn.Revision(pysvn.opt_revision_kind.date, enddate)
+	start_rev = pysvn.Revision(pysvn.opt_revision_kind.date, startdate)
+	
+	c = pysvn.Client()
+
+	commits = []
+	msgs = c.log(repo, revision_start=start_rev, revision_end=end_rev, discover_changed_paths=True)
+	msgs.reverse() 
+	for m in msgs:
+		date = m.data['revprops']['svn:date']
+		message = m.data['message']
+		paths = [p.path for p in m.data['changed_paths']]
+
+		c = Commit(message, date, paths)
+		commits.append(c)
+	return commits
+
 if __name__ == "__main__":
 	parser = argparse.ArgumentParser(description='Given a repo url, a startdate and enddate, process the commits between.')
 	parser.add_argument('repo')
@@ -14,17 +32,5 @@ if __name__ == "__main__":
 	
 	args.startdate, args.enddate = fixDates(args.startdate, args.enddate)
 	
-	end_rev = pysvn.Revision(pysvn.opt_revision_kind.date, args.enddate)
-	start_rev = pysvn.Revision(pysvn.opt_revision_kind.date, args.startdate)
-	
-	c = pysvn.Client()
-	msgs = c.log(args.repo, revision_start=start_rev, revision_end=end_rev, discover_changed_paths=True)
-	msgs.reverse() 
-	for m in msgs:
-		date = m.data['revprops']['svn:date']
-		message = m.data['message']
-		paths = [p.path for p in m.data['changed_paths']]
-
-		c = Commit(message, date, paths)
-		c.save()
-		c.pprint()
+	commits = getCommits(args.repo, args.startdate, args.enddate)
+	for c in commits: c.pprint()
