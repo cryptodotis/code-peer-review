@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import MySQLdb, argparse
-from config import Config
+from database import DB
 
 
 if __name__ == "__main__":
@@ -12,48 +12,45 @@ if __name__ == "__main__":
     
 
 
-    conn = MySQLdb.connect (host = Config.host,
-                            user = Config.username,
-                            passwd = Config.password,
-                            db = Config.database)
+    conn = DB.getConn()
 
     c = conn.cursor()
     
     if args.wipe:
         try:
-            c.execute("DROP TABLE repotype_tbl")
+            c.execute("DROP TABLE " + DB.repotype._table)
         except:
             pass
         try:
-            c.execute("DROP TABLE repo_tbl")
+            c.execute("DROP TABLE " + DB.repo._table)
         except:
             pass
         try:
-            c.execute("DROP TABLE keyword_tbl")        
+            c.execute("DROP TABLE " + DB.keyword._table)        
         except:
             pass
         try:
-            c.execute("DROP TABLE commit_tbl")
+            c.execute("DROP TABLE " + DB.commit._table)
         except:
             pass
         try:
-            c.execute("DROP TABLE commitkeyword_tbl")
+            c.execute("DROP TABLE " + DB.commitkeyword._table)
         except:
             pass
         try:
-            c.execute("DROP TABLE commitfile_tbl")
+            c.execute("DROP TABLE " + DB.commitfile._table)
         except:
             pass
 
     else:
-        #repotype_tbl -------------------------------------------
-        c.execute("SHOW TABLES LIKE 'repotype_tbl'")
+        #repotype._table + """ -------------------------------------------
+        c.execute("SHOW TABLES LIKE '" + DB.repotype._table + "'")
         r = c.fetchone()
         if r:
             print "Repo Type Table Exists"
         else:
             print "Creating Repo Type Table..."
-            repotype = """CREATE TABLE repotype_tbl
+            repotype = "CREATE TABLE " + DB.repotype._table + """
 			(
 			id smallint NOT NULL PRIMARY KEY,
 			type varchar(10) NOT NULL UNIQUE
@@ -62,7 +59,7 @@ if __name__ == "__main__":
             c.execute(repotype)
             
             print 'Populating Repo Type...'
-            repotype = """INSERT INTO repotype_tbl (id, type)
+            repotype = "INSERT INTO " + DB.repotype._table + """(id, type)
 			SELECT 1, 'svn' UNION
 			SELECT 2, 'git' UNION
 			SELECT 3, 'cvs' UNION
@@ -71,14 +68,14 @@ if __name__ == "__main__":
 			"""
             c.execute(repotype)
 
-        #repos_tbl ---------------------------------------------
-        c.execute("SHOW TABLES LIKE 'repo_tbl'")
+        #repos._table + """ ---------------------------------------------
+        c.execute("SHOW TABLES LIKE '" + DB.repo._table + "'")
         r = c.fetchone()
         if r:
             print "Repo Table Exists"
         else:
             print "Creating Repos Table..."
-            sql = """CREATE TABLE repo_tbl
+            sql = "CREATE TABLE " + DB.repo._table + """
 			(
 			id smallint NOT NULL AUTO_INCREMENT PRIMARY KEY,
 			repotypeid tinyint NOT NULL,
@@ -89,21 +86,21 @@ if __name__ == "__main__":
             
             if args.populate:
                 print 'Populating Repos...'
-        	sql = """INSERT INTO repo_tbl(repotypeid, url)
+        	sql = "INSERT INTO " + DB.repo._table + """(repotypeid, url)
 			SELECT 2, 'https://github.com/crooks/aam2mail.git' UNION
 			SELECT 2, 'https://github.com/crooks/nymserv' UNION
 			SELECT 1, 'https://svn.torproject.org/svn/'
 			"""
                 c.execute(sql)
 
-        #keyword_tbl ---------------------------------------------
-        c.execute("SHOW TABLES LIKE 'keyword_tbl'")
+        #keyword._table + """ ---------------------------------------------
+        c.execute("SHOW TABLES LIKE '" + DB.keyword._table + "'")
         r = c.fetchone()
         if r:
             print "Keyword Table Exists"
         else:
             print "Creating Keyword Table..."
-            sql = """CREATE TABLE keyword_tbl
+            sql = "CREATE TABLE " + DB.keyword._table + """
 			(
 			keyword varchar(50) NOT NULL,
 			parent varchar(50) 
@@ -113,7 +110,7 @@ if __name__ == "__main__":
             
             if args.populate:
                 print 'Populating Keywords...'
-        	sql = """INSERT INTO keyword_tbl(keyword, parent)
+        	sql = "INSERT INTO " + DB.keyword._table + """(keyword, parent)
 			SELECT 'debian', NULL UNION
 			SELECT 'oaep', 'crypto-padding' UNION
 			SELECT 'oaep', 'asymmetric-crypto' UNION
@@ -122,14 +119,14 @@ if __name__ == "__main__":
 			"""
                 c.execute(sql)
 
-        #commit_tbl ----------------------------------------
-        c.execute("SHOW TABLES LIKE 'commit_tbl'")
+        #commit._table + """ ----------------------------------------
+        c.execute("SHOW TABLES LIKE '" + DB.commit._table + "'")
         r = c.fetchone()
         if r:
             print "Commit Table Exists"
         else:
             print "Creating Commit Table..."
-            sql = """CREATE TABLE commit_tbl
+            sql = "CREATE TABLE " + DB.commit._table + """
                         (
                         id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
                         repoid tinyint NOT NULL,
@@ -138,28 +135,28 @@ if __name__ == "__main__":
                         ) ENGINE=innodb;
                         """
             c.execute(sql)
-        #commitfile_tbl ----------------------------------------
-        c.execute("SHOW TABLES LIKE 'commitfile_tbl'")
+        #commitfile._table + """ ----------------------------------------
+        c.execute("SHOW TABLES LIKE '" + DB.commitfile._table + "'")
         r = c.fetchone()
         if r:
             print "Commit File Table Exists"
         else:
             print "Creating Commit Table..."
-            sql = """CREATE TABLE commitfile_tbl
+            sql = "CREATE TABLE " + DB.commitfile._table + """
                         (
                         commitid int NOT NULL,
 			file varchar(512)
                         ) ENGINE=innodb;
                         """
             c.execute(sql)
-        #commitkeyword_tbl ----------------------------------------
-        c.execute("SHOW TABLES LIKE 'commitkeyword_tbl'")
+        #commitkeyword._table + """ ----------------------------------------
+        c.execute("SHOW TABLES LIKE '" + DB.commitkeyword._table + "'")
         r = c.fetchone()
         if r:
             print "Commit Keyword Table Exists"
         else:
             print "Creating Commit Keywords Table..."
-            sql = """CREATE TABLE commitkeyword_tbl
+            sql = "CREATE TABLE " + DB.commitkeyword._table + """
                         (
                         commitid int NOT NULL,
                         keywordid int NOT NULL,

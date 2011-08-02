@@ -4,7 +4,7 @@ import time, re, os, MySQLdb
 
 import synonymmapping
 from common import *
-from config import Config
+from database import DB
 re_gitsvn = re.compile('git-svn-id: \w+://.+ \w{4,12}-\w{4,12}-\w{4,12}-\w{4,12}-\w{4,12}')
 
 class Commit:
@@ -61,18 +61,15 @@ class Commit:
         return keywords
 
     def save(self):
-        conn = MySQLdb.connect (host = Config.host,
-                                user = Config.username,
-                                passwd = Config.password,
-                                db = Config.database)
+        conn = DB.getConn()
         c = conn.cursor()
-        sql = """INSERT INTO commit_tbl(repoid, date, message) 
+        sql = "INSERT INTO " + DB.commit._table + """(repoid, date, message) 
 		VALUES(1, %s, %s)""" 
         c.execute(sql, (self.date, self.message))
 
         self.commitid = conn.insert_id()
 
-        sql = "INSERT INTO commitfile_tbl(commitid, file) "
+        sql = "INSERT INTO " + DB.commitfile._table + "(commitid, file) "
         for f in self.files:
             sql += "SELECT " + str(self.commitid) + ", %s UNION "
         sql = sql[:-6]
