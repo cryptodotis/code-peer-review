@@ -5,7 +5,8 @@ import MySQLdb
 from config import Config
 
 class DB:
-	def getConn(self):
+	@staticmethod
+	def getConn():
 		conn = MySQLdb.connect (host = Config.host,
                 	                user = Config.username,
                 	                passwd = Config.password,
@@ -14,7 +15,7 @@ class DB:
 	
 	#define table names and column indices
 	class repotype:
-		_table "repotype_tbl"
+		_table = "repotype_tbl"
 		id = 0
 		type = 1
 	class repo:
