@@ -4,6 +4,7 @@ import MySQLdb
 
 from config import Config
 from database import DB
+from repo import Repo
 import svnpuller, gitpuller
 
 if __name__ == "__main__":
@@ -13,5 +14,7 @@ if __name__ == "__main__":
 	c.execute("SELECT * FROM " + DB.repo._table)
 	rows = c.fetchall()
 	
-	for r in rows:
-		print r
+	for i in rows:
+		r = Repo(i)
+		r.pprint()
+		
