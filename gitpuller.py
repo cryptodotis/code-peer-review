@@ -4,9 +4,10 @@ import git as pygit
 
 from common import *
 from commit import Commit
+from repo import Repo
 
 def getCommits(repo, startdate, enddate):
-	localfolder = urlToFolder(repo)
+	localfolder = urlToFolder(repo.url)
 
 	repoloc = 'git-repos/' + localfolder + '/'
 	if os.path.exists(repoloc):
@@ -14,7 +15,7 @@ def getCommits(repo, startdate, enddate):
 	else:
 		os.makedirs(repoloc)
 		c = pygit.Repo.init(repoloc)
-		c.create_remote('origin', repo)
+		c.create_remote('origin', repo.url)
 
 	c.remotes.origin.fetch()
 	c.remotes.origin.pull('master')
@@ -28,7 +29,7 @@ def getCommits(repo, startdate, enddate):
 		message = cleanUpCommitMessage(m.message)
 		files = m.stats.files.keys()
 
-		c = Commit(message, date, files)
+		c = Commit(repo.id, message, date, files)
 		commits.append(c)
 	return commits
 
@@ -41,5 +42,6 @@ if __name__ == "__main__":
 	
 	args.startdate, args.enddate = fixDates(args.startdate, args.enddate)
 	
-	commits = getCommits(args.repo, args.startdate, args.enddate)
+	r = Repo([-1, Repo.Type.GIT, args.repo])
+	commits = getCommits(r, args.startdate, args.enddate)
 	for c in commits: c.pprint()

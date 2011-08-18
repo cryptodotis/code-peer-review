@@ -4,6 +4,7 @@ import pysvn
 
 from common import *
 from commit import Commit
+from repo import Repo
 
 def getCommits(repo, startdate, enddate):
 	end_rev = pysvn.Revision(pysvn.opt_revision_kind.date, enddate)
@@ -12,14 +13,14 @@ def getCommits(repo, startdate, enddate):
 	c = pysvn.Client()
 
 	commits = []
-	msgs = c.log(repo, revision_start=start_rev, revision_end=end_rev, discover_changed_paths=True)
+	msgs = c.log(repo.url, revision_start=start_rev, revision_end=end_rev, discover_changed_paths=True)
 	msgs.reverse() 
 	for m in msgs:
 		date = m.data['revprops']['svn:date']
 		message = m.data['message']
 		paths = [p.path for p in m.data['changed_paths']]
 
-		c = Commit(message, date, paths)
+		c = Commit(repo.id, message, date, paths)
 		commits.append(c)
 	return commits
 
@@ -32,5 +33,6 @@ if __name__ == "__main__":
 	
 	args.startdate, args.enddate = fixDates(args.startdate, args.enddate)
 	
-	commits = getCommits(args.repo, args.startdate, args.enddate)
+	r = Repo([-1, Repo.Type.SVN, args.repo])
+	commits = getCommits(r, args.startdate, args.enddate)
 	for c in commits: c.pprint()
