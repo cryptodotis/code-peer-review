@@ -12,6 +12,8 @@ class Repo:
 		self.id = row[DB.repo.id]
 		self.type = row[DB.repo.repotypeid]
 		self.url = row[DB.repo.url]
+		self.tagname = row[DB.repo.tagname]
+		self.tagmaturity = row[DB.repo.tagmaturity]
 		
 	def pprint(self):
 		s = "(" + str(self.id) + ", "
@@ -20,7 +22,7 @@ class Repo:
 			if self.type == getattr(Repo.Type, i):
 				s += i
 		
-		s+= ", " + self.url + ")"
+		s+= ", " + self.url + ", project-" + self.tagname + ", maturity-" + self.tagmaturity + ")"
 		print s
 				
 	class Type:
@@ -29,3 +31,9 @@ class Repo:
 		CVS = 3
 		RSS = 4
 		EMAIL = 5
+	
+	#Maturity Values
+	#	pervasive - project is used by hundreds or thousands of people who regurally rely on it for protection
+	#	stable - project is in use and stable on public servers, but not pervasive
+	#	beta - project can be used on public servers but is marked as beta by the authors
+	#	development - project is in development

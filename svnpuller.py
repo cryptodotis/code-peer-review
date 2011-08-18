@@ -20,7 +20,7 @@ def getCommits(repo, startdate, enddate):
 		message = m.data['message']
 		paths = [p.path for p in m.data['changed_paths']]
 
-		c = Commit(repo.id, message, date, paths)
+		c = Commit(repo, message, date, paths)
 		commits.append(c)
 	return commits
 

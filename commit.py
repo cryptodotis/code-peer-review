@@ -13,14 +13,18 @@ class Commit:
 	date = 0
 	files = []
 	commitid = -1
-	def __init__(self, id, m, d, f):
-		self.repoid = id
+	def __init__(self, repo, m, d, f):
+		self.repoid = repo.id
 		self.message = Commit.cleanUpCommitMessage(m)
 		self.date = d
 		self.files = f
 
 		self.base_paths = self.getBasePath()
-		self.keywords = self.getSynonyms()
+		self.dbkeywords = self.getSynonyms()
+
+		self.keywords = set(self.dbkeywords)
+		self.keywords.add('project-' + repo.tagname)
+		self.keywords.add('maturity-' + repo.tagmaturity)
 
 	@staticmethod
 	def cleanUpCommitMessage(msg):
@@ -71,11 +75,19 @@ class Commit:
 
 		self.commitid = conn.insert_id()
 
-		sql = "INSERT INTO " + DB.commitfile._table + "(commitid, file) "
-		for f in self.files:
-			sql += "SELECT " + str(self.commitid) + ", %s UNION "
-		sql = sql[:-6]
-		c.execute(sql, self.files)
+		if len(self.files):
+			sql = "INSERT INTO " + DB.commitfile._table + "(commitid, file) "
+			for f in self.files:
+				sql += "SELECT " + str(self.commitid) + ", %s UNION "
+			sql = sql[:-6]
+			c.execute(sql, self.files)
+		
+		if(len(self.dbkeywords)):
+			sql = "INSERT INTO " + DB.commitkeyword._table + "(commitid, keyword) "
+			for f in self.dbkeywords:
+				sql += "SELECT " + str(self.commitid) + ", %s UNION "
+			sql = sql[:-6]
+			c.execute(sql, [x for x in self.dbkeywords])
 
 		conn.commit()
 		

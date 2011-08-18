@@ -29,7 +29,7 @@ def getCommits(repo, startdate, enddate):
 		message = cleanUpCommitMessage(m.message)
 		files = m.stats.files.keys()
 
-		c = Commit(repo.id, message, date, files)
+		c = Commit(repo, message, date, files)
 		commits.append(c)
 	return commits
 

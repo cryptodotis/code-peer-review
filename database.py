@@ -23,6 +23,8 @@ class DB:
 		id = 0
 		repotypeid = 1
 		url = 2
+		tagname = 3
+		tagmaturity = 4
 	class keyword:
 		_table = "keyword_tbl"
 		keyword = 0
@@ -40,4 +42,4 @@ class DB:
 	class commitkeyword:
 		_table = "commitkeyword_tbl"
 		commitid = 0
-		keywordid = 1
+		keyword = 1

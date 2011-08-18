@@ -4,6 +4,15 @@ import time,os,urlparse,re, datetime
 
 import synonymmapping
 
+def fla(a, b):
+	if a and not b:
+		return a
+	elif b and not a:
+		return b
+	else:
+		a.extend(b)
+		return a
+
 def unixToGitDateFormat(t):
 	s = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(t))
 	return s
