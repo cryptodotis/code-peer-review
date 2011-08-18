@@ -24,12 +24,7 @@ def getCommits(repo, startdate, enddate):
 	msgs = c.iter_commits(since=unixToGitDateFormat(startdate))
 	for m in msgs:
 		if m.committed_date > enddate: continue
-
-		date = m.committed_date
-		message = cleanUpCommitMessage(m.message)
-		files = m.stats.files.keys()
-
-		c = Commit(repo, message, date, files)
+		c = Commit(repo, m.message, m.committed_date, m.stats.files.keys(), m.__str__())
 		commits.append(c)
 	return commits
 
@@ -42,6 +37,6 @@ if __name__ == "__main__":
 	
 	args.startdate, args.enddate = fixDates(args.startdate, args.enddate)
 	
-	r = Repo([-1, Repo.Type.GIT, args.repo])
+	r = Repo([-1, Repo.Type.GIT, args.repo, '', ''])
 	commits = getCommits(r, args.startdate, args.enddate)
 	for c in commits: c.pprint()

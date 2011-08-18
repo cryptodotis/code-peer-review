@@ -13,11 +13,12 @@ class Commit:
 	date = 0
 	files = []
 	commitid = -1
-	def __init__(self, repo, m, d, f):
+	def __init__(self, repo, m, d, f, uid):
 		self.repoid = repo.id
 		self.message = Commit.cleanUpCommitMessage(m)
 		self.date = d
 		self.files = f
+		self.uniqueid = uid
 
 		self.base_paths = self.getBasePath()
 		self.dbkeywords = self.getSynonyms()
@@ -69,9 +70,10 @@ class Commit:
 	def save(self):
 		conn = DB.getConn()
 		c = conn.cursor()
-		sql = "INSERT INTO " + DB.commit._table + """(repoid, date, message) 
-		VALUES(%s, %s, %s)""" 
-		c.execute(sql, (self.repoid, self.date, self.message))
+		sql = "INSERT INTO " + DB.commit._table + """(repoid, date, message, uniqueid) 
+				VALUES(%s, %s, %s, %s)
+				ON DUPLICATE KEY UPDATE uniqueid = VALUES(uniqueid)""" 
+		c.execute(sql, (self.repoid, self.date, self.message, self.uniqueid))
 
 		self.commitid = conn.insert_id()
 
@@ -92,6 +94,7 @@ class Commit:
 		conn.commit()
 		
 	def pprint(self):
+		print "ID:\t\t", self.uniqueid
 		print "Date:\t\t", unixToGitDateFormat(self.date), "(" + str(self.date) + ")"
 		print "Log Message:\t", self.message
 		if len(self.files) > 0:

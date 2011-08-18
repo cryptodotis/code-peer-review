@@ -35,6 +35,7 @@ class DB:
 		repoid = 1
 		date = 2
 		message = 3
+		uniqueid = 4
 	class commitfile:
 		_table = "commitfile_tbl"
 		commitid = 0

@@ -145,7 +145,9 @@ if __name__ == "__main__":
 					id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
 					repoid tinyint NOT NULL,
 					date int NOT NULL,
-					message text 
+					message text,
+					uniqueid varchar(64) NOT NULL,
+					UNIQUE (repoid, uniqueid)
 					) ENGINE=innodb;
 					"""
 			c.execute(sql)

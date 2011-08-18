@@ -20,7 +20,7 @@ def getCommits(repo, startdate, enddate):
 		message = m.data['message']
 		paths = [p.path for p in m.data['changed_paths']]
 
-		c = Commit(repo, message, date, paths)
+		c = Commit(repo, message, date, paths, m.data['revision'].number)
 		commits.append(c)
 	return commits
 
@@ -33,6 +33,6 @@ if __name__ == "__main__":
 	
 	args.startdate, args.enddate = fixDates(args.startdate, args.enddate)
 	
-	r = Repo([-1, Repo.Type.SVN, args.repo])
+	r = Repo([-1, Repo.Type.SVN, args.repo, '', ''])
 	commits = getCommits(r, args.startdate, args.enddate)
 	for c in commits: c.pprint()
