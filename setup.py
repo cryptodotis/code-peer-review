@@ -64,7 +64,9 @@ if __name__ == "__main__":
 						SELECT 2, 'git' UNION
 						SELECT 3, 'cvs' UNION
 						SELECT 4, 'rss' UNION
-						SELECT 5, 'email'
+						SELECT 5, 'email' UNION
+						SELECT 6, 'bazaar' UNION
+						SELECT 7, 'mercurial'
 						"""
 			c.execute(repotype)
 

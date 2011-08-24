@@ -31,6 +31,8 @@ class Repo:
 		CVS = 3
 		RSS = 4
 		EMAIL = 5
+		BAZAAR = 6
+		MERCURIAL = 7
 	
 	#Maturity Values
 	#	pervasive - project is used by hundreds or thousands of people who regurally rely on it for protection
