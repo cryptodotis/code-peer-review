@@ -8,14 +8,33 @@ class Repo:
 	id = 0
 	type = 0
 	url = ''
-	def __init__(self, row):
+	
+	initialized = False
+	def __init__(self):
+		pass
+	
+	def loadFromDatabase(self, row):
+		self.initialized = True
+		
 		self.id = row[DB.repo.id]
 		self.type = row[DB.repo.repotypeid]
 		self.url = row[DB.repo.url]
 		self.tagname = row[DB.repo.tagname]
 		self.tagmaturity = row[DB.repo.tagmaturity]
 		
+	def loadFromValues(self, i, t, u, tagn, tagm):
+		self.initialized = True
+		
+		self.id = i
+		self.type = t
+		self.url = u
+		self.tagname = tagn
+		self.tagmaturity = tagm
+		
 	def pprint(self):
+		if not self.initialized:
+			raise Exception("called getBasePath on unitialized Commit object")
+			
 		s = "(" + str(self.id) + ", "
 		
 		for i in dir(Repo.Type):

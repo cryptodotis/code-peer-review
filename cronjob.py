@@ -24,7 +24,8 @@ if __name__ == "__main__":
 	rows = c.fetchall()
 	
 	for i in rows:
-		r = Repo(i)
+		r = Repo()
+		r.loadFromDatabase(i)
 		r.pprint()
 		
 		module = -1

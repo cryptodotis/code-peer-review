@@ -24,7 +24,8 @@ def getCommits(repo, startdate, enddate):
 	msgs = c.iter_commits(since=unixToGitDateFormat(startdate))
 	for m in msgs:
 		if m.committed_date > enddate: continue
-		c = Commit(repo, m.message, m.committed_date, m.stats.files.keys(), m.__str__())
+		c = Commit()
+		c.loadFromSource(repo, m.message, m.committed_date, m.stats.files.keys(), m.__str__())
 		commits.append(c)
 	return commits
 

@@ -13,13 +13,37 @@ class Commit:
 	date = 0
 	files = []
 	commitid = -1
-	def __init__(self, repo, m, d, f, uid):
+	
+	initialized = False
+	def __init__(self):
+		pass
+	
+	def loadFromSource(self, repo, m, d, f, uid):
+		self.initialized = True
+	
 		self.repoid = repo.id
 		self.message = Commit.cleanUpCommitMessage(m)
 		self.date = d
 		self.files = f
 		self.uniqueid = uid
 
+		self.base_paths = self.getBasePath()
+		self.dbkeywords = self.getSynonyms()
+
+		self.keywords = set(self.dbkeywords)
+		self.keywords.add('project-' + repo.tagname)
+		self.keywords.add('maturity-' + repo.tagmaturity)
+	
+	def loadFromDatabase(self, repo, row, files):
+		self.initialized = True
+		
+		self.repoid = repo.id
+		self.commitid = row[DB.commit.id]
+		self.message = row[DB.commit.message]
+		self.date = row[DB.commit.date]
+		self.uniqueid = row[DB.commit.uniqueid]
+
+		self.files = files
 		self.base_paths = self.getBasePath()
 		self.dbkeywords = self.getSynonyms()
 
@@ -33,6 +57,9 @@ class Commit:
 		return msg.strip()
 
 	def getBasePath(self):
+		if not self.initialized:
+			raise Exception("called getBasePath on unitialized Commit object")
+			
 		if len(self.files) == 0: return ""
 		trunks = [p for p in self.files if "/trunk" in p]
 		branches = [p for p in self.files if "/branches" in p]
@@ -51,6 +78,9 @@ class Commit:
 
 
 	def getSynonyms(self):
+		if not self.initialized:
+			raise Exception("called getBasePath on unitialized Commit object")
+			
 		log = self.message.lower()
 		paths = []
 		for i in range(len(self.files)): paths.append(self.files[i].lower())
@@ -68,6 +98,9 @@ class Commit:
 		return keywords
 
 	def save(self):
+		if not self.initialized:
+			raise Exception("called getBasePath on unitialized Commit object")
+			
 		conn = DB.getConn()
 		c = conn.cursor()
 		sql = "INSERT INTO " + DB.commit._table + """(repoid, date, message, uniqueid) 
@@ -94,6 +127,9 @@ class Commit:
 		conn.commit()
 		
 	def pprint(self):
+		if not self.initialized:
+			raise Exception("called getBasePath on unitialized Commit object")
+			
 		print "ID:\t\t", self.uniqueid
 		print "Date:\t\t", unixToGitDateFormat(self.date), "(" + str(self.date) + ")"
 		print "Log Message:\t", self.message

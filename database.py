@@ -18,6 +18,7 @@ class DB:
 		_table = "repotype_tbl"
 		id = 0
 		type = 1
+		_numColumns = 2
 	class repo:
 		_table = "repo_tbl"
 		id = 0
@@ -25,10 +26,12 @@ class DB:
 		url = 2
 		tagname = 3
 		tagmaturity = 4
+		_numColumns = 5
 	class keyword:
 		_table = "keyword_tbl"
 		keyword = 0
 		parent = 1
+		_numColumns = 2
 	class commit:
 		_table = "commit_tbl"
 		id = 0
@@ -36,11 +39,14 @@ class DB:
 		date = 2
 		message = 3
 		uniqueid = 4
+		_numColumns = 5
 	class commitfile:
 		_table = "commitfile_tbl"
 		commitid = 0
 		file = 1
+		_numColumns = 2
 	class commitkeyword:
 		_table = "commitkeyword_tbl"
 		commitid = 0
 		keyword = 1
+		_numColumns = 2
