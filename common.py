@@ -17,6 +17,9 @@ def unixToGitDateFormat(t):
 	s = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(t))
 	return s
 
+def unixToDatetime(t):
+	return datetime.datetime.utcfromtimestamp(t)
+
 def urlToFolder(url):
 	scheme, netloc, path, parameters, query, fragment = urlparse.urlparse(url)
 	folder = netloc + path

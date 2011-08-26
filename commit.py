@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import time, re, os, MySQLdb
+from PyRSS2Gen import RSSItem
 
 import synonymmapping
 from common import *
@@ -8,7 +9,7 @@ from database import DB
 re_gitsvn = re.compile('git-svn-id: \w+://.+ \w{4,12}-\w{4,12}-\w{4,12}-\w{4,12}-\w{4,12}')
 
 class Commit:
-	repoid = -1
+	repo = None
 	message = ''
 	date = 0
 	files = []
@@ -21,7 +22,7 @@ class Commit:
 	def loadFromSource(self, repo, m, d, f, uid):
 		self.initialized = True
 	
-		self.repoid = repo.id
+		self.repo = repo
 		self.message = Commit.cleanUpCommitMessage(m)
 		self.date = d
 		self.files = f
@@ -37,7 +38,7 @@ class Commit:
 	def loadFromDatabase(self, repo, row, files):
 		self.initialized = True
 		
-		self.repoid = repo.id
+		self.repo = repo
 		self.commitid = row[DB.commit.id]
 		self.message = row[DB.commit.message]
 		self.date = row[DB.commit.date]
@@ -146,4 +147,14 @@ class Commit:
 				else:
 					print "Base Path:\t", self.base_paths
 		print "Keywords:\t", ", ".join(self.keywords)
+		
+	def toRSSItem(self):
+		item = RSSItem(
+			title = self.message,
+			link = self.repo.url,
+			description = self.message,
+			guid = self.repo.url + "#" + self.uniqueid,
+			pubDate = unixToDatetime(self.date)
+			)
+		return item
 
