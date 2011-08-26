@@ -107,7 +107,7 @@ class Commit:
 		sql = "INSERT INTO " + DB.commit._table + """(repoid, date, message, uniqueid) 
 				VALUES(%s, %s, %s, %s)
 				ON DUPLICATE KEY UPDATE uniqueid = VALUES(uniqueid)""" 
-		c.execute(sql, (self.repoid, self.date, self.message, self.uniqueid))
+		c.execute(sql, (self.repo.id, self.date, self.message, self.uniqueid))
 
 		self.commitid = conn.insert_id()
 
@@ -127,32 +127,47 @@ class Commit:
 
 		conn.commit()
 		
-	def pprint(self):
+	def getpprint(self):
 		if not self.initialized:
 			raise Exception("called getBasePath on unitialized Commit object")
 			
-		print "ID:\t\t", self.uniqueid
-		print "Date:\t\t", unixToGitDateFormat(self.date), "(" + str(self.date) + ")"
-		print "Log Message:\t", self.message
+		eol = "\r\n"
+		s = ""
+		s += "ID:\t\t %s%s" % (self.uniqueid, eol)
+		s += "Date:\t\t %s (%s)%s" % (unixToGitDateFormat(self.date), self.date, eol)
+		s += "Log Message:\t %s%s" % (self.message, eol)
 		if len(self.files) > 0:
-			print "Files:\t\t", self.files[0]
+			s += "Files:\t\t %s%s" % (self.files[0], eol)
 			for p in self.files[1:]:
-				print "\t\t", p
+				s += "\t\t %s%s" % (p, eol)
 
 		if len(self.base_paths) > 0:
 			if len(self.base_paths) > 0 and not isinstance(self.base_paths, basestring):
-				print "Base Paths:\t", self.base_paths[0]
+				s += "Base Paths:\t %s%s" % (self.base_paths[0], eol)
 				for p in self.base_paths[1:]:
-					print "\t\t", p
+					s += "\t\t %s%s" % (p, eol)
 				else:
-					print "Base Path:\t", self.base_paths
-		print "Keywords:\t", ", ".join(self.keywords)
-		
+					s += "Base Path:\t %s%s" % (self.base_paths, eol)
+		s+= "Keywords:\t %s%s" % (", ".join(self.keywords), eol)
+		return s
+	
+	def pprint(self):
+		print getpprint()
+	
 	def toRSSItem(self):
+		title = self.repo.tagname
+		if self.message and len(self.message) > 50: title += " - " + self.message[:50] + "..."
+		elif self.message: title += " - " + self.message
+		if self.dbkeywords: title += " - " + ",".join(self.dbkeywords)
+		
+		description  = "<pre>"
+		description += self.getpprint()
+		description += "</pre>"
+
 		item = RSSItem(
-			title = self.message,
+			title = title,
 			link = self.repo.url,
-			description = self.message,
+			description = description,
 			guid = self.repo.url + "#" + self.uniqueid,
 			pubDate = unixToDatetime(self.date)
 			)

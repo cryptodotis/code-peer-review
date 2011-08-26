@@ -1,5 +1,8 @@
 #!/usr/bin/python
 
+import tornado.ioloop
+import tornado.web
+
 import MySQLdb, argparse, datetime
 from PyRSS2Gen import RSS2
 
@@ -9,11 +12,12 @@ from database import DB
 from repo import Repo
 from commit import Commit
 
-if __name__ == "__main__":
+class MainHandler(tornado.web.RequestHandler):
+    def get(self):
 	conn = DB.getConn()
 	c = conn.cursor()
 	
-	c.execute("SELECT c.*, r.repotypeid, r.url, r.tagname, r.maturity FROM " + DB.commit._table + " c INNER JOIN " + DB.repo._table + " r ON r.id = c.repoid")
+	c.execute("SELECT c.*, r.repotypeid, r.url, r.tagname, r.maturity FROM " + DB.commit._table + " c INNER JOIN " + DB.repo._table + " r ON r.id = c.repoid ORDER BY c.date DESC")
 	commitrows = c.fetchall()
 	
 	allcommitids = ",".join([str(int(commit[0])) for commit in commitrows])
@@ -43,6 +47,17 @@ if __name__ == "__main__":
 
 		feed.items.append(c.toRSSItem())
 	
-	print feed.to_xml()
+        self.set_header('Content-Type', 'application/rss+xml')
+	self.write(feed.to_xml())
+        return
+
+application = tornado.web.Application([
+    (r"/", MainHandler),
+])
+
+if __name__ == "__main__":
+    application.listen(8888)
+    tornado.ioloop.IOLoop.instance().start()
+
 		
 		

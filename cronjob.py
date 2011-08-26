@@ -39,5 +39,6 @@ if __name__ == "__main__":
 			for c in commits:
 				print ".",
 				c.save()
+			if commits: print ""
 		else:
 			print "Do not have a module for", r.url
