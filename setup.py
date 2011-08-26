@@ -93,7 +93,14 @@ if __name__ == "__main__":
 				sql = "INSERT INTO " + DB.repo._table + """(repotypeid, url, tagname, maturity)
 				SELECT 2, 'https://github.com/crooks/aam2mail.git', 'aam2mail', 'stable' UNION
 				SELECT 2, 'https://github.com/crooks/nymserv', 'nymserv', 'stable' UNION
-				SELECT 1, 'https://svn.torproject.org/svn/', 'tor', 'pervasive'
+				SELECT 1, 'https://svn.torproject.org/svn/', 'tor', 'pervasive' UNION
+				SELECT 2, 'https://github.com/cryptodotis/crypto.is-docs', 'crypto.is-docs', 'beta' UNION
+				SELECT 2, 'https://github.com/moxie0/Convergence.git', 'convergence', 'beta' UNION
+				SELECT 2, 'https://github.com/brl/obfuscated-openssh', 'obfuscated-openssh', 'stable' UNION
+				SELECT 2, 'git://git.gnupg.org/gnupg.git', 'gnupg', 'pervasive' UNION
+				SELECT 2, 'git://git.gnupg.org/libgcrypt.git', 'libgcrypt', 'pervasive' UNION
+				SELECT 1, 'http://encfs.googlecode.com/svn/trunk/', 'encfs', 'stable' UNION
+				SELECT 1, 'http://cryptsetup.googlecode.com/svn/trunk/', 'luks', 'pervasive'
 				"""
 				c.execute(sql)
 
