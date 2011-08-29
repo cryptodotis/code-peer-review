@@ -100,7 +100,8 @@ if __name__ == "__main__":
 				SELECT 2, 'git://git.gnupg.org/gnupg.git', 'gnupg', 'pervasive' UNION
 				SELECT 2, 'git://git.gnupg.org/libgcrypt.git', 'libgcrypt', 'pervasive' UNION
 				SELECT 1, 'http://encfs.googlecode.com/svn/trunk/', 'encfs', 'stable' UNION
-				SELECT 1, 'http://cryptsetup.googlecode.com/svn/trunk/', 'luks', 'pervasive'
+				SELECT 1, 'http://cryptsetup.googlecode.com/svn/trunk/', 'luks', 'pervasive' UNION
+				SELECT 1, 'http://phantom.googlecode.com/svn/trunk/', 'phantom', 'development'
 				"""
 				c.execute(sql)
 
