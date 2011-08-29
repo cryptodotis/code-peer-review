@@ -1,3 +1,0 @@
-https://github.com/crooks/aam2mail.git
-https://github.com/crooks/nymserv
-https://svn.torproject.org/svn/
