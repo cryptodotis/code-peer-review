@@ -66,7 +66,9 @@ if __name__ == "__main__":
 						SELECT 4, 'rss' UNION
 						SELECT 5, 'email' UNION
 						SELECT 6, 'bazaar' UNION
-						SELECT 7, 'mercurial'
+						SELECT 7, 'mercurial' UNION
+						SELECT 8, 'targz' UNION
+						SELECT 9, 'darcs'
 						"""
 			c.execute(repotype)
 
@@ -91,18 +93,39 @@ if __name__ == "__main__":
 			if args.populate:
 				print 'Populating Repos...'
 				sql = "INSERT INTO " + DB.repo._table + """(repotypeid, url, tagname, maturity)
-				SELECT 2, 'https://github.com/crooks/aam2mail.git', 'aam2mail', 'stable' UNION
-				SELECT 2, 'https://github.com/crooks/nymserv', 'nymserv', 'stable' UNION
 				SELECT 1, 'https://svn.torproject.org/svn/', 'tor', 'pervasive' UNION
 				SELECT 2, 'https://github.com/cryptodotis/crypto.is-docs', 'crypto.is-docs', 'beta' UNION
 				SELECT 2, 'https://github.com/moxie0/Convergence.git', 'convergence', 'beta' UNION
 				SELECT 2, 'https://github.com/brl/obfuscated-openssh', 'obfuscated-openssh', 'stable' UNION
-				SELECT 2, 'git://git.gnupg.org/gnupg.git', 'gnupg', 'pervasive' UNION
-				SELECT 2, 'git://git.gnupg.org/libgcrypt.git', 'libgcrypt', 'pervasive' UNION
+				SELECT 1, 'http://phantom.googlecode.com/svn/trunk/', 'phantom', 'development' UNION
+				SELECT 8, 'http://www.agroman.net/corkscrew/', 'corkscrew', 'development' UNION
+				SELECT 9, 'http://tahoe-lafs.org/source/tahoe-lafs/trunk/', 'tahoe-lafs', 'beta' UNION""" 
+				#crypto libraries
+				sql += """
+				SELECT 2, 'git://git.gnupg.org/libgcrypt.git', 'libgcrypt', 'pervasive' UNION"""
+				#file crypto
+				sql += """
+				SELECT 2, 'git://git.gnupg.org/gnupg.git', 'gnupg', 'pervasive' UNION"""
+				#remailer
+				sql += """
+				SELECT 2, 'https://github.com/crooks/aam2mail.git', 'aam2mail', 'stable' UNION
+				SELECT 2, 'https://github.com/crooks/nymserv', 'nymserv', 'stable' UNION"""
+				#fde
+				sql += """
 				SELECT 1, 'http://encfs.googlecode.com/svn/trunk/', 'encfs', 'stable' UNION
-				SELECT 1, 'http://cryptsetup.googlecode.com/svn/trunk/', 'luks', 'pervasive' UNION
-				SELECT 1, 'http://phantom.googlecode.com/svn/trunk/', 'phantom', 'development'
-				"""
+				SELECT 1, 'http://cryptsetup.googlecode.com/svn/trunk/', 'luks', 'pervasive' UNION"""
+				#keyservers
+				sql += """
+				SELECT 6, 'http://www.earth.li/~noodles/bzr/onak/mainline', 'onak', 'development' UNION"""
+				#mailinglist
+				sql += """
+				SELECT 1, 'https://sels.svn.sourceforge.net/svnroot/sels', 'sels', 'development' UNION
+				SELECT 8, 'http://non-gnu.uvt.nl/pub/mailman/', 'secure-list-server', 'development' UNION
+				SELECT 2, 'git://git.immerda.ch/schleuder.git', 'schleuder', 'development' UNION
+				SELECT 8, 'http://www.synacklabs.net/projects/crypt-ml/', 'crypt-ml', 'development' UNION
+				SELECT 3, 'shibboleth.cvs.sourceforge.net', 'shibboleth', 'development' UNION
+				SELECT 3, 'mmreencrypt.cvs.sourceforge.net', 'mmreencrypt', 'development'"""
+				
 				c.execute(sql)
 
 		#keyword._table + """ ---------------------------------------------
@@ -124,16 +147,42 @@ if __name__ == "__main__":
 				print 'Populating Keywords...'
 				sql = "INSERT INTO " + DB.keyword._table + """(keyword, parent)
 				
-				SELECT 'pervasive', NULL UNION
-				SELECT 'stable', NULL UNION
-				SELECT 'beta', NULL UNION
-				SELECT 'development', NULL UNION
+				SELECT 'project-schleuder', 'mailinglist' UNION
+				SELECT 'project-sels', 'mailinglist' UNION
+				SELECT 'project-secure-list-server', 'mailinglist' UNION
+				SELECT 'project-mmreencrypt', 'mailinglist' UNION
+				SELECT 'project-shibboleth', 'mailinglist' UNION
+				SELECT 'project-crypt-ml', 'mailinglist' UNION
+				
+				SELECT 'project-onak', 'keyserver' UNION
+				
+				SELECT 'project-libgcrypt', 'library' UNION
+				
+				SELECT 'project-gnupg', 'filecrypto' UNION
+				
+				SELECT 'project-aam2mail', 'remailer' UNION
+				SELECT 'project-nymserv', 'remailer' UNION
+				SELECT 'pynchon', 'remailer' UNION
+				SELECT 'underhill', 'remailer' UNION
+				
+				SELECT 'project-encfs', 'fde' UNION
+				SELECT 'project-luks', 'fde' UNION
+				
 				
 				SELECT 'debian', NULL UNION
+				SELECT 'gentoo', NULL UNION
+				SELECT 'ubuntu', NULL UNION
+				
 				SELECT 'oaep', 'crypto-padding' UNION
 				SELECT 'oaep', 'asymmetric-crypto' UNION
 				SELECT 'oaep', 'RSA' UNION
+				
+				SELECT 'dkim', NULL UNION
+
 				SELECT 'vidalia', 'project-tor'
+				
+				
+				
 				"""
 				c.execute(sql)
 				

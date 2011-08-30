@@ -52,6 +52,8 @@ class Repo:
 		EMAIL = 5
 		BAZAAR = 6
 		MERCURIAL = 7
+		TAR = 8
+		DARCS = 9
 	
 	#Maturity Values
 	#	pervasive - project is used by hundreds or thousands of people who regurally rely on it for protection
