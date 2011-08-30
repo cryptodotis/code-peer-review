@@ -15,21 +15,25 @@ class Tree:
 		self.nodes.append(n)
 	def appendToTail(self, n):
 		self.nodes[len(self.nodes)-1].add(n)
-	def tostring(self, column, starting=False):
-		s = ""
+	def getWhereClause(self, column, starting=False):
+		sql = ""
+		components = []
 		for n in self.nodes:
 			if type(n) is str:
 				if starting:
-					s += " " + column + " = '" + n + "'"
+					sql += " " + column + " = %s"
 				else:
-					s += " " + self.mode + " " + column + " = '" + n + "'"
+					sql += " " + self.mode + " " + column + " = %s"
+				components.append(n)
 			else:
+				innersql, newcomponents = n.getWhereClause(column, True)
 				if starting:
-					s += " (" + n.tostring(column, True) + ")"
+					sql += " (" + innersql + ")"
 				else:
-					s += " " + self.mode + " (" + n.tostring(column, True) + ")"
+					sql += " " + self.mode + " (" + innersql + ")"
+				components.extend(newcomponents)
 			starting = False
-		return s
+		return sql, components
 	def __repr__(self):
 		s = "("
 		for n in self.nodes:
@@ -99,8 +103,9 @@ class KeywordsParser:
 			else:
 				self.base.add(t)
 			i += 1
-	def tostring(self, column):
-		return self.base.tostring(column, True) + " "
+	def getWhereClause(self, column):
+		sql, components = self.base.getWhereClause(column, True)
+		return (sql + " ", components)
 	def __repr__(self):
 		return self.base.__repr__()
 
@@ -137,4 +142,4 @@ if __name__ == "__main__":
 		
 	for t in testcases:
 		tree = KeywordsParser(t)
-		print t, "|", tree.tostring("ck.keyword")
+		print t, "|", tree.getWhereClause("ck.keyword")

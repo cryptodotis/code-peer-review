@@ -24,16 +24,17 @@ class MainHandler(tornado.web.RequestHandler):
 						"	ON r.id = c.repoid "
 		
 		whereClause = " 1=1 "
+		components = []
 		if keywords:
 			keywordsTree = KeywordsParser(keywords)
 			getcommitsSQL += "INNER JOIN " + DB.commitkeyword._table + " ck " + \
 							 "	ON c.id = ck.commitid "
-			whereClause = keywordsTree.tostring("ck.keyword")
+			whereClause, components = keywordsTree.getWhereClause("ck.keyword")
 		
 		getcommitsSQL += "WHERE " + whereClause
 		getcommitsSQL += "ORDER BY c.date DESC "
 		
-		c.execute(getcommitsSQL)
+		c.execute(getcommitsSQL, components)
 		commitrows = c.fetchall()
 		
 		if commitrows:
