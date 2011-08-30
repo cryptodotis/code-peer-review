@@ -93,13 +93,39 @@ if __name__ == "__main__":
 			if args.populate:
 				print 'Populating Repos...'
 				sql = "INSERT INTO " + DB.repo._table + """(repotypeid, url, tagname, maturity)
-				SELECT 1, 'https://svn.torproject.org/svn/', 'tor', 'pervasive' UNION
 				SELECT 2, 'https://github.com/cryptodotis/crypto.is-docs', 'crypto.is-docs', 'beta' UNION
 				SELECT 2, 'https://github.com/moxie0/Convergence.git', 'convergence', 'beta' UNION
 				SELECT 2, 'https://github.com/brl/obfuscated-openssh', 'obfuscated-openssh', 'stable' UNION
 				SELECT 1, 'http://phantom.googlecode.com/svn/trunk/', 'phantom', 'development' UNION
 				SELECT 8, 'http://www.agroman.net/corkscrew/', 'corkscrew', 'development' UNION
 				SELECT 9, 'http://tahoe-lafs.org/source/tahoe-lafs/trunk/', 'tahoe-lafs', 'beta' UNION""" 
+				#tor
+				sql += """
+				SELECT 2, 'https://gitweb.torproject.org/arm.git', 		'tor-arm', 		'stable' UNION
+				SELECT 2, 'https://gitweb.torproject.org/bridgedb.git', 	'tor-bridgedb', 	'stable' UNION
+				SELECT 2, 'https://gitweb.torproject.org/debian/polipo.git', 	'tor-debian-polipo',	'stable' UNION
+				SELECT 2, 'https://gitweb.torproject.org/debian/tor.git', 	'tor-debian-tor', 	'pervasive' UNION
+				SELECT 2, 'https://gitweb.torproject.org/flashproxy.git', 	'tor-flashproxy', 	'stable' UNION
+				SELECT 2, 'https://gitweb.torproject.org/gettor.git', 		'tor-gettor', 		'pervasive' UNION
+				SELECT 2, 'https://gitweb.torproject.org/https-everywhere.git', 'https-everywhere', 	'pervasive' UNION
+				SELECT 2, 'https://gitweb.torproject.org/jtorctl.git', 		'tor-jtorctl', 		'stable' UNION
+				SELECT 2, 'https://gitweb.torproject.org/mat.git', 		'tor-mat', 		'stable' UNION
+				SELECT 2, 'https://gitweb.torproject.org/metrics-db.git', 	'tor-metrics-db', 	'stable' UNION
+				SELECT 2, 'https://gitweb.torproject.org/metrics-tasks.git', 	'tor-metrics-tasks',	'stable' UNION
+				SELECT 2, 'https://gitweb.torproject.org/metrics-utils.git', 	'tor-metrics-utils, 	'stable' UNION
+				SELECT 2, 'https://gitweb.torproject.org/metrics-web.git', 	'tor-metrics-web', 	'stable' UNION
+				SELECT 2, 'https://gitweb.torproject.org/obfsproxy.git', 	'tor-obfsproxy', 	'stable' UNION
+				SELECT 2, 'https://gitweb.torproject.org/orbot.git', 		'tor-orbot', 		'stable' UNION
+				SELECT 2, 'https://gitweb.torproject.org/puppetor.git', 	'tor-puppetor', 	'stable' UNION
+				SELECT 2, 'https://gitweb.torproject.org/pytorctl.git', 	'tor-pytorctl', 	'stable' UNION
+				SELECT 2, 'https://gitweb.torproject.org/thandy.git', 		'tor-thandy', 		'pervasive' UNION
+				SELECT 2, 'https://gitweb.torproject.org/tor.git', 		'tor', 			'pervasive', UNION
+				SELECT 2, 'https://gitweb.torproject.org/torbutton.git', 	'torbutton', 		'pervasive' UNION
+				SELECT 2, 'https://gitweb.torproject.org/tordnsel.git', 	'tor-dnsel', 		'stable' UNION
+				SELECT 2, 'https://gitweb.torproject.org/torsocks.git', 	'torsocks', 		'pervasive' UNION
+				SELECT 2, 'https://gitweb.torproject.org/torspec.git', 		'torspec', 		'pervasive' UNION
+				SELECT 2, 'https://gitweb.torproject.org/vidalia-plugins.git', 	'vidalia-plugins, 	'stable' UNION
+				SELECT 2, 'https://gitweb.torproject.org/vidalia.git', 		'vidalia', 		'pervasive' UNION"""
 				#crypto libraries
 				sql += """
 				SELECT 2, 'git://git.gnupg.org/libgcrypt.git', 'libgcrypt', 'pervasive' UNION"""
@@ -172,6 +198,7 @@ if __name__ == "__main__":
 				SELECT 'project-luks', 'fde' UNION
 				
 				SELECT 'project-cr-gpg', 'browser-plugin' UNION
+				SELECT 'project-https-everywhere', 'browser-plugin' UNION
 				
 				SELECT 'project-enigmail', 'mailcient-plugin' UNION
 				
@@ -180,7 +207,10 @@ if __name__ == "__main__":
 				SELECT 'penango', 'email-crypto' UNION
 				SELECT 'smime', 'email-crypto' UNION
 				
+				SELECT 'project-tor-debian-polipo', 'debian' UNION
+				SELECT 'project-tor-debian-tor', 'debian' UNION
 				SELECT 'debian', NULL UNION
+				
 				SELECT 'gentoo', NULL UNION
 				SELECT 'ubuntu', NULL UNION
 				
@@ -190,7 +220,32 @@ if __name__ == "__main__":
 				
 				SELECT 'dkim', NULL UNION
 
-				SELECT 'vidalia', 'project-tor'
+				SELECT 'vidalia', 'project-tor' UNION
+				SELECT 'tor', 'project-tor' UNION
+				
+				SELECT 'project-tor-arm', 'project-tor' UNION
+				SELECT 'project-tor-bridgedb', 'project-tor' UNION
+				SELECT 'project-tor-debian-polipo', 'project-tor' UNION
+				SELECT 'project-tor-debian-tor', 'project-tor' UNION
+				SELECT 'project-tor-flashproxy', 'project-tor' UNION
+				SELECT 'project-tor-gettor', 'project-tor' UNION
+				SELECT 'project-tor-jtorctl', 'project-tor' UNION
+				SELECT 'project-tor-mat', 'project-tor' UNION
+				SELECT 'project-tor-metrics-db', 'project-tor' UNION
+				SELECT 'project-tor-metrics-tasks', 'project-tor'UNION
+				SELECT 'project-tor-metrics-utils, 'project-tor' UNION
+				SELECT 'project-tor-metrics-web', 'project-tor' UNION
+				SELECT 'project-tor-obfsproxy', 'project-tor' UNION
+				SELECT 'project-tor-orbot', 'project-tor' UNION
+				SELECT 'project-tor-puppetor', 'project-tor' UNION
+				SELECT 'project-tor-pytorctl', 'project-tor' UNION
+				SELECT 'project-tor-thandy', 'project-tor' UNION
+				SELECT 'project-torbutton', 'project-tor' UNION
+				SELECT 'project-tor-dnsel', 'project-tor' UNION
+				SELECT 'project-torsocks', 'project-tor' UNION
+				SELECT 'project-torspec', 'project-tor' UNION
+				SELECT 'project-vidalia-plugins, 'project-vidalia' UNION
+				SELECT 'project-vidalia', 'project-tor' UNION
 				
 				
 				
