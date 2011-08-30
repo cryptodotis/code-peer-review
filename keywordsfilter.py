@@ -15,6 +15,21 @@ class Tree:
 		self.nodes.append(n)
 	def appendToTail(self, n):
 		self.nodes[len(self.nodes)-1].add(n)
+	def tostring(self, column, starting=False):
+		s = ""
+		for n in self.nodes:
+			if type(n) is str:
+				if starting:
+					s += " " + column + " = '" + n + "'"
+				else:
+					s += " " + self.mode + " " + column + " = '" + n + "'"
+			else:
+				if starting:
+					s += " (" + n.tostring(column, True) + ")"
+				else:
+					s += " " + self.mode + " (" + n.tostring(column, True) + ")"
+			starting = False
+		return s
 	def __repr__(self):
 		s = "("
 		for n in self.nodes:
@@ -57,7 +72,6 @@ class KeywordsParser:
 		tokens = KeywordsParser._trimnonsense(tokens)
 		
 		if not len(tokens):
-			self.base = ""
 			return
 		
 		i=0
@@ -85,8 +99,8 @@ class KeywordsParser:
 			else:
 				self.base.add(t)
 			i += 1
-	def tostring(self):
-		return self.__repr__()
+	def tostring(self, column):
+		return self.base.tostring(column, True) + " "
 	def __repr__(self):
 		return self.base.__repr__()
 
@@ -118,8 +132,9 @@ if __name__ == "__main__":
 	,"tag1 tag2 or tag3"
 	,"tag1 or tag2 tag3"
 	,"tag1 or tag2 or tag3"
+	,"tag1 and tag2 or tag3 and tag4"
 	]
 		
 	for t in testcases:
 		tree = KeywordsParser(t)
-		print t, "|", tree
+		print t, "|", tree.tostring("ck.keyword")
