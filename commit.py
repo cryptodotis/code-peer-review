@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-import time, re, os, MySQLdb
+import time, re, os, MySQLdb, unicodedata
 from PyRSS2Gen import RSSItem
 
 import synonymmapping
@@ -163,6 +163,9 @@ class Commit:
 		description  = "<pre>"
 		description += self.getpprint()
 		description += "</pre>"
+		
+		title = unicodedata.normalize('NFKD', unicode(title, 'utf-8')).encode('ascii', 'ignore')
+		description = unicodedata.normalize('NFKD', unicode(description, 'utf-8')).encode('ascii', 'ignore')
 
 		item = RSSItem(
 			title = title,

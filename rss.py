@@ -3,7 +3,7 @@
 import tornado.ioloop
 import tornado.web
 
-import MySQLdb, argparse, datetime
+import MySQLdb, argparse, datetime, unicodedata
 from PyRSS2Gen import RSS2
 
 from common import *
@@ -33,6 +33,7 @@ class MainHandler(tornado.web.RequestHandler):
 		
 		getcommitsSQL += "WHERE " + whereClause
 		getcommitsSQL += "ORDER BY c.date DESC "
+		
 		
 		c.execute(getcommitsSQL, components)
 		commitrows = c.fetchall()
@@ -67,7 +68,8 @@ class MainHandler(tornado.web.RequestHandler):
 		
 		self.set_header('Content-Type', 'application/rss+xml')
 		
-		self.write(feed.to_xml())
+		xml = feed.to_xml()
+		self.write(xml)
 		return
 
 application = tornado.web.Application([
