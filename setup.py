@@ -117,6 +117,9 @@ if __name__ == "__main__":
 				#keyservers
 				sql += """
 				SELECT 6, 'http://www.earth.li/~noodles/bzr/onak/mainline', 'onak', 'development' UNION"""
+				#browser plugins
+				sql += """
+				SELECT 2, 'https://github.com/RC1140/cr-gpg.git', 'cr-gpg', 'development' UNION"""
 				#mailinglist
 				sql += """
 				SELECT 1, 'https://sels.svn.sourceforge.net/svnroot/sels', 'sels', 'development' UNION
@@ -168,6 +171,14 @@ if __name__ == "__main__":
 				SELECT 'project-encfs', 'fde' UNION
 				SELECT 'project-luks', 'fde' UNION
 				
+				SELECT 'project-cr-gpg', 'browser-plugin' UNION
+				
+				SELECT 'project-enigmail', 'mailcient-plugin' UNION
+				
+				SELECT 'project-cr-gpg', 'email-crypto' UNION
+				SELECT 'project-enigmail', 'email-crypto' UNION
+				SELECT 'penango', 'email-crypto' UNION
+				SELECT 'smime', 'email-crypto' UNION
 				
 				SELECT 'debian', NULL UNION
 				SELECT 'gentoo', NULL UNION
