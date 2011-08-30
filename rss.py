@@ -27,13 +27,12 @@ class MainHandler(tornado.web.RequestHandler):
 		components = []
 		if keywords:
 			keywordsTree = KeywordsParser(keywords)
-			getcommitsSQL += "INNER JOIN " + DB.commitkeyword._table + " ck " + \
+			getcommitsSQL += "LEFT OUTER JOIN " + DB.commitkeyword._table + " ck " + \
 							 "	ON c.id = ck.commitid "
-			whereClause, components = keywordsTree.getWhereClause("ck.keyword")
+			whereClause, components = keywordsTree.getWhereClause("ck.keyword", "r.tagname", "r.maturity")
 		
 		getcommitsSQL += "WHERE " + whereClause
 		getcommitsSQL += "ORDER BY c.date DESC "
-		
 		
 		c.execute(getcommitsSQL, components)
 		commitrows = c.fetchall()

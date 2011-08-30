@@ -84,7 +84,7 @@ if __name__ == "__main__":
 					id smallint NOT NULL AUTO_INCREMENT PRIMARY KEY,
 					repotypeid tinyint NOT NULL,
 					url varchar(255) NOT NULL UNIQUE,
-					tagname varchar(20) NOT NULL,
+					tagname varchar(30) NOT NULL,
 					maturity varchar(20) NOT NULL
 					) ENGINE=innodb;
 					"""

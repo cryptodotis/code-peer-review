@@ -15,18 +15,25 @@ class Tree:
 		self.nodes.append(n)
 	def appendToTail(self, n):
 		self.nodes[len(self.nodes)-1].add(n)
-	def getWhereClause(self, column, starting=False):
+	def getWhereClause(self, keywordcolumn, projectcolumn, maturitycolumn, starting=False):
 		sql = ""
 		components = []
 		for n in self.nodes:
 			if type(n) is str:
-				if starting:
-					sql += " " + column + " = %s"
+				if not starting:
+					sql += " " + self.mode
+
+				if n.startswith("project-"):
+					sql += " " + projectcolumn + " = %s"
+					components.append(n.replace('project-', ''))
+				elif n.startswith("maturity-"):
+					sql += " " + maturitycolumn + " = %s"
+					components.append(n.replace('maturity-', ''))
 				else:
-					sql += " " + self.mode + " " + column + " = %s"
-				components.append(n)
+					sql += " " + keywordcolumn + " = %s"
+					components.append(n)
 			else:
-				innersql, newcomponents = n.getWhereClause(column, True)
+				innersql, newcomponents = n.getWhereClause(keywordcolumn, projectcolumn, maturitycolumn, True)
 				if starting:
 					sql += " (" + innersql + ")"
 				else:
@@ -67,22 +74,26 @@ class KeywordsParser:
 						tokens.pop(i+1)
 						return KeywordsParser._combinenonsense(tokens)
 		return tokens
-					
+	
+	base = AndTree()
+	projecttokens = []
+	maturitytokens = []
+	tokens = []
 	def __init__(self, keywords):
-		tokens = keywords.lower().split(' ')
+		self.tokens = keywords.lower().split(' ')
 		self.base = AndTree()
 		
-		tokens = KeywordsParser._combinenonsense(tokens)
-		tokens = KeywordsParser._trimnonsense(tokens)
+		self.tokens = KeywordsParser._combinenonsense(self.tokens)
+		self.tokens = KeywordsParser._trimnonsense(self.tokens)
 		
-		if not len(tokens):
+		if not len(self.tokens):
 			return
 		
 		i=0
-		while i < len(tokens):
-			t = tokens[i]
-			if i < len(tokens)-1:
-				nextToken = tokens[i+1]
+		while i < len(self.tokens):
+			t = self.tokens[i]
+			if i < len(self.tokens)-1:
+				nextToken = self.tokens[i+1]
 			else:
 				nextToken = ""
 			
@@ -97,15 +108,17 @@ class KeywordsParser:
 			elif nextToken == "or":
 				n = OrTree(t)
 				i += 2 #skip past or and go to next tag
-				n.add(tokens[i])
+				n.add(self.tokens[i])
 				
 				self.base.add(n)
 			else:
 				self.base.add(t)
 			i += 1
-	def getWhereClause(self, column):
-		sql, components = self.base.getWhereClause(column, True)
-		return (sql + " ", components)
+	def getWhereClause(self, keywordcolumn, projectcolumn, maturitycolumn):
+		sql, components = self.base.getWhereClause(keywordcolumn, projectcolumn, maturitycolumn, True)
+		sql += " "
+				
+		return (sql, components)
 	def __repr__(self):
 		return self.base.__repr__()
 
@@ -114,32 +127,32 @@ if __name__ == "__main__":
 	testcases = [
 	"tag1"
 	,"and"
-	,"tag1 tag2"
-	,"tag1 and tag2"
-	,"tag1 or tag2"
-	,"tag1 tag2 tag3"
-	,"tag1 and and tag2 tag3"
-	,"tag1 tag2 and and tag3"
-	,"tag1 tag2 and and tag3 and and"
-	,"and and tag1 tag2 and and tag3 and and"
-	,"tag1 tag2 and tag3"
-	,"tag1 and tag2 tag3"
-	,"tag1 and tag2 or tag3"
+	,"tag1 project-tag2"
+	,"tag1 and project-tag2"
+	,"tag1 or project-tag2"
+	,"tag1 project-tag2 maturity-tag3"
+	,"tag1 and and project-tag2 maturity-tag3"
+	,"tag1 project-tag2 and and maturity-tag3"
+	,"tag1 project-tag2 and and maturity-tag3 and and"
+	,"and and tag1 project-tag2 and and maturity-tag3 and and"
+	,"tag1 project-tag2 and maturity-tag3"
+	,"tag1 and project-tag2 maturity-tag3"
+	,"tag1 and project-tag2 or maturity-tag3"
 	,"or"
-	,"tag1 tag2"
-	,"tag1 or tag2"
-	,"tag1 or tag2"
-	,"tag1 tag2 tag3"
-	,"tag1 or or tag2 tag3"
-	,"tag1 tag2 or or tag3"
-	,"tag1 tag2 or or tag3 or or"
-	,"or or tag1 tag2 or or tag3 or or"
-	,"tag1 tag2 or tag3"
-	,"tag1 or tag2 tag3"
-	,"tag1 or tag2 or tag3"
-	,"tag1 and tag2 or tag3 and tag4"
+	,"tag1 project-tag2"
+	,"tag1 or project-tag2"
+	,"tag1 or project-tag2"
+	,"tag1 project-tag2 maturity-tag3"
+	,"tag1 or or project-tag2 maturity-tag3"
+	,"tag1 project-tag2 or or maturity-tag3"
+	,"tag1 project-tag2 or or maturity-tag3 or or"
+	,"or or tag1 project-tag2 or or maturity-tag3 or or"
+	,"tag1 project-tag2 or maturity-tag3"
+	,"tag1 or project-tag2 maturity-tag3"
+	,"tag1 or project-tag2 or maturity-tag3"
+	,"tag1 and project-tag2 or maturity-tag3 and tag4"
 	]
 		
 	for t in testcases:
 		tree = KeywordsParser(t)
-		print t, "|", tree.getWhereClause("ck.keyword")
+		print t, "|", tree.getWhereClause("ck.keyword", "c.projecttag", "c.maturitytag")
