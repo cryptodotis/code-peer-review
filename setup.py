@@ -101,31 +101,28 @@ if __name__ == "__main__":
 				SELECT 9, 'http://tahoe-lafs.org/source/tahoe-lafs/trunk/', 'tahoe-lafs', 'beta' UNION""" 
 				#tor
 				sql += """
-				SELECT 2, 'https://gitweb.torproject.org/arm.git', 		'tor-arm', 		'stable' UNION
-				SELECT 2, 'https://gitweb.torproject.org/bridgedb.git', 	'tor-bridgedb', 	'stable' UNION
-				SELECT 2, 'https://gitweb.torproject.org/debian/polipo.git', 	'tor-debian-polipo',	'stable' UNION
-				SELECT 2, 'https://gitweb.torproject.org/debian/tor.git', 	'tor-debian-tor', 	'pervasive' UNION
-				SELECT 2, 'https://gitweb.torproject.org/flashproxy.git', 	'tor-flashproxy', 	'stable' UNION
-				SELECT 2, 'https://gitweb.torproject.org/gettor.git', 		'tor-gettor', 		'pervasive' UNION
-				SELECT 2, 'https://gitweb.torproject.org/https-everywhere.git', 'https-everywhere', 	'pervasive' UNION
-				SELECT 2, 'https://gitweb.torproject.org/jtorctl.git', 		'tor-jtorctl', 		'stable' UNION
-				SELECT 2, 'https://gitweb.torproject.org/mat.git', 		'tor-mat', 		'stable' UNION
-				SELECT 2, 'https://gitweb.torproject.org/metrics-db.git', 	'tor-metrics-db', 	'stable' UNION
-				SELECT 2, 'https://gitweb.torproject.org/metrics-tasks.git', 	'tor-metrics-tasks',	'stable' UNION
-				SELECT 2, 'https://gitweb.torproject.org/metrics-utils.git', 	'tor-metrics-utils', 	'stable' UNION
-				SELECT 2, 'https://gitweb.torproject.org/metrics-web.git', 	'tor-metrics-web', 	'stable' UNION
-				SELECT 2, 'https://gitweb.torproject.org/obfsproxy.git', 	'tor-obfsproxy', 	'stable' UNION
-				SELECT 2, 'https://gitweb.torproject.org/orbot.git', 		'tor-orbot', 		'stable' UNION
-				SELECT 2, 'https://gitweb.torproject.org/puppetor.git', 	'tor-puppetor', 	'stable' UNION
-				SELECT 2, 'https://gitweb.torproject.org/pytorctl.git', 	'tor-pytorctl', 	'stable' UNION
-				SELECT 2, 'https://gitweb.torproject.org/thandy.git', 		'tor-thandy', 		'pervasive' UNION
-				SELECT 2, 'https://gitweb.torproject.org/tor.git', 		'tor', 			'pervasive' UNION
-				SELECT 2, 'https://gitweb.torproject.org/torbutton.git', 	'torbutton', 		'pervasive' UNION
-				SELECT 2, 'https://gitweb.torproject.org/tordnsel.git', 	'tor-dnsel', 		'stable' UNION
-				SELECT 2, 'https://gitweb.torproject.org/torsocks.git', 	'torsocks', 		'pervasive' UNION
-				SELECT 2, 'https://gitweb.torproject.org/torspec.git', 		'torspec', 		'pervasive' UNION
-				SELECT 2, 'https://gitweb.torproject.org/vidalia-plugins.git', 	'vidalia-plugins', 	'stable' UNION
-				SELECT 2, 'https://gitweb.torproject.org/vidalia.git', 		'vidalia', 		'pervasive' UNION"""
+				SELECT 2, 'https://git.torproject.org/arm.git', 		'tor-arm', 		'stable' UNION
+				SELECT 2, 'https://git.torproject.org/bridgedb.git', 	'tor-bridgedb', 	'stable' UNION
+				SELECT 2, 'https://git.torproject.org/debian/tor.git', 	'tor-debian-tor', 	'pervasive' UNION
+				SELECT 2, 'https://git.torproject.org/flashproxy.git', 	'tor-flashproxy', 	'stable' UNION
+				SELECT 2, 'https://git.torproject.org/gettor.git', 		'tor-gettor', 		'pervasive' UNION
+				SELECT 2, 'https://git.torproject.org/https-everywhere.git', 'https-everywhere', 	'pervasive' UNION
+				SELECT 2, 'https://git.torproject.org/jtorctl.git', 		'tor-jtorctl', 		'stable' UNION
+				SELECT 2, 'https://git.torproject.org/metrics-db.git', 	'tor-metrics-db', 	'stable' UNION
+				SELECT 2, 'https://git.torproject.org/metrics-tasks.git', 	'tor-metrics-tasks',	'stable' UNION
+				SELECT 2, 'https://git.torproject.org/metrics-utils.git', 	'tor-metrics-utils', 	'stable' UNION
+				SELECT 2, 'https://git.torproject.org/metrics-web.git', 	'tor-metrics-web', 	'stable' UNION
+				SELECT 2, 'https://git.torproject.org/obfsproxy.git', 	'tor-obfsproxy', 	'stable' UNION
+				SELECT 2, 'https://git.torproject.org/orbot.git', 		'tor-orbot', 		'stable' UNION
+				SELECT 2, 'https://git.torproject.org/puppetor.git', 	'tor-puppetor', 	'stable' UNION
+				SELECT 2, 'https://git.torproject.org/pytorctl.git', 	'tor-pytorctl', 	'stable' UNION
+				SELECT 2, 'https://git.torproject.org/thandy.git', 		'tor-thandy', 		'pervasive' UNION
+				SELECT 2, 'https://git.torproject.org/tor.git', 		'tor', 			'pervasive' UNION
+				SELECT 2, 'https://git.torproject.org/torbutton.git', 	'torbutton', 		'pervasive' UNION
+				SELECT 2, 'https://git.torproject.org/tordnsel.git', 	'tor-dnsel', 		'stable' UNION
+				SELECT 2, 'https://git.torproject.org/torsocks.git', 	'torsocks', 		'pervasive' UNION
+				SELECT 2, 'https://git.torproject.org/torspec.git', 		'torspec', 		'pervasive' UNION
+				SELECT 2, 'https://git.torproject.org/vidalia.git', 		'vidalia', 		'pervasive' UNION"""
 				#crypto libraries
 				sql += """
 				SELECT 2, 'git://git.gnupg.org/libgcrypt.git', 'libgcrypt', 'pervasive' UNION"""
@@ -219,6 +216,9 @@ if __name__ == "__main__":
 				SELECT 'oaep', 'RSA' UNION
 				
 				SELECT 'dkim', NULL UNION
+				
+				SELECT 'otr', NULL UNION
+				SELECT 'socks', NULL UNION
 
 				SELECT 'vidalia', 'project-tor' UNION
 				SELECT 'tor', 'project-tor' UNION
