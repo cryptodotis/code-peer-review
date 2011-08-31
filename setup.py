@@ -112,19 +112,19 @@ if __name__ == "__main__":
 				SELECT 2, 'https://gitweb.torproject.org/mat.git', 		'tor-mat', 		'stable' UNION
 				SELECT 2, 'https://gitweb.torproject.org/metrics-db.git', 	'tor-metrics-db', 	'stable' UNION
 				SELECT 2, 'https://gitweb.torproject.org/metrics-tasks.git', 	'tor-metrics-tasks',	'stable' UNION
-				SELECT 2, 'https://gitweb.torproject.org/metrics-utils.git', 	'tor-metrics-utils, 	'stable' UNION
+				SELECT 2, 'https://gitweb.torproject.org/metrics-utils.git', 	'tor-metrics-utils', 	'stable' UNION
 				SELECT 2, 'https://gitweb.torproject.org/metrics-web.git', 	'tor-metrics-web', 	'stable' UNION
 				SELECT 2, 'https://gitweb.torproject.org/obfsproxy.git', 	'tor-obfsproxy', 	'stable' UNION
 				SELECT 2, 'https://gitweb.torproject.org/orbot.git', 		'tor-orbot', 		'stable' UNION
 				SELECT 2, 'https://gitweb.torproject.org/puppetor.git', 	'tor-puppetor', 	'stable' UNION
 				SELECT 2, 'https://gitweb.torproject.org/pytorctl.git', 	'tor-pytorctl', 	'stable' UNION
 				SELECT 2, 'https://gitweb.torproject.org/thandy.git', 		'tor-thandy', 		'pervasive' UNION
-				SELECT 2, 'https://gitweb.torproject.org/tor.git', 		'tor', 			'pervasive', UNION
+				SELECT 2, 'https://gitweb.torproject.org/tor.git', 		'tor', 			'pervasive' UNION
 				SELECT 2, 'https://gitweb.torproject.org/torbutton.git', 	'torbutton', 		'pervasive' UNION
 				SELECT 2, 'https://gitweb.torproject.org/tordnsel.git', 	'tor-dnsel', 		'stable' UNION
 				SELECT 2, 'https://gitweb.torproject.org/torsocks.git', 	'torsocks', 		'pervasive' UNION
 				SELECT 2, 'https://gitweb.torproject.org/torspec.git', 		'torspec', 		'pervasive' UNION
-				SELECT 2, 'https://gitweb.torproject.org/vidalia-plugins.git', 	'vidalia-plugins, 	'stable' UNION
+				SELECT 2, 'https://gitweb.torproject.org/vidalia-plugins.git', 	'vidalia-plugins', 	'stable' UNION
 				SELECT 2, 'https://gitweb.torproject.org/vidalia.git', 		'vidalia', 		'pervasive' UNION"""
 				#crypto libraries
 				sql += """
@@ -233,7 +233,7 @@ if __name__ == "__main__":
 				SELECT 'project-tor-mat', 'project-tor' UNION
 				SELECT 'project-tor-metrics-db', 'project-tor' UNION
 				SELECT 'project-tor-metrics-tasks', 'project-tor'UNION
-				SELECT 'project-tor-metrics-utils, 'project-tor' UNION
+				SELECT 'project-tor-metrics-utils', 'project-tor' UNION
 				SELECT 'project-tor-metrics-web', 'project-tor' UNION
 				SELECT 'project-tor-obfsproxy', 'project-tor' UNION
 				SELECT 'project-tor-orbot', 'project-tor' UNION
@@ -244,8 +244,8 @@ if __name__ == "__main__":
 				SELECT 'project-tor-dnsel', 'project-tor' UNION
 				SELECT 'project-torsocks', 'project-tor' UNION
 				SELECT 'project-torspec', 'project-tor' UNION
-				SELECT 'project-vidalia-plugins, 'project-vidalia' UNION
-				SELECT 'project-vidalia', 'project-tor' UNION
+				SELECT 'project-vidalia-plugins', 'project-vidalia' UNION
+				SELECT 'project-vidalia', 'project-tor' 
 				
 				
 				
