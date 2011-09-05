@@ -1,8 +1,6 @@
 #!/usr/bin/python
 
-import time,os,urlparse,re, datetime
-
-import synonymmapping
+import time, os, urlparse, re, datetime, synonymmapping
 
 def fla(a, b):
 	if a and not b:
@@ -14,8 +12,7 @@ def fla(a, b):
 		return a
 
 def unixToGitDateFormat(t):
-	s = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(t))
-	return s
+	return time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(t))
 
 def unixToDatetime(t):
 	return datetime.datetime.utcfromtimestamp(t)
@@ -34,11 +31,11 @@ def fixDates(start, end):
 		print "Invalid Start or End Date"
 		exit
 		
-	if end == 0 and start < 0:
+	if start and not end:
 		end = time.time()
 		start = end + int(start)
 	elif end < start:
-		tmp = end
-		end = start
-		start = tmp
+		end += start
+		start = end - start
+		end = end - start
 	return start, end
