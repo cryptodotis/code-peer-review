@@ -37,4 +37,6 @@ if __name__ == "__main__":
 	r = Repo()
 	r.loadFromValues(-1, Repo.Type.SVN, args.repo, '', '')
 	commits = getCommits(r, args.startdate, args.enddate)
-	for c in commits: c.pprint()
+	for c in commits: 
+		c.pprint()
+		c.save()
