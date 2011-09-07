@@ -118,6 +118,7 @@ class Commit:
 			for f in self.files:
 				sql += "SELECT " + str(self.commitid) + ", %s UNION "
 			sql = sql[:-6]
+			sql += " ON DUPLICATE KEY UPDATE file = VALUES(file)"
 			c.execute(sql, self.files)
 		
 		if self.dbkeywords:
@@ -125,6 +126,7 @@ class Commit:
 			for f in self.dbkeywords:
 				sql += "SELECT " + str(self.commitid) + ", %s UNION "
 			sql = sql[:-6]
+			sql += " ON DUPLICATE KEY UPDATE keyword = VALUES(keyword)"
 			c.execute(sql, [x for x in self.dbkeywords])
 
 		conn.commit()
