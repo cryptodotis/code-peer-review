@@ -31,11 +31,11 @@ def fixDates(start, end):
 		print "Invalid Start or End Date"
 		exit
 		
-	if start and not end:
+	if start < 0 and not end:
 		end = time.time()
 		start = end + int(start)
 	elif end < start:
-		end += start
-		start = end - start
-		end = end - start
+        tmp = end
+        end = start
+        start = tmp
 	return start, end
