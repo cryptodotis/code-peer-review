@@ -1,4 +1,4 @@
-B0;136;0c#!/usr/bin/python
+#!/usr/bin/python
 import argparse, sys, time, os
 import git as pygit
 
@@ -41,4 +41,6 @@ if __name__ == "__main__":
 	r = Repo()
 	r.loadFromValues(-1, Repo.Type.GIT, args.repo, '', '')
 	commits = getCommits(r, args.startdate, args.enddate)
-	for c in commits: c.pprint()
+	for c in commits: 
+		c.pprint()
+		c.save()

@@ -54,7 +54,7 @@ class Commit:
 
 	@staticmethod
 	def cleanUpCommitMessage(msg):
-        msg = re_gitsvn.sub('', msg)
+		msg = re_gitsvn.sub('', msg)
 		return msg.strip()
 
 	def getBasePath(self):
@@ -69,15 +69,15 @@ class Commit:
 		odd = [p for p in self.files if p not in trunks and p not in branches and p not in tags]
 
 		if ((1 if trunks else 0) + (1 if branches else 0) + \
-				(1 if tags else 0) + (1 if odd else 0)) > 1:
-				ret = []
-				if trunks: ret.append(os.path.commonprefix(trunks))
-				if branches: ret.append(os.path.commonprefix(branches))
-				if tags: ret.append(os.path.commonprefix(tags))
-				if odd: ret.append(os.path.commonprefix(odd))
-				return ret
+			    (1 if tags else 0) + (1 if odd else 0)) > 1:
+			ret = []
+			if trunks: ret.append(os.path.commonprefix(trunks))
+			if branches: ret.append(os.path.commonprefix(branches))
+			if tags: ret.append(os.path.commonprefix(tags))
+			if odd: ret.append(os.path.commonprefix(odd))
+			return ret
 		else:
-				return os.path.dirname(os.path.commonprefix(self.files))
+			return os.path.dirname(os.path.commonprefix(self.files))
 
 
 	def getSynonyms(self):
@@ -90,13 +90,13 @@ class Commit:
 
 		keywords = set()
 		for k in synonymmapping.getMap():
-				if k in log:
-						keywords.add(k)
-						for v in synonymmapping.map[k]: keywords.add(v)
-				for p in paths:
-						if k in p:
-								keywords.add(k)
-								for v in synonymmapping.map[k]: keywords.add(v)
+			if k in log:
+				keywords.add(k)
+				for v in synonymmapping.map[k]: keywords.add(v)
+			for p in paths:
+				if k in p:
+					keywords.add(k)
+					for v in synonymmapping.map[k]: keywords.add(v)
 
 		return keywords
 
@@ -144,11 +144,12 @@ class Commit:
 				s += "\t\t %s%s" % (p, eol)
 
 		if self.base_paths and not isinstance(self.base_paths, basestring):
-            s += "Base Paths:\t %s%s" % (self.base_paths[0], eol)
-            for p in self.base_paths[1:]:
-                s += "\t\t %s%s" % (p, eol)
-            else:
-                s += "Base Path:\t %s%s" % (self.base_paths, eol)
+			s += "Base Paths:\t %s%s" % (self.base_paths[0], eol)
+			for p in self.base_paths[1:]:
+				s += "\t\t %s%s" % (p, eol)
+		elif self.base_paths:
+			s += "Base Path:\t %s%s" % (self.base_paths, eol)
+
 		s+= "Keywords:\t %s%s" % (", ".join(self.keywords), eol)
 		return s
 	
