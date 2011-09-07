@@ -35,7 +35,7 @@ def fixDates(start, end):
 		end = time.time()
 		start = end + int(start)
 	elif end < start:
-        tmp = end
-        end = start
-        start = tmp
+		tmp = end
+		end = start
+		start = tmp
 	return start, end
