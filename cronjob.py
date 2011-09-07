@@ -35,7 +35,12 @@ if __name__ == "__main__":
 			module = gitpuller
 			
 		if module != -1:
-			commits = module.getCommits(r, args.startdate, args.enddate)
+			try:
+				commits = module.getCommits(r, args.startdate, args.enddate)
+			except:
+				print "Error pulling commits for", r.url
+				commits = []
+				
 			for c in commits:
 				print ".",
 				c.save()
