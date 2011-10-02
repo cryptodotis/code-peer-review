@@ -8,6 +8,7 @@ if __name__ == "__main__":
 	parser = argparse.ArgumentParser()
 	parser.add_argument('--wipe', dest='wipe', action='store_true', help='Instead of creating tables if they don\'t exist - empty the database.')
 	parser.add_argument('--populate', dest='populate', action='store_true', help='If a reference data table is created, also populate it with some test data.  Mandatory refdata tables will be populated regardless.')
+	parser.add_argument('--keywords', dest='keywords', action='store_true', help='Only reprocess the kwywords table.')
 	args = parser.parse_args()
 	
 
@@ -155,6 +156,11 @@ if __name__ == "__main__":
 				c.execute(sql)
 
 		#keyword._table + """ ---------------------------------------------
+		if args.keywords:
+			try:
+				c.execute("DROP TABLE " + DB.keyword._table)        
+			except:
+				pass
 		c.execute("SHOW TABLES LIKE '" + DB.keyword._table + "'")
 		r = c.fetchone()
 		if r:
@@ -169,10 +175,13 @@ if __name__ == "__main__":
 					"""
 			c.execute(sql)
 			
-			if args.populate:
+			if args.populate or args.keywords:
 				print 'Populating Keywords...'
 				sql = "INSERT INTO " + DB.keyword._table + """(keyword, parent)
 				
+				SELECT 'libgcrypt', 'project-libgcrypt' UNION
+				SELECT 'project-libgcrypt', 'crypto-library' UNION
+
 				SELECT 'project-schleuder', 'mailinglist' UNION
 				SELECT 'project-sels', 'mailinglist' UNION
 				SELECT 'project-secure-list-server', 'mailinglist' UNION
@@ -190,6 +199,8 @@ if __name__ == "__main__":
 				SELECT 'project-nymserv', 'remailer' UNION
 				SELECT 'pynchon', 'remailer' UNION
 				SELECT 'underhill', 'remailer' UNION
+				SELECT 'mixminion', 'remailer' UNION
+				SELECT 'mixmaster', 'remailer' UNION
 				
 				SELECT 'project-encfs', 'fde' UNION
 				SELECT 'project-luks', 'fde' UNION
@@ -206,15 +217,45 @@ if __name__ == "__main__":
 				
 				SELECT 'project-tor-debian-polipo', 'debian' UNION
 				SELECT 'project-tor-debian-tor', 'debian' UNION
+
 				SELECT 'debian', NULL UNION
-				
 				SELECT 'gentoo', NULL UNION
 				SELECT 'ubuntu', NULL UNION
+				SELECT 'osx', NULL UNION
+				SELECT 'ppc', NULL UNION
+				SELECT 'slackware', NULL UNION
+				SELECT 'fedora', NULL UNION
+				SELECT 'red hat', NULL UNION
+				SELECT 'rhel', NULL UNION
+				SELECT 'suse', NULL UNION
+
+				SELECT 'pthread', NULL UNION
+				SELECT 'ctypes', NULL UNION
+
+				SELECT 'valgrind', NULL UNION
+				SELECT 'oprofile', NULL UNION
+
+				SELECT 'design doc', 'designdoc' UNION
+
+				SELECT 'maildir', NULL UNION
 				
 				SELECT 'oaep', 'crypto-padding' UNION
 				SELECT 'oaep', 'asymmetric-crypto' UNION
 				SELECT 'oaep', 'RSA' UNION
 				
+				SELECT 'tlsv1', 'tls' UNION
+				SELECT 'tls1', 'tls' UNION
+				SELECT 'tlsv1.1', 'tls' UNION
+				SELECT 'tls1.1', 'tls' UNION
+				SELECT 'tlsv1.2', 'tls' UNION
+				SELECT 'tls1.2', 'tls' UNION
+				SELECT 'sslv3', 'tls' UNION
+				SELECT 'ssl3', 'tls' UNION
+				SELECT 'tls', 'ssl' UNION
+				SELECT 'ssl', 'tls' UNION
+				
+				SELECT 'hmac', NULL UNION
+
 				SELECT 'dkim', NULL UNION
 				
 				SELECT 'otr', NULL UNION

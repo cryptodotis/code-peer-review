@@ -90,11 +90,14 @@ class Commit:
 
 		keywords = set()
 		for k in synonymmapping.getMap():
-			if k in log:
+			lk = " " + k + " "
+			pk = "/" + k
+			
+			if lk in log:
 				keywords.add(k)
 				for v in synonymmapping.map[k]: keywords.add(v)
 			for p in paths:
-				if k in p:
+				if pk in p:
 					keywords.add(k)
 					for v in synonymmapping.map[k]: keywords.add(v)
 
@@ -111,22 +114,27 @@ class Commit:
 				ON DUPLICATE KEY UPDATE uniqueid = VALUES(uniqueid)""" 
 		c.execute(sql, (self.repo.id, self.date, self.message, self.uniqueid))
 
-		self.commitid = conn.insert_id()
+		if not self.commitid:		
+			self.commitid = conn.insert_id()
 
 		if self.files:
+			sql = "DELETE FROM " + DB.commitfile._table + " WHERE commitid = " + str(self.commitid)
+			c.execute(sql)
+
 			sql = "INSERT INTO " + DB.commitfile._table + "(commitid, file) "
 			for f in self.files:
 				sql += "SELECT " + str(self.commitid) + ", %s UNION "
 			sql = sql[:-6]
-			sql += " ON DUPLICATE KEY UPDATE file = VALUES(file)"
 			c.execute(sql, self.files)
 		
 		if self.dbkeywords:
+			sql = "DELETE FROM " + DB.commitkeyword._table + " WHERE commitid = " + str(self.commitid)
+			c.execute(sql)
+
 			sql = "INSERT INTO " + DB.commitkeyword._table + "(commitid, keyword) "
 			for f in self.dbkeywords:
 				sql += "SELECT " + str(self.commitid) + ", %s UNION "
 			sql = sql[:-6]
-			sql += " ON DUPLICATE KEY UPDATE keyword = VALUES(keyword)"
 			c.execute(sql, [x for x in self.dbkeywords])
 
 		conn.commit()

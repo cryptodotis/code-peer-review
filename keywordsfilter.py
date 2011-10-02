@@ -100,6 +100,8 @@ class KeywordsParser:
 			if t == "or":
 				self.base.appendToTail(nextToken)
 				i += 1 # skip past next token
+			elif t == "and":
+				pass
 			elif nextToken == "and":
 				self.base.add(t)
 				i += 1 #skip past add
@@ -109,7 +111,7 @@ class KeywordsParser:
 				n.add(self.tokens[i])
 
 				self.base.add(n)
-            elif t != "and":
+			else:
 				self.base.add(t)
 			i += 1
 	def getWhereClause(self, keywordcolumn, projectcolumn, maturitycolumn):
