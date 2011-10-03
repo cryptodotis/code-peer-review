@@ -98,9 +98,9 @@ if __name__ == "__main__":
 				SELECT 2, 'https://github.com/cryptodotis/crypto.is-docs', 'https://github.com/cryptodotis/crypto.is-docs/commit/%ID', 'crypto.is-docs', 'beta' UNION
 				SELECT 2, 'https://github.com/moxie0/Convergence.git', 'https://github.com/moxie0/Convergence/commit/%ID', 'convergence', 'beta' UNION
 				SELECT 2, 'https://github.com/brl/obfuscated-openssh', 'https://github.com/brl/obfuscated-openssh/commit/%ID', 'obfuscated-openssh', 'stable' UNION
-				SELECT 1, 'http://phantom.googlecode.com/svn/trunk/', 	NULL, 'phantom', 'development' UNION
+				SELECT 1, 'http://phantom.googlecode.com/svn/trunk/', 	'http://code.google.com/p/phantom/source/detail?r=%ID', 'phantom', 'development' UNION
 				SELECT 8, 'http://www.agroman.net/corkscrew/', 		NULL, 'corkscrew', 'development' UNION
-				SELECT 9, 'http://tahoe-lafs.org/source/tahoe-lafs/trunk/', NULL, 'tahoe-lafs', 'beta' UNION""" 
+				SELECT 9, 'http://tahoe-lafs.org/source/tahoe-lafs/trunk/', 'http://tahoe-lafs.org/trac/tahoe-lafs/changeset?old_path=%2Ftrunk&old=%ID&new_path=%2Ftrunk&new=%ID', 'tahoe-lafs', 'beta' UNION""" 
 				#tor
 				sql += """
 				SELECT 2, 'https://git.torproject.org/arm.git', 		'https://gitweb.torproject.org/arm.git/commitdiff/%ID', 'tor-arm', 			'stable' UNION
@@ -137,8 +137,8 @@ if __name__ == "__main__":
 				SELECT 2, 'https://github.com/crooks/nymserv', 'https://github.com/crooks/nymserv/commit/%ID', 'nymserv', 'stable' UNION"""
 				#fde
 				sql += """
-				SELECT 1, 'http://encfs.googlecode.com/svn/trunk/', NULL, 'encfs', 'stable' UNION
-				SELECT 1, 'http://cryptsetup.googlecode.com/svn/trunk/', NULL, 'luks', 'pervasive' UNION"""
+				SELECT 1, 'http://encfs.googlecode.com/svn/trunk/', 'http://code.google.com/p/encfs/source/detail?r=%ID', 'encfs', 'stable' UNION
+				SELECT 1, 'http://cryptsetup.googlecode.com/svn/trunk/', 'http://code.google.com/p/cryptsetup/source/detail?r=%ID', 'luks', 'pervasive' UNION"""
 				#keyservers
 				sql += """
 				SELECT 6, 'http://www.earth.li/~noodles/bzr/onak/mainline', NULL, 'onak', 'development' UNION"""
