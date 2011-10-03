@@ -85,6 +85,7 @@ if __name__ == "__main__":
 					id smallint NOT NULL AUTO_INCREMENT PRIMARY KEY,
 					repotypeid tinyint NOT NULL,
 					url varchar(255) NOT NULL UNIQUE,
+					viewlink varchar(512) NULL,
 					tagname varchar(30) NOT NULL,
 					maturity varchar(20) NOT NULL
 					) ENGINE=innodb;
@@ -93,67 +94,67 @@ if __name__ == "__main__":
 			
 			if args.populate:
 				print 'Populating Repos...'
-				sql = "INSERT INTO " + DB.repo._table + """(repotypeid, url, tagname, maturity)
-				SELECT 2, 'https://github.com/cryptodotis/crypto.is-docs', 'crypto.is-docs', 'beta' UNION
-				SELECT 2, 'https://github.com/moxie0/Convergence.git', 'convergence', 'beta' UNION
-				SELECT 2, 'https://github.com/brl/obfuscated-openssh', 'obfuscated-openssh', 'stable' UNION
-				SELECT 1, 'http://phantom.googlecode.com/svn/trunk/', 'phantom', 'development' UNION
-				SELECT 8, 'http://www.agroman.net/corkscrew/', 'corkscrew', 'development' UNION
-				SELECT 9, 'http://tahoe-lafs.org/source/tahoe-lafs/trunk/', 'tahoe-lafs', 'beta' UNION""" 
+				sql = "INSERT INTO " + DB.repo._table + """(repotypeid, url, viewlink, tagname, maturity)
+				SELECT 2, 'https://github.com/cryptodotis/crypto.is-docs', 'https://github.com/cryptodotis/crypto.is-docs/commit/%ID', 'crypto.is-docs', 'beta' UNION
+				SELECT 2, 'https://github.com/moxie0/Convergence.git', 'https://github.com/moxie0/Convergence/commit/%ID', 'convergence', 'beta' UNION
+				SELECT 2, 'https://github.com/brl/obfuscated-openssh', 'https://github.com/brl/obfuscated-openssh/commit/%ID', 'obfuscated-openssh', 'stable' UNION
+				SELECT 1, 'http://phantom.googlecode.com/svn/trunk/', 	NULL, 'phantom', 'development' UNION
+				SELECT 8, 'http://www.agroman.net/corkscrew/', 		NULL, 'corkscrew', 'development' UNION
+				SELECT 9, 'http://tahoe-lafs.org/source/tahoe-lafs/trunk/', NULL, 'tahoe-lafs', 'beta' UNION""" 
 				#tor
 				sql += """
-				SELECT 2, 'https://git.torproject.org/arm.git', 		'tor-arm', 		'stable' UNION
-				SELECT 2, 'https://git.torproject.org/bridgedb.git', 	'tor-bridgedb', 	'stable' UNION
-				SELECT 2, 'https://git.torproject.org/debian/tor.git', 	'tor-debian-tor', 	'pervasive' UNION
-				SELECT 2, 'https://git.torproject.org/flashproxy.git', 	'tor-flashproxy', 	'stable' UNION
-				SELECT 2, 'https://git.torproject.org/gettor.git', 		'tor-gettor', 		'pervasive' UNION
-				SELECT 2, 'https://git.torproject.org/https-everywhere.git', 'https-everywhere', 	'pervasive' UNION
-				SELECT 2, 'https://git.torproject.org/jtorctl.git', 		'tor-jtorctl', 		'stable' UNION
-				SELECT 2, 'https://git.torproject.org/metrics-db.git', 	'tor-metrics-db', 	'stable' UNION
-				SELECT 2, 'https://git.torproject.org/metrics-tasks.git', 	'tor-metrics-tasks',	'stable' UNION
-				SELECT 2, 'https://git.torproject.org/metrics-utils.git', 	'tor-metrics-utils', 	'stable' UNION
-				SELECT 2, 'https://git.torproject.org/metrics-web.git', 	'tor-metrics-web', 	'stable' UNION
-				SELECT 2, 'https://git.torproject.org/obfsproxy.git', 	'tor-obfsproxy', 	'stable' UNION
-				SELECT 2, 'https://git.torproject.org/orbot.git', 		'tor-orbot', 		'stable' UNION
-				SELECT 2, 'https://git.torproject.org/puppetor.git', 	'tor-puppetor', 	'stable' UNION
-				SELECT 2, 'https://git.torproject.org/pytorctl.git', 	'tor-pytorctl', 	'stable' UNION
-				SELECT 2, 'https://git.torproject.org/thandy.git', 		'tor-thandy', 		'pervasive' UNION
-				SELECT 2, 'https://git.torproject.org/tor.git', 		'tor', 			'pervasive' UNION
-				SELECT 2, 'https://git.torproject.org/torbutton.git', 	'torbutton', 		'pervasive' UNION
-				SELECT 2, 'https://git.torproject.org/tordnsel.git', 	'tor-dnsel', 		'stable' UNION
-				SELECT 2, 'https://git.torproject.org/torsocks.git', 	'torsocks', 		'pervasive' UNION
-				SELECT 2, 'https://git.torproject.org/torspec.git', 		'torspec', 		'pervasive' UNION
-				SELECT 2, 'https://git.torproject.org/vidalia.git', 		'vidalia', 		'pervasive' UNION"""
+				SELECT 2, 'https://git.torproject.org/arm.git', 		'https://gitweb.torproject.org/arm.git/commitdiff/%ID', 'tor-arm', 			'stable' UNION
+				SELECT 2, 'https://git.torproject.org/bridgedb.git', 		'https://gitweb.torproject.org/bridgedb.git/commitdiff/%ID', 'tor-bridgedb', 	'stable' UNION
+				SELECT 2, 'https://git.torproject.org/debian/tor.git', 		'https://gitweb.torproject.org/debian/tor.git/commitdiff/%ID', 'tor-debian-tor', 	'pervasive' UNION
+				SELECT 2, 'https://git.torproject.org/flashproxy.git', 		'https://gitweb.torproject.org/flashproxy.git/commitdiff/%ID', 'tor-flashproxy', 	'stable' UNION
+				SELECT 2, 'https://git.torproject.org/gettor.git', 		'https://gitweb.torproject.org/gettor.git/commitdiff/%ID', 'tor-gettor', 		'pervasive' UNION
+				SELECT 2, 'https://git.torproject.org/https-everywhere.git', 	'https://gitweb.torproject.org/https-everywhere.git/commitdiff/%ID', 'https-everywhere', 	'pervasive' UNION
+				SELECT 2, 'https://git.torproject.org/jtorctl.git', 		'https://gitweb.torproject.org/jtorctl.git/commitdiff/%ID', 'tor-jtorctl', 		'stable' UNION
+				SELECT 2, 'https://git.torproject.org/metrics-db.git', 		'https://gitweb.torproject.org/metrics-db.git/commitdiff/%ID', 'tor-metrics-db', 	'stable' UNION
+				SELECT 2, 'https://git.torproject.org/metrics-tasks.git', 	'https://gitweb.torproject.org/metrics-tasks.git/commitdiff/%ID', 'tor-metrics-tasks',	'stable' UNION
+				SELECT 2, 'https://git.torproject.org/metrics-utils.git', 	'https://gitweb.torproject.org/metrics-utils.git/commitdiff/%ID', 'tor-metrics-utils', 	'stable' UNION
+				SELECT 2, 'https://git.torproject.org/metrics-web.git', 	'https://gitweb.torproject.org/metrics-web.git/commitdiff/%ID', 'tor-metrics-web', 	'stable' UNION
+				SELECT 2, 'https://git.torproject.org/obfsproxy.git', 		'https://gitweb.torproject.org/obfsproxy.git/commitdiff/%ID', 'tor-obfsproxy', 	'stable' UNION
+				SELECT 2, 'https://git.torproject.org/orbot.git', 		'https://gitweb.torproject.org/orbot.git/commitdiff/%ID', 'tor-orbot', 		'stable' UNION
+				SELECT 2, 'https://git.torproject.org/puppetor.git', 		'https://gitweb.torproject.org/puppetor.git/commitdiff/%ID', 'tor-puppetor', 	'stable' UNION
+				SELECT 2, 'https://git.torproject.org/pytorctl.git', 		'https://gitweb.torproject.org/pytorctl.git/commitdiff/%ID', 'tor-pytorctl', 	'stable' UNION
+				SELECT 2, 'https://git.torproject.org/thandy.git', 		'https://gitweb.torproject.org/thandy.git/commitdiff/%ID', 'tor-thandy', 		'pervasive' UNION
+				SELECT 2, 'https://git.torproject.org/tor.git', 		'https://gitweb.torproject.org/tor.git/commitdiff/%ID', 'tor', 			'pervasive' UNION
+				SELECT 2, 'https://git.torproject.org/torbutton.git', 		'https://gitweb.torproject.org/torbutton.git/commitdiff/%ID', 'torbutton', 		'pervasive' UNION
+				SELECT 2, 'https://git.torproject.org/tordnsel.git', 		'https://gitweb.torproject.org/tordnsel.git/commitdiff/%ID', 'tor-dnsel', 		'stable' UNION
+				SELECT 2, 'https://git.torproject.org/torsocks.git', 		'https://gitweb.torproject.org/torsocks.git/commitdiff/%ID', 'torsocks', 		'pervasive' UNION
+				SELECT 2, 'https://git.torproject.org/torspec.git', 		'https://gitweb.torproject.org/torspec.git/commitdiff/%ID', 'torspec', 		'pervasive' UNION
+				SELECT 2, 'https://git.torproject.org/vidalia.git', 		'https://gitweb.torproject.org/vidalia.git/commitdiff/%ID', 'vidalia', 		'pervasive' UNION"""
 				#crypto libraries
 				sql += """
-				SELECT 2, 'git://git.gnupg.org/libgcrypt.git', 'libgcrypt', 'pervasive' UNION"""
+				SELECT 2, 'git://git.gnupg.org/libgcrypt.git', 'http://git.gnupg.org/cgi-bin/gitweb.cgi?p=libgcrypt.git;a=commitdiff;h=%ID', 'libgcrypt', 'pervasive' UNION"""
 				#file crypto
 				sql += """
-				SELECT 2, 'git://git.gnupg.org/gnupg.git', 'gnupg', 'pervasive' UNION"""
+				SELECT 2, 'git://git.gnupg.org/gnupg.git', 'http://git.gnupg.org/cgi-bin/gitweb.cgi?p=gnupg.git;a=commitdiff;h=%ID', 'gnupg', 'pervasive' UNION"""
 				#remailer
 				sql += """
-				SELECT 2, 'https://github.com/crooks/aam2mail.git', 'aam2mail', 'stable' UNION
-				SELECT 2, 'https://github.com/crooks/nymserv', 'nymserv', 'stable' UNION"""
+				SELECT 2, 'https://github.com/crooks/aam2mail.git', 'https://github.com/crooks/aam2mail/commit/%ID', 'aam2mail', 'stable' UNION
+				SELECT 2, 'https://github.com/crooks/nymserv', 'https://github.com/crooks/nymserv/commit/%ID', 'nymserv', 'stable' UNION"""
 				#fde
 				sql += """
-				SELECT 1, 'http://encfs.googlecode.com/svn/trunk/', 'encfs', 'stable' UNION
-				SELECT 1, 'http://cryptsetup.googlecode.com/svn/trunk/', 'luks', 'pervasive' UNION"""
+				SELECT 1, 'http://encfs.googlecode.com/svn/trunk/', NULL, 'encfs', 'stable' UNION
+				SELECT 1, 'http://cryptsetup.googlecode.com/svn/trunk/', NULL, 'luks', 'pervasive' UNION"""
 				#keyservers
 				sql += """
-				SELECT 6, 'http://www.earth.li/~noodles/bzr/onak/mainline', 'onak', 'development' UNION"""
+				SELECT 6, 'http://www.earth.li/~noodles/bzr/onak/mainline', NULL, 'onak', 'development' UNION"""
 				#browser plugins
 				sql += """
-				SELECT 2, 'https://github.com/RC1140/cr-gpg.git', 'cr-gpg', 'development' UNION"""
+				SELECT 2, 'https://github.com/RC1140/cr-gpg.git', 'https://github.com/RC1140/cr-gpg/commit/%ID', 'cr-gpg', 'development' UNION"""
 				#mailinglist
 				sql += """
-				SELECT 1, 'https://sels.svn.sourceforge.net/svnroot/sels', 'sels', 'development' UNION
-				SELECT 8, 'http://non-gnu.uvt.nl/pub/mailman/', 'secure-list-server', 'development' UNION
-				SELECT 2, 'git://git.immerda.ch/schleuder.git', 'schleuder', 'development' UNION
-				SELECT 8, 'http://www.synacklabs.net/projects/crypt-ml/', 'crypt-ml', 'development' UNION
-				SELECT 3, 'shibboleth.cvs.sourceforge.net', 'shibboleth', 'development' UNION
-				SELECT 3, 'mmreencrypt.cvs.sourceforge.net', 'mmreencrypt', 'development'"""
+				SELECT 1, 'https://sels.svn.sourceforge.net/svnroot/sels', NULL, 'sels', 'development' UNION
+				SELECT 8, 'http://non-gnu.uvt.nl/pub/mailman/', NULL, 'secure-list-server', 'development' UNION
+				SELECT 2, 'git://git.immerda.ch/schleuder.git', NULL, 'schleuder', 'development' UNION
+				SELECT 8, 'http://www.synacklabs.net/projects/crypt-ml/', NULL, 'crypt-ml', 'development' UNION
+				SELECT 3, 'shibboleth.cvs.sourceforge.net', NULL, 'shibboleth', 'development' UNION
+				SELECT 3, 'mmreencrypt.cvs.sourceforge.net', NULL, 'mmreencrypt', 'development'"""
 				
-				c.execute(sql)
+				DB.execute(c, sql)
 
 		#keyword._table + """ ---------------------------------------------
 		if args.keywords:

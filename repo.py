@@ -19,15 +19,17 @@ class Repo:
 		self.id = row[DB.repo.id]
 		self.type = row[DB.repo.repotypeid]
 		self.url = row[DB.repo.url]
+		self.viewlink = row[DB.repo.viewlink]
 		self.tagname = row[DB.repo.tagname]
 		self.tagmaturity = row[DB.repo.tagmaturity]
 		
-	def loadFromValues(self, i, t, u, tagn, tagm):
+	def loadFromValues(self, i, t, u, vl, tagn, tagm):
 		self.initialized = True
 		
 		self.id = i
 		self.type = t
 		self.url = u
+		self.viewlink = vl
 		self.tagname = tagn
 		self.tagmaturity = tagm
 		

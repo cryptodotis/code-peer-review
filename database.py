@@ -12,6 +12,22 @@ class DB:
                 	                passwd = Config.password,
                 	                db = Config.database)
 		return conn
+	@staticmethod
+	def execute(c, sql):
+		try:
+			c.execute(sql)
+		except MySQLdb.OperationalError as e:
+			print e
+			print sql
+			raise e
+	#@staticmethod
+	#def execute(c, sql, args):
+	#	try:
+	#		c.execute(sql, args)
+	#	except _mysql_exceptions.OperationError as e:
+	#		print e
+	#		print sql, args
+	#		raise e
 	
 	#define table names and column indices
 	class repotype:
@@ -24,9 +40,10 @@ class DB:
 		id = 0
 		repotypeid = 1
 		url = 2
-		tagname = 3
-		tagmaturity = 4
-		_numColumns = 5
+		viewlink = 3
+		tagname = 4
+		tagmaturity = 5
+		_numColumns = 6
 	class keyword:
 		_table = "keyword_tbl"
 		keyword = 0
@@ -50,3 +67,4 @@ class DB:
 		commitid = 0
 		keyword = 1
 		_numColumns = 2
+

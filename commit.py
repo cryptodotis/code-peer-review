@@ -179,9 +179,13 @@ class Commit:
 		title = unicodedata.normalize('NFKD', unicode(title, 'utf-8')).encode('ascii', 'ignore')
 		description = unicodedata.normalize('NFKD', unicode(description, 'utf-8')).encode('ascii', 'ignore')
 
+		link = ''
+		if self.repo.viewlink:
+			link = self.repo.viewlink.replace('%ID', self.uniqueid)
+
 		item = RSSItem(
 			title = title,
-			link = self.repo.url,
+			link = link,
 			description = description,
 			guid = self.repo.url + "#" + self.uniqueid,
 			pubDate = unixToDatetime(self.date)
