@@ -13,12 +13,17 @@ class DB:
                 	                db = Config.database)
 		return conn
 	@staticmethod
-	def execute(c, sql):
+	def execute(c, sql, *args):
 		try:
-			c.execute(sql)
+			if not args:
+				c.execute(sql)
+			else:
+				c.execute(sql, args[0])
 		except MySQLdb.OperationalError as e:
 			print e
 			print sql
+			if args:
+				print args[0]
 			raise e
 	#@staticmethod
 	#def execute(c, sql, args):

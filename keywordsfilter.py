@@ -2,6 +2,8 @@
 
 import sys
 
+import synonymmapping
+
 class Tree:
 	mode = "INVALID"
 	def __init__(self, n=""):
@@ -86,6 +88,8 @@ class KeywordsParser:
 		self.tokens = KeywordsParser._combinenonsense(self.tokens)
 		self.tokens = KeywordsParser._trimnonsense(self.tokens)
 
+		map = synonymmapping.getMap()
+
 		if not self.tokens:
 			return
 
@@ -96,6 +100,9 @@ class KeywordsParser:
 				nextToken = self.tokens[i+1]
 			else:
 				nextToken = ""
+
+			if t not in ['and', 'or'] and 'project-' + t in map:
+				t = 'project-' + t
 
 			if t == "or":
 				self.base.appendToTail(nextToken)
@@ -127,30 +134,30 @@ if __name__ == "__main__":
 	testcases = [
 			"tag1"
 			,"and"
-			,"tag1 project-tag2"
-			,"tag1 and project-tag2"
-			,"tag1 or project-tag2"
-			,"tag1 project-tag2 maturity-tag3"
-			,"tag1 and and project-tag2 maturity-tag3"
-			,"tag1 project-tag2 and and maturity-tag3"
-			,"tag1 project-tag2 and and maturity-tag3 and and"
-			,"and and tag1 project-tag2 and and maturity-tag3 and and"
-			,"tag1 project-tag2 and maturity-tag3"
-			,"tag1 and project-tag2 maturity-tag3"
-			,"tag1 and project-tag2 or maturity-tag3"
+			,"tag1 phantom"
+			,"tag1 and phantom"
+			,"tag1 or tag2"
+			,"tag1 phantom maturity-tag3"
+			,"tag1 and and phantom maturity-tag3"
+			,"tag1 phantom and and maturity-tag3"
+			,"tag1 phantom and and maturity-tag3 and and"
+			,"and and tag1 phantom and and maturity-tag3 and and"
+			,"tag1 phantom and maturity-tag3"
+			,"tag1 and phantom maturity-tag3"
+			,"tag1 and phantom or maturity-tag3"
 			,"or"
-			,"tag1 project-tag2"
-			,"tag1 or project-tag2"
-			,"tag1 or project-tag2"
-			,"tag1 project-tag2 maturity-tag3"
-			,"tag1 or or project-tag2 maturity-tag3"
-			,"tag1 project-tag2 or or maturity-tag3"
-			,"tag1 project-tag2 or or maturity-tag3 or or"
-			,"or or tag1 project-tag2 or or maturity-tag3 or or"
-			,"tag1 project-tag2 or maturity-tag3"
-			,"tag1 or project-tag2 maturity-tag3"
-			,"tag1 or project-tag2 or maturity-tag3"
-			,"tag1 and project-tag2 or maturity-tag3 and tag4"
+			,"tag1 phantom"
+			,"tag1 or phantom"
+			,"tag1 or phantom"
+			,"tag1 phantom maturity-tag3"
+			,"tag1 or or phantom maturity-tag3"
+			,"tag1 phantom or or maturity-tag3"
+			,"tag1 phantom or or maturity-tag3 or or"
+			,"or or tag1 phantom or or maturity-tag3 or or"
+			,"tag1 phantom or maturity-tag3"
+			,"tag1 or phantom maturity-tag3"
+			,"tag1 or phantom or maturity-tag3"
+			,"tag1 and phantom or maturity-tag3 and tag4"
 			]
 
 	for t in testcases:

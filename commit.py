@@ -3,6 +3,7 @@
 import time, re, os, MySQLdb, unicodedata
 from PyRSS2Gen import RSSItem
 
+from config import Config
 import synonymmapping
 from common import *
 from database import DB
@@ -187,7 +188,7 @@ class Commit:
 			title = title,
 			link = link,
 			description = description,
-			guid = self.repo.url + "#" + self.uniqueid,
+			guid = Config.rooturl + "/commit/" + self.repo.tagname + "/" + self.uniqueid,
 			pubDate = unixToDatetime(self.date)
 			)
 		return item

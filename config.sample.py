@@ -5,3 +5,5 @@ class Config:
     password=""
     host="localhost"
     database=""
+
+    rooturl="http://example.com" #no trailing slash

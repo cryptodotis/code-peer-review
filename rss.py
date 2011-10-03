@@ -14,7 +14,7 @@ from repo import Repo
 from commit import Commit
 from keywordsfilter import *
 
-class MainHandler(tornado.web.RequestHandler):
+class RSSHandler(tornado.web.RequestHandler):
 	def get(self, keywords):
 		commits = DBQ.findByKeywords(keywords)
 		
@@ -35,8 +35,34 @@ class MainHandler(tornado.web.RequestHandler):
 		self.write(xml)
 		return
 
+class CommitHandler(tornado.web.RequestHandler):
+	def get(self, project, uniqueid):
+		commit = DBQ.findByIDs(project, uniqueid)
+		if len(commit) > 1:
+			raise "More than one commit returned?"
+		if not commit:
+			self.write("Could not find commit")
+			return
+		commit = commit[0]		
+
+		feed = RSS2(
+			title = "Crypto.is Code Audit Feed",
+			description = "Just a thing, right?",
+			link = "https://crypto.is",
+			lastBuildDate = datetime.datetime.utcnow()
+			)
+			
+		feed.items.append(commit.toRSSItem())
+		
+		self.set_header('Content-Type', 'application/rss+xml')
+		
+		xml = feed.to_xml()
+		self.write(xml)
+		return
+
 application = tornado.web.Application([
-    (r"/(.*)", MainHandler),
+    (r"/rss/(.*)", RSSHandler),
+    (r"/commit/(.*)/(.*)", CommitHandler),
 ])
 
 if __name__ == "__main__":
