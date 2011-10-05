@@ -115,7 +115,7 @@ class Commit:
 				ON DUPLICATE KEY UPDATE uniqueid = VALUES(uniqueid)""" 
 		c.execute(sql, (self.repo.id, self.date, self.message, self.uniqueid))
 
-		if not self.commitid:		
+		if self.commitid <= 0:
 			self.commitid = conn.insert_id()
 
 		if self.files:
@@ -146,14 +146,13 @@ class Commit:
 			
 		eol = "\r\n"
 		s = ""
-		s += "ID:\t\t %s%s" % (self.uniqueid, eol)
 		s += "Date:\t\t %s (%s)%s" % (unixToGitDateFormat(self.date), self.date, eol)
 		s += "Log Message:\t %s%s" % (self.message, eol)
+		s += eol + eol
 		if self.files:
 			s += "Files:\t\t %s%s" % (self.files[0], eol)
 			for p in self.files[1:]:
 				s += "\t\t %s%s" % (p, eol)
-
 		if self.base_paths and not isinstance(self.base_paths, basestring):
 			s += "Base Paths:\t %s%s" % (self.base_paths[0], eol)
 			for p in self.base_paths[1:]:
@@ -161,7 +160,8 @@ class Commit:
 		elif self.base_paths:
 			s += "Base Path:\t %s%s" % (self.base_paths, eol)
 
-		s+= "Keywords:\t %s%s" % (", ".join(self.keywords), eol)
+		s += "Keywords:\t %s%s" % (", ".join(self.keywords), eol)
+		s += "ID:\t\t %s%s" % (self.uniqueid, eol)
 		return s
 	
 	def pprint(self):
