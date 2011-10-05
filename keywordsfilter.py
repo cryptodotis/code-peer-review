@@ -1,142 +1,198 @@
 #!/usr/bin/python
 
 import sys
+import ply.yacc as yacc
+import ply.lex as lex
 
 import synonymmapping
 
+# Lex =================================================================
+reserved = {
+    'and' : 'AND',
+    'or' : 'OR'
+    }
+tokens = [
+    'NAME',
+    'LPAREN','RPAREN',
+    ] + list(reserved.values())
+t_LPAREN  = r'\('
+t_RPAREN  = r'\)'
+
+def t_NAME(t):
+     r'[-_a-zA-Z0-9_]+'
+     t.type = reserved.get(t.value, 'NAME')
+     return t
+
+t_ignore = " \t\n"
+
+def t_error(t):
+    print("Illegal character '%s'" % t.value[0])
+    t.lexer.skip(1)
+    
+# Structure ===========================================================
 class Tree:
-	mode = "INVALID"
-	def __init__(self, n=""):
-		if not n:
-			self.nodes = []
-		elif isinstance(n, str):
-			self.nodes = [n]
-		else:
-			self.nodes = n
-	def add(self, n):
-		self.nodes.append(n)
-	def appendToTail(self, n):
-		self.nodes[-1].add(n)
-	def getWhereClause(self, keywordcolumn, projectcolumn, maturitycolumn, starting=False):
+	left = None
+	right = None
+	def __init__(self, l, r):
+		self.left = l
+		self.right = r
+	def __repr__(self):
+		s = "(" + repr(self.left) + " " + self.mode + " " + repr(self.right) + ")"
+		return s
+	def _getSQLNode(self, node, keywordcolumn, projectcolumn, maturitycolumn):
 		sql = ""
 		components = []
-		for n in self.nodes:
-			if isinstance(n, str):
-				if not starting:
-					sql += " " + self.mode
-
-				if n.startswith("project-"):
-					sql += " " + projectcolumn + " = %s"
-					components.append(n.replace('project-', ''))
-				elif n.startswith("maturity-"):
-					sql += " " + maturitycolumn + " = %s"
-					components.append(n.replace('maturity-', ''))
-				else:
-					sql += " " + keywordcolumn + " = %s"
-					components.append(n)
+		if isinstance(node, str):
+			if node.startswith("project-"):
+				sql += " " + projectcolumn + " = %s"
+				components.append(node.replace('project-', ''))
+			elif node.startswith("maturity-"):
+				sql += " " + maturitycolumn + " = %s"
+				components.append(node.replace('maturity-', ''))
 			else:
-				innersql, newcomponents = n.getWhereClause(keywordcolumn, projectcolumn, maturitycolumn, True)
-				if starting:
-					sql += " (" + innersql + ")"
-				else:
-					sql += " " + self.mode + " (" + innersql + ")"
-				components.extend(newcomponents)
-			starting = False
+				sql += " " + keywordcolumn + " = %s"
+				components.append(node)		
+		else:
+			innersql, newcomponents = node.getWhereClause(keywordcolumn, projectcolumn, maturitycolumn)
+
+			#Don't have a ton of extra parens
+			if len(newcomponents) > 1:			
+				sql += "(" + innersql + ")"
+			else:
+				sql += innersql
+				
+			components.extend(newcomponents)
 		return sql, components
-	def __repr__(self):
-		s = "("
-		tmp = [repr(n) for n in self.nodes]
-		joiner = " " + self.mode + " "
-		s += joiner.join(tmp)
-		s = s[:-(2+len(self.mode))] + ")"
-		return s
+	def getWhereClause(self, keywordcolumn, projectcolumn, maturitycolumn):
 
+		sql, components = self._getSQLNode(self.left, keywordcolumn, projectcolumn, maturitycolumn)
+		#We overload the AndTree to handle the single-node case
+		if self.right:
+			sql += " " + self.mode + " "
+
+			nextsql, newcomponents = self._getSQLNode(self.right, keywordcolumn, projectcolumn, maturitycolumn)
+			sql += nextsql
+			components.extend(newcomponents)
+		return sql, components
 class AndTree(Tree):
-	mode = "AND"
-
+	mode = "and"
 class OrTree(Tree):
-	mode = "OR"
+	mode = "or"
+
+
+# Yacc ================================================================
+
+#expression : NAME
+#   | expression AND expression
+#   | expression expression
+#   | expression OR expression
+#   | ( expression )
+
+def p_expression_name(p):
+    'expression : NAME'
+    p[0] = AndTree(p[1], None)
+
+def p_expression_names(p):
+    'expression : expression expression'
+    p[0] = AndTree(p[1], p[2])
+
+def p_expression_and(p):
+    'expression : expression AND expression'
+    p[0] = AndTree(p[1], p[3])
+
+def p_expression_or(p):
+    'expression : expression OR expression'
+    p[0] = OrTree(p[1], p[3])
+
+def p_expression_parens(p):
+    'expression : LPAREN expression RPAREN'
+    p[0] = AndTree(p[2], None)
+
+def p_error(p):
+    print "Syntax error in input!"
+
+lex.lex()
+yacc.yacc()
+
+# Interface ===========================================================
 
 class KeywordsParser:
 	@staticmethod
-	def _trimnonsense(tokens):
+	def _isBalanced(keywords):
+		balancedParens = 0
+		for c in keywords:
+			if c == "(":
+				balancedParens += 1
+			elif c == ")":
+				balancedParens -= 1
+			if balancedParens < 0:
+				return False
+		return balancedParens == 0
+	@staticmethod
+	def _trimnonsense(tokens): #get rid of beginning or ending combining words, including inside parens
 		if tokens and tokens[0] in ["and", "or"]:
 			tokens.pop(0)
 		if tokens and tokens[-1] in ["and", "or"]:
 			tokens.pop()
+		for i in range(len(tokens) - 1):
+			thistoken = tokens[i]
+			nexttoken = tokens[i+1]
+			if thistoken == "(": 
+				if nexttoken in ["and", "or"]:
+					tokens.pop(i+1)
+					return KeywordsParser._trimnonsense(tokens)
 		return tokens
 	@staticmethod
-	def _combinenonsense(tokens):
+	def _combinenonsense(tokens): #collapse repeated combining words e.g.  'tag1 and and tag2'
 		if len(tokens) > 1:
-			for i in range(len(tokens)-1):
+			for i in range(len(tokens)-1): #remove successive combination words
 				thistoken = tokens[i]
 				nexttoken = tokens[i+1]
 				if thistoken in ["and", "or"]:
 					if nexttoken in ["and", "or"]:
 						tokens.pop(i+1)
 						return KeywordsParser._combinenonsense(tokens)
+			for i in range(len(tokens)-1): #remove empty parens
+				thistoken = tokens[i]
+				nexttoken = tokens[i+1]
+				if thistoken == "(" and nexttoken == ")": 
+					tokens.pop(i)
+					tokens.pop(i)
+					return KeywordsParser._combinenonsense(tokens)
 		return tokens
+	@staticmethod
+	def _preProcess(keywords):
+		if not KeywordsParser._isBalanced(keywords):
+			keywords = keywords.replace("(", "").replace(")", "")
+		else:
+			keywords = keywords.replace("(", " ( ").replace(")", " ) ")
+		tokens = keywords.lower().split()
+		tokens = KeywordsParser._combinenonsense(tokens)
+		tokens = KeywordsParser._trimnonsense(tokens)
+		tokens = KeywordsParser._combinenonsense(tokens)
+		return ' '.join(tokens)   
 
-	base = AndTree()
-	projecttokens = []
-	maturitytokens = []
-	tokens = []
 	def __init__(self, keywords):
-		self.tokens = keywords.lower().split(' ')
-		self.base = AndTree()
+		self.keywords = KeywordsParser._preProcess(keywords)
+		if self.keywords:
+			self.result = yacc.parse(self.keywords)
+		else:
+			self.result = False
 
-		self.tokens = KeywordsParser._combinenonsense(self.tokens)
-		self.tokens = KeywordsParser._trimnonsense(self.tokens)
-
-		map = synonymmapping.getMap()
-
-		if not self.tokens:
-			return
-
-		i = 0
-		while i < len(self.tokens):
-			t = self.tokens[i]
-			if i < len(self.tokens)-1:
-				nextToken = self.tokens[i+1]
-			else:
-				nextToken = ""
-
-			if t not in ['and', 'or'] and 'project-' + t in map:
-				t = 'project-' + t
-
-			if t == "or":
-				self.base.appendToTail(nextToken)
-				i += 1 # skip past next token
-			elif t == "and":
-				pass
-			elif nextToken == "and":
-				self.base.add(t)
-				i += 1 #skip past add
-			elif nextToken == "or":
-				n = OrTree(t)
-				i += 2 #skip past or and go to next tag
-				n.add(self.tokens[i])
-
-				self.base.add(n)
-			else:
-				self.base.add(t)
-			i += 1
 	def getWhereClause(self, keywordcolumn, projectcolumn, maturitycolumn):
-		sql, components = self.base.getWhereClause(keywordcolumn, projectcolumn, maturitycolumn, True)
-		sql += " "
-
-		return (sql, components)
-	def __repr__(self):
-		return repr(self.base)
+		if self.result:
+			return self.result.getWhereClause(keywordcolumn, projectcolumn, maturitycolumn)
+		else:
+			return ('', [])
 
 if __name__ == "__main__":
 
 	testcases = [
-			"tag1"
-			,"and"
-			,"tag1 phantom"
-			,"tag1 and phantom"
-			,"tag1 or tag2"
+			"tag1  "
+			,"and  "
+			,"tag1   phantom"
+			,"tag1   and   phantom"
+			,"tag1   or   tag2"
 			,"tag1 phantom maturity-tag3"
 			,"tag1 and and phantom maturity-tag3"
 			,"tag1 phantom and and maturity-tag3"
@@ -158,8 +214,33 @@ if __name__ == "__main__":
 			,"tag1 or phantom maturity-tag3"
 			,"tag1 or phantom or maturity-tag3"
 			,"tag1 and phantom or maturity-tag3 and tag4"
+			,")tag1(  "
+			,"(and)  "
+			,"((tag1)   phantom)"
+			,"(tag1   and   phantom)"
+			,"(((tag1   or   tag2)))"
+			,"(tag1 phantom) maturity-tag3"
+			,"(tag1 and and phantom) maturity-tag3"
+			,"tag1 (phantom and and maturity-tag3)"
+			,"(tag1 phantom) and and maturity-tag3 and and"
+			,"and and (tag1 phantom) and and maturity-tag3 and and"
+			,"(tag1 phantom) and maturity-tag3"
+			,"(())()()()(())tag1 and phantom maturity-tag3"
+			,"(tag1 and phantom) or maturity-tag3"
+			,"tag1 and (phantom or maturity-tag3)"
+			,"(tag1 or phantom) and maturity-tag3"
+			,"tag1 or (phantom and maturity-tag3)"
+			,"(tag1 and phantom) or (maturity-tag3 and tag4)"
+			,"tag1 and (phantom or maturity-tag3) and tag4"
+			,"tag1 and (phantom or maturity-tag3 and tag4)"
+			,"(tag1 and phantom or maturity-tag3) and tag4"
+			,"(tag1 and (phantom or maturity-tag3)) and tag4"
+			,"tag1 and ((phantom or maturity-tag3) and tag4)"
 			]
+
 
 	for t in testcases:
 		tree = KeywordsParser(t)
-		print t, "|", tree.getWhereClause("ck.keyword", "c.projecttag", "c.maturitytag")
+		print t
+		print "\t", tree.getWhereClause("ck.keyword", "c.projecttag", "c.maturitytag")
+		print ""
