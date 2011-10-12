@@ -39,7 +39,7 @@ if __name__ == "__main__":
 	args.startdate, args.enddate = fixDates(args.startdate, args.enddate)
 	
 	r = Repo()
-	r.loadFromValues(-1, Repo.Type.GIT, args.repo, '', '')
+	r.loadFromValues(-1, Repo.Type.GIT, args.repo, '', '', '')
 	commits = getCommits(r, args.startdate, args.enddate)
 	for c in commits: 
 		c.pprint()
