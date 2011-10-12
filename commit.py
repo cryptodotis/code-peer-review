@@ -1,5 +1,10 @@
 #!/usr/bin/python
 
+from repo import Repo
+import difflib
+import gdiff
+import git as pygit
+
 import time, re, os, MySQLdb, unicodedata
 from PyRSS2Gen import RSSItem
 
@@ -58,6 +63,29 @@ class Commit:
 		msg = re_gitsvn.sub('', msg)
 		return msg.strip()
 
+	def getDiffs(self):
+		s = ""
+		differ = gdiff.diff_match_patch()
+		if self.repo.type == Repo.Type.GIT:
+			r = pygit.Repo('git-repos/' + urlToFolder(self.repo.url) + '/')
+			c = r.commit(self.uniqueid)
+			for d in c.diff().iter_change_type('M'): #modified
+				left = d.a_blob.data_stream.read()
+				right = d.b_blob.data_stream.read()
+				diffs = differ.diff_main(left, right)
+				if diffs: differ.diff_cleanupSemantic(diffs)
+	
+				s += "<p></p><p></p>"
+				s += differ.diff_prettyHtml(diffs)
+				s += "<p></p><p></p>"
+
+			for d in c.diff().iter_change_type('A'): #added
+				pass
+			for d in c.diff().iter_change_type('D'):	#deleted
+				pass
+			for d in c.diff().iter_change_type('R'):	#renamed
+				pass
+		return s
 	def getBasePath(self):
 		if not self.initialized:
 			raise Exception("called getBasePath on unitialized Commit object")
