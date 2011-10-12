@@ -42,7 +42,7 @@ class Tree:
 	def _getSQLNode(self, node, keywordcolumn, projectcolumn, maturitycolumn):
 		sql = ""
 		components = []
-		if isinstance(node, str):
+		if isinstance(node, str) or isinstance(node, unicode):
 			if node.startswith("project-"):
 				sql += " " + projectcolumn + " = %s"
 				components.append(node.replace('project-', ''))

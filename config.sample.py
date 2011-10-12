@@ -7,3 +7,5 @@ class Config:
     database=""
 
     rooturl="http://example.com" #no trailing slash
+    fsdir="/var/www/htdocs/containingDirOfPyFiles/" #trailing slash
+    logfile="/var/log/tornado/tornado_log"

@@ -2,6 +2,8 @@
 
 import tornado.ioloop
 import tornado.web
+import tornado.options
+import logging
 
 import MySQLdb, argparse, datetime, unicodedata
 from PyRSS2Gen import RSS2
@@ -36,7 +38,7 @@ class RSSHandler(tornado.web.RequestHandler):
 		self.write(xml)
 		return
 
-env = Environment(loader=FileSystemLoader('templates'))
+env = Environment(loader=FileSystemLoader(Config.fsdir + 'templates'))
 class CommitHandler(tornado.web.RequestHandler):
 	def get(self, project, uniqueid):
 		commit = DBQ.findByIDs(project, uniqueid)
@@ -57,10 +59,15 @@ application = tornado.web.Application([
     (r"/rss/(.*)", RSSHandler),
     (r"/commit/(.*)/(.*)", CommitHandler),
 ])
+tornado.options.parse_command_line() 
 
 if __name__ == "__main__":
-    application.listen(8888)
-    tornado.ioloop.IOLoop.instance().start()
+	tlog = logging.FileHandler(Config.logfile)
+	logging.getLogger().addHandler(tlog)
+	logging.debug('Starting up...')
+	
+	application.listen(8888)
+	tornado.ioloop.IOLoop.instance().start()
 
 		
 		
