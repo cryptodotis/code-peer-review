@@ -5,6 +5,7 @@ import tornado.web
 
 import MySQLdb, argparse, datetime, unicodedata
 from PyRSS2Gen import RSS2
+from jinja2 import Environment, FileSystemLoader
 
 from common import *
 from config import Config
@@ -35,6 +36,7 @@ class RSSHandler(tornado.web.RequestHandler):
 		self.write(xml)
 		return
 
+env = Environment(loader=FileSystemLoader('templates'))
 class CommitHandler(tornado.web.RequestHandler):
 	def get(self, project, uniqueid):
 		commit = DBQ.findByIDs(project, uniqueid)
@@ -45,19 +47,10 @@ class CommitHandler(tornado.web.RequestHandler):
 			return
 		commit = commit[0]		
 
-		feed = RSS2(
-			title = "Crypto.is Code Audit Feed",
-			description = "Just a thing, right?",
-			link = "https://crypto.is",
-			lastBuildDate = datetime.datetime.utcnow()
-			)
-			
-		feed.items.append(commit.toRSSItem())
+		template = env.get_template('commit.html')
+		html = template.render(commit=commit)	
 		
-		self.set_header('Content-Type', 'application/rss+xml')
-		
-		xml = feed.to_xml()
-		self.write(xml)
+		self.write(html)
 		return
 
 application = tornado.web.Application([

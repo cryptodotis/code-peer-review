@@ -6,3 +6,4 @@ Requirements:
    1. Move config.sample.py to config.py and fill in variables
    2. Run ./setup.py --populate
  - PyRSS2Gen - I'm using 1.0.0
+ - Jinja - I'm using 2.6
