@@ -91,18 +91,15 @@ class Commit:
 
 		keywords = set()
 		for k in synonymmapping.getMap():
-			#lk = " " + k + " "
-			#pk = "/" + k
-			ls = re.compile('\w*\s*' + k + '\s*\w*')
-			pk = re.compile('/\w*' + k + '\w*')
+			kregex = re.compile('(?<=[^a-zA-Z])' + k + '(?![a-zA-Z])') #positive lookbehind, tag, negative lookahead.  
+			# k is not surrounded by alpha characters.  
+			# Matches tor, +tor, (tor), tor(, but not gotor, hitorhi, or tortor
 			
-			#if lk in log:
-			if lk.search(log):
+			if kregex.search(log):
 				keywords.add(k)
 				for v in synonymmapping.map[k]: keywords.add(v)
 			for p in paths:
-				#if pk in p:
-				if pk.search(p):
+				if kregex.search(p):
 					keywords.add(k)
 					for v in synonymmapping.map[k]: keywords.add(v)
 
