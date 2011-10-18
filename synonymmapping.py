@@ -1,6 +1,7 @@
 #/usr/bin/python
 
 import MySQLdb
+from common import *
 from database import DB
 
 map = None
@@ -27,16 +28,46 @@ def getMap():
 
 		for r in rows:
 			if not r[DB.keyword.keyword] in map:
-				map[r[DB.keyword.keyword]] = []
+				map[r[DB.keyword.keyword]] = MicroMock(type=1, implies=[])
 			if r[DB.keyword.parent]:
-		   		map[r[DB.keyword.keyword]].append(r[DB.keyword.parent])
 				if not r[DB.keyword.parent] in map:
-					map[r[DB.keyword.parent]] = []
+					map[r[DB.keyword.parent]] = MicroMock(type=1, implies=[])
+
+		   		map[r[DB.keyword.keyword]].implies.append(r[DB.keyword.parent])
 
 		c.execute("SELECT tagname FROM " + DB.repo._table)
 		rows = c.fetchall()
 		for r in rows:
 			if not 'project-' + r[0] in map:
-				map['project-' + r[0]] = []
+				map['project-' + r[0]] = MicroMock(type=1, implies=[])
     
     	return map
+
+def getTags(commit):
+	log = commit.message.lower()
+	paths = []
+	for i in range(len(commit.files)): paths.append(commit.files[i].lower())
+
+	keywords = set()
+	for k in getMap():
+		kregex = re.compile('(?<=[^a-zA-Z])' + k + '(?![a-zA-Z])') #positive lookbehind, tag, negative lookahead.  
+		# k is not surrounded by alpha characters.  
+		# Matches tor, +tor, (tor), tor(, but not gotor, hitorhi, or tortor
+		
+		if kregex.search(log):
+			keywords.add(k)
+			for v in map[k].implies: keywords.add(v)
+		for p in paths:
+			if kregex.search(p):
+				keywords.add(k)
+				for v in map[k].implies: keywords.add(v)
+	return keywords
+
+	
+def projectizeTags(tokens):
+	map = getMap()
+	for i in range(len(tokens)):
+		if 'project-' + tokens[i] in map:
+			tokens[i] = 'project-' + tokens[i]
+	return tokens
+

@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-import time, os, urlparse, re, datetime, synonymmapping
+import time, os, urlparse, re, datetime
 
 def fla(a, b):
 	if a and not b:
@@ -39,3 +39,7 @@ def fixDates(start, end):
 		end = start
 		start = tmp
 	return start, end
+
+class MicroMock(object):
+	def __init__(self, **kwargs):
+		self.__dict__.update(kwargs)

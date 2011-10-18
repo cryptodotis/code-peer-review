@@ -171,10 +171,7 @@ class KeywordsParser:
 		tokens = KeywordsParser._trimnonsense(tokens)
 		tokens = KeywordsParser._combinenonsense(tokens)
 		
-		map = synonymmapping.getMap()
-		for i in range(len(tokens)):
-			if 'project-' + tokens[i] in map:
-				tokens[i] = 'project-' + tokens[i]
+		tokens = synonymmapping.projectizeTags(tokens)
 
 		return ' '.join(tokens)   
 

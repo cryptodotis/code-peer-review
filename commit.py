@@ -85,23 +85,7 @@ class Commit:
 		if not self.initialized:
 			raise Exception("called getBasePath on unitialized Commit object")
 			
-		log = self.message.lower()
-		paths = []
-		for i in range(len(self.files)): paths.append(self.files[i].lower())
-
-		keywords = set()
-		for k in synonymmapping.getMap():
-			kregex = re.compile('(?<=[^a-zA-Z])' + k + '(?![a-zA-Z])') #positive lookbehind, tag, negative lookahead.  
-			# k is not surrounded by alpha characters.  
-			# Matches tor, +tor, (tor), tor(, but not gotor, hitorhi, or tortor
-			
-			if kregex.search(log):
-				keywords.add(k)
-				for v in synonymmapping.map[k]: keywords.add(v)
-			for p in paths:
-				if kregex.search(p):
-					keywords.add(k)
-					for v in synonymmapping.map[k]: keywords.add(v)
+		keywords = synonymmapping.getTags(self)
 
 		return keywords
 
