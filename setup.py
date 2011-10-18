@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-import MySQLdb, argparse
+import MySQLdb, argparse, os
 from database import DB
 
 
@@ -171,7 +171,8 @@ if __name__ == "__main__":
 			sql = "CREATE TABLE " + DB.keyword._table + """
 					(
 					keyword varchar(50) NOT NULL,
-					parent varchar(50) 
+					parent varchar(50), 
+					type tinyint NOT NULL DEFAULT 1
 					) ENGINE=innodb;
 					"""
 			c.execute(sql)
@@ -288,8 +289,34 @@ if __name__ == "__main__":
 				SELECT 'project-torspec', 'project-tor' UNION
 				SELECT 'project-vidalia-plugins', 'project-vidalia' UNION
 				SELECT 'project-vidalia', 'project-tor' 
-				
-				
+				"""
+				c.execute(sql)
+
+
+				sql = "INSERT INTO " + DB.keyword._table + """(keyword, parent, type)
+				SELECT 'openssl-library-bio', 'openssl-library', 3 UNION
+				SELECT 'openssl-library-blowfish', 'openssl-library', 3 UNION
+				SELECT 'openssl-library-bn', 'openssl-library', 3 UNION
+				SELECT 'openssl-library-des', 'openssl-library', 3 UNION
+				SELECT 'openssl-library-dh', 'openssl-library', 3 UNION
+				SELECT 'openssl-library-dsa', 'openssl-library', 3 UNION
+				SELECT 'openssl-library-err', 'openssl-library', 3 UNION
+				SELECT 'openssl-library-evp', 'openssl-library', 3 UNION
+				SELECT 'openssl-library-hmac', 'openssl-library', 3 UNION
+				SELECT 'openssl-library-lhash', 'openssl-library', 3 UNION
+				SELECT 'openssl-library-md5', 'openssl-library', 3 UNION
+				SELECT 'openssl-library-mdc2', 'openssl-library', 3 UNION
+				SELECT 'openssl-library-pem', 'openssl-library', 3 UNION
+				SELECT 'openssl-library-rand', 'openssl-library', 3 UNION
+				SELECT 'openssl-library-rc4', 'openssl-library', 3 UNION
+				SELECT 'openssl-library-ripemd', 'openssl-library', 3 UNION
+				SELECT 'openssl-library-rsa', 'openssl-library', 3 UNION
+				SELECT 'openssl-library-sha', 'openssl-library', 3 UNION
+				SELECT 'openssl-library-ssl', 'openssl-library', 3 UNION
+				SELECT 'openssl-library-threads', 'openssl-library', 3 UNION
+				SELECT 'openssl-library-x509', 'openssl-library', 3 UNION
+				SELECT 'openssl-library', NULL, 3
+
 				
 				"""
 				c.execute(sql)
@@ -298,6 +325,18 @@ if __name__ == "__main__":
 				SELECT CONCAT('project-', r.tagname), NULL
 				FROM """ + DB.repo._table + " as r"
 				c.execute(sql)
+
+				for f in os.listdir('keyword-setup'):
+					h = open('keyword-setup/' + f, 'r')
+					t = f.replace('.txt', '').replace("'", "") #rudimentary escaping here
+
+					sql = 'INSERT INTO ' + DB.keyword._table + "(keyword, parent, type)\n"
+					components = []
+					for l in h:
+						sql += "SELECT %s, '" + t + "', 2 UNION\n"
+						components.append(l.strip())
+					sql = sql[0:-6]
+					DB.execute(c, sql, components)
 
 
 		#commit._table + """ ----------------------------------------

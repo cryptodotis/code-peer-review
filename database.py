@@ -53,7 +53,8 @@ class DB:
 		_table = "keyword_tbl"
 		keyword = 0
 		parent = 1
-		_numColumns = 2
+		type = 2
+		_numColumns = 3
 	class commit:
 		_table = "commit_tbl"
 		id = 0
