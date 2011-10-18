@@ -91,14 +91,18 @@ class Commit:
 
 		keywords = set()
 		for k in synonymmapping.getMap():
-			lk = " " + k + " "
-			pk = "/" + k
+			#lk = " " + k + " "
+			#pk = "/" + k
+			ls = re.compile('\w*\s*' + k + '\s*\w*')
+			pk = re.compile('/\w*' + k + '\w*')
 			
-			if lk in log:
+			#if lk in log:
+			if lk.search(log):
 				keywords.add(k)
 				for v in synonymmapping.map[k]: keywords.add(v)
 			for p in paths:
-				if pk in p:
+				#if pk in p:
+				if pk.search(p):
 					keywords.add(k)
 					for v in synonymmapping.map[k]: keywords.add(v)
 
