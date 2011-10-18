@@ -1,0 +1,4 @@
+SHA1
+SHA1_Final
+SHA1_Init
+SHA1_Update

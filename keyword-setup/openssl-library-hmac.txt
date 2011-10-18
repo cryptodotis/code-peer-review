@@ -1,0 +1,5 @@
+HMAC
+HMAC_Final
+HMAC_Init
+HMAC_Update
+HMAC_cleanup

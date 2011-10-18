@@ -1,0 +1,14 @@
+CRYPTO_THREADID_cmp
+CRYPTO_THREADID_cpy
+CRYPTO_THREADID_current
+CRYPTO_THREADID_get_callback
+CRYPTO_THREADID_hash
+CRYPTO_THREADID_set_callback
+CRYPTO_destroy_dynlockid
+CRYPTO_get_new_dynlockid
+CRYPTO_lock
+CRYPTO_num_locks
+CRYPTO_set_dynlock_create_callback
+CRYPTO_set_dynlock_destroy_callback
+CRYPTO_set_dynlock_lock_callback
+CRYPTO_set_locking_callback

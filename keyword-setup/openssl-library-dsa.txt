@@ -1,0 +1,35 @@
+DSA_METHOD
+DSA_OpenSSL
+DSA_SIG
+DSA_SIG DSA_SIG_new
+DSA_SIG DSA_do_sign
+DSA_SIG d2i_DSA_SIG
+DSA_SIG_free
+DSA_do_verify
+DSA_dup_DH
+DSA_free
+DSA_generate_key
+DSA_generate_parameters
+DSA_get_default_method
+DSA_get_ex_data
+DSA_get_ex_new_index
+DSA_new
+DSA_new_method
+DSA_print
+DSA_print_fp
+DSA_set_default_method
+DSA_set_ex_data
+DSA_set_method
+DSA_sign
+DSA_sign_setup
+DSA_size
+DSA_verify
+DSAparams_print
+DSAparams_print_fp
+d2i_DSAPrivateKey
+d2i_DSAPublicKey
+d2i_DSAparams
+i2d_DSAPrivateKey
+i2d_DSAPublicKey
+i2d_DSA_SIG
+i2d_DSAparams

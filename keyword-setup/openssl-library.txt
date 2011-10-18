@@ -1,0 +1,3 @@
+OPENSSL_VERSION_NUMBER
+SSLeay
+SSLeay_version
