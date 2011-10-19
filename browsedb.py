@@ -14,6 +14,7 @@ def browse(keywords):
 	commits = DBQ.findByKeywords(keywords)
 	
 	for c in commits:
+		print "---------"
 		c.pprint()
 
 if __name__ == "__main__":

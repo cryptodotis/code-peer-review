@@ -12,7 +12,7 @@ from keywordsfilter import *
 
 def regen(keywords):
 	commits= DBQ.findByKeywords(keywords)
-	
+
 	for c in commits:
 		c.dbkeywords = c.getSynonyms()
 		c.save()

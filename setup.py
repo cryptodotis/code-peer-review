@@ -181,7 +181,6 @@ if __name__ == "__main__":
 				print 'Populating Keywords...'
 				sql = "INSERT INTO " + DB.keyword._table + """(keyword, parent)
 				
-				SELECT 'libgcrypt', 'project-libgcrypt' UNION
 				SELECT 'project-libgcrypt', 'crypto-library' UNION
 
 				SELECT 'project-schleuder', 'mailinglist' UNION
@@ -259,12 +258,19 @@ if __name__ == "__main__":
 				SELECT 'hmac', NULL UNION
 
 				SELECT 'dkim', NULL UNION
+
+				SELECT 'md4', 'hash-functions' UNION
+				SELECT 'md5', 'hash-functions' UNION
+				SELECT 'sha1', 'hash-functions' UNION
+				SELECT 'sha256', 'hash-functions' UNION
+				SELECT 'sha512', 'hash-functions' UNION
+				SELECT 'ripemd', 'hash-functions' UNION
+				SELECT 'tiger', 'hash-functions' UNION
 				
 				SELECT 'otr', NULL UNION
 				SELECT 'socks', NULL UNION
 
 				SELECT 'vidalia', 'project-tor' UNION
-				SELECT 'tor', 'project-tor' UNION
 				
 				SELECT 'project-tor-arm', 'project-tor' UNION
 				SELECT 'project-tor-bridgedb', 'project-tor' UNION
@@ -321,10 +327,10 @@ if __name__ == "__main__":
 				"""
 				c.execute(sql)
 				
-				sql = "INSERT INTO " + DB.keyword._table + """(keyword, parent)
-				SELECT CONCAT('project-', r.tagname), NULL
-				FROM """ + DB.repo._table + " as r"
-				c.execute(sql)
+				#sql = "INSERT INTO " + DB.keyword._table + """(keyword, parent)
+				#SELECT CONCAT('project-', r.tagname), NULL
+				#FROM """ + DB.repo._table + " as r"
+				#c.execute(sql)
 
 				for f in os.listdir('keyword-setup'):
 					h = open('keyword-setup/' + f, 'r')
