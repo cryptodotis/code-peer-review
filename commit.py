@@ -73,7 +73,7 @@ class Commit:
 
 	def getSynonyms(self):
 		if not self.initialized:
-			raise Exception("called getBasePath on unitialized Commit object")
+			raise Exception("called getSynonyms on unitialized Commit object")
 			
 		keywords = synonymmapping.getTags(self)
 
@@ -81,7 +81,7 @@ class Commit:
 
 	def save(self):
 		if not self.initialized:
-			raise Exception("called getBasePath on unitialized Commit object")
+			raise Exception("called save on unitialized Commit object")
 			
 		conn = DB.getConn()
 		c = conn.cursor()
@@ -117,7 +117,7 @@ class Commit:
 		
 	def getpprint(self):
 		if not self.initialized:
-			raise Exception("called getBasePath on unitialized Commit object")
+			raise Exception("called getpprint on unitialized Commit object")
 			
 		eol = "\r\n"
 		s = ""
