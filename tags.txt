@@ -122,9 +122,86 @@ tls : ssl
 ssl : tls
 BEAST : ssl
 
+openpgp :
+web of trust :
+trust on first use :
+
+x509 :
+public key infrastructure :
+certificate authority :
+notary : convergence
+
 hmac : 
 
-dkim : 
+dane :
+dkim :
+domain keys :
+
+ppp :
+pptp :
+802.11a : 802.11
+802.11b : 802.11
+802.11g : 802.11
+802.11n : 802.11
+tkip :
+802.16 : wimax
+
+ipv4 : ip
+ipv6 : ip
+ipsec : ip
+sscp :
+arp :
+rarp :
+bgp :
+rip :
+ndp :
+tcp : 
+udp :
+icmp :
+ipx :
+smb :
+cifs : smb
+
+pop3 :
+imap :
+soap :
+ftp :
+sftp :
+ssh :
+scp :
+telnet :
+dns :
+dnssec : dns
+http :
+https : ssl
+smtp :
+starttls :
+bittorrent :
+dhcp :
+finger :
+gopher :
+irc :
+ldap :
+mime :
+netbios :
+nntp :
+ntp :
+radius :
+rsync :
+sip :
+snmp :
+webdav :
+xmpp :
+
+fuse :
+
+git :
+svn : subversion
+hg : mercurial
+sourcesafe : visualsourcesafe
+vss : visualsourcesafe
+cvs :
+
 
 md2 : hash-functions
 md4 : hash-functions
@@ -177,7 +254,16 @@ hmac :
 otr : 
 socks : 
 
+tahoe : tahoe-lafs
+
 vidalia : project-tor
+
+prng : random-number-generator
+rng : random-number-generator
+random number generator : random-number-generator
+psuedonumber generator : random-number-generator
+lfsr : random-number-generator
+linear feedback shift register : random-number-generator
 
 project-tor-arm : project-tor
 project-tor-bridgedb : project-tor
@@ -201,4 +287,4 @@ project-tor-dnsel : project-tor
 project-torsocks : project-tor
 project-torspec : project-tor
 project-vidalia-plugins : project-vidalia
-project-vidalia : project-tor' 
+project-vidalia : project-tor

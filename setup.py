@@ -184,8 +184,9 @@ if __name__ == "__main__":
 				sql = 'INSERT INTO ' + DB.keyword._table + "(keyword, parent, type)\n"
 				components = []
 				for l in h:
+					if not l.strip(): continue
 					parts = l.strip().split(':')
-					parts = [p.strip() for p in parts]
+					parts = [p.strip() for p in parts if p.strip()]
 					
 					if len(parts) > 1:
 						sql += "SELECT %s, %s, 1 UNION\n"
