@@ -64,22 +64,12 @@ class Commit:
 			
 		if not self.files: return ""
 
-		trunks = [p for p in self.files if "/trunk" in p]
-		branches = [p for p in self.files if "/branches" in p]
-		tags = [p for p in self.files if "/tags" in p]
-		odd = [p for p in self.files if p not in trunks and p not in branches and p not in tags]
-
-		if ((1 if trunks else 0) + (1 if branches else 0) + \
-			    (1 if tags else 0) + (1 if odd else 0)) > 1:
-			ret = []
-			if trunks: ret.append(os.path.commonprefix(trunks))
-			if branches: ret.append(os.path.commonprefix(branches))
-			if tags: ret.append(os.path.commonprefix(tags))
-			if odd: ret.append(os.path.commonprefix(odd))
-			return ret
-		else:
-			return os.path.dirname(os.path.commonprefix(self.files))
-
+		paths = set()
+		for f in self.files:
+			paths.add(os.path.dirname(f))
+		l = [p for p in paths if p]
+		l.sort()
+		return l
 
 	def getSynonyms(self):
 		if not self.initialized:
@@ -136,14 +126,15 @@ class Commit:
 		s += eol + eol
 		if self.files:
 			s += "Files:\t\t %s%s" % (self.files[0], eol)
-			for p in self.files[1:]:
+			for p in self.files[1:14]:
 				s += "\t\t %s%s" % (p, eol)
-		if self.base_paths and not isinstance(self.base_paths, basestring):
-			s += "Base Paths:\t %s%s" % (self.base_paths[0], eol)
+			if len(self.files) > 15:
+				s += "\t\t ...%s" % (eol)
+		if self.base_paths:
+			plural = len(self.base_paths) > 1
+			s += "Base Path%s:\t %s%s" % ("s" if plural else "", self.base_paths[0], eol)
 			for p in self.base_paths[1:]:
 				s += "\t\t %s%s" % (p, eol)
-		elif self.base_paths:
-			s += "Base Path:\t %s%s" % (self.base_paths, eol)
 
 		s += "Keywords:\t %s%s" % (", ".join(self.keywords), eol)
 		s += "ID:\t\t %s%s" % (self.uniqueid, eol)
