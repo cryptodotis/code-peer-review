@@ -126,7 +126,7 @@ openpgp :
 web of trust :
 trust on first use :
 
-x509 :
+x.509 : x509
 public key infrastructure :
 certificate authority :
 notary : convergence
@@ -252,7 +252,9 @@ sha-1 : sha-family
 hmac : 
 				
 otr : 
-socks : 
+socks4 : socks
+socka4a : socks
+socks5 : socks
 
 tahoe : tahoe-lafs
 
