@@ -100,7 +100,9 @@ if __name__ == "__main__":
 				SELECT 2, 'https://github.com/brl/obfuscated-openssh', 'https://github.com/brl/obfuscated-openssh/commit/%ID', 'obfuscated-openssh', 'stable' UNION
 				SELECT 1, 'http://phantom.googlecode.com/svn/trunk/', 	'http://code.google.com/p/phantom/source/detail?r=%ID', 'phantom', 'development' UNION
 				SELECT 8, 'http://www.agroman.net/corkscrew/', 		NULL, 'corkscrew', 'development' UNION
-				SELECT 9, 'http://tahoe-lafs.org/source/tahoe-lafs/trunk/', 'http://tahoe-lafs.org/trac/tahoe-lafs/changeset?old_path=%2Ftrunk&old=%ID&new_path=%2Ftrunk&new=%ID', 'tahoe-lafs', 'beta' UNION""" 
+				SELECT 9, 'http://tahoe-lafs.org/source/tahoe-lafs/trunk/', 'http://tahoe-lafs.org/trac/tahoe-lafs/changeset?old_path=%2Ftrunk&old=%ID&new_path=%2Ftrunk&new=%ID', 'tahoe-lafs', 'beta' UNION
+				SELECT 2, 'git://briar.git.sourceforge.net/gitroot/briar/prototype', 'http://briar.git.sourceforge.net/git/gitweb.cgi?p=briar/prototype;a=commitdiff;h=%ID', 'briar', 'development' UNION
+				SELECT 2, 'git://briar.git.sourceforge.net/gitroot/briar/docs', 'http://briar.git.sourceforge.net/git/gitweb.cgi?p=briar/docs;a=commitdiff;h=%ID', 'briar-docs', 'development' UNION"""
 				#tor
 				sql += """
 				SELECT 2, 'https://git.torproject.org/arm.git', 		'https://gitweb.torproject.org/arm.git/commitdiff/%ID', 'tor-arm', 			'stable' UNION

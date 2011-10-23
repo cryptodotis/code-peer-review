@@ -1,4 +1,5 @@
 project-libgcrypt : crypto-library
+project-libgcrypt : crypto-library
 project-schleuder : mailinglist
 project-sels : mailinglist
 project-secure-list-server : mailinglist
@@ -130,6 +131,7 @@ x.509 : x509
 public key infrastructure :
 certificate authority :
 notary : convergence
+diginotar :
 
 hmac : 
 

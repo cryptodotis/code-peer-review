@@ -7,4 +7,4 @@ Requirements:
    2. Run ./setup.py --populate
  - PyRSS2Gen - I'm using 1.0.0
  - Jinja - I'm using 2.6
- - Pygraph - I'm using 1.8.0
+ - Python-Graph - I'm using 1.8.0 http://code.google.com/p/python-graph/
