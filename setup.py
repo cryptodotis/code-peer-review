@@ -102,7 +102,11 @@ if __name__ == "__main__":
 				SELECT 8, 'http://www.agroman.net/corkscrew/', 		NULL, 'corkscrew', 'development' UNION
 				SELECT 9, 'http://tahoe-lafs.org/source/tahoe-lafs/trunk/', 'http://tahoe-lafs.org/trac/tahoe-lafs/changeset?old_path=%2Ftrunk&old=%ID&new_path=%2Ftrunk&new=%ID', 'tahoe-lafs', 'beta' UNION
 				SELECT 2, 'git://briar.git.sourceforge.net/gitroot/briar/prototype', 'http://briar.git.sourceforge.net/git/gitweb.cgi?p=briar/prototype;a=commitdiff;h=%ID', 'briar', 'development' UNION
-				SELECT 2, 'git://briar.git.sourceforge.net/gitroot/briar/docs', 'http://briar.git.sourceforge.net/git/gitweb.cgi?p=briar/docs;a=commitdiff;h=%ID', 'briar-docs', 'development' UNION"""
+				SELECT 2, 'git://briar.git.sourceforge.net/gitroot/briar/docs', 'http://briar.git.sourceforge.net/git/gitweb.cgi?p=briar/docs;a=commitdiff;h=%ID', 'briar-docs', 'development' UNION
+				SELECT 2, 'https://git.torproject.org/user/jvoisin/mat.git', 'https://gitweb.torproject.org/user/jvoisin/mat.git/commitdiff/%ID', 'mat', 'beta' UNION
+				SELECT 2, 'https://github.com/secYOUre/Encounter.git', 'https://github.com/secYOUre/Encounter/commit/%ID', 'encounter', 'development' UNION
+				SELECT 8, 'http://www.issihosts.com/haveged/', '', 'haveged', 'beta' UNION"""
+				
 				#tor
 				sql += """
 				SELECT 2, 'https://git.torproject.org/arm.git', 		'https://gitweb.torproject.org/arm.git/commitdiff/%ID', 'tor-arm', 			'stable' UNION

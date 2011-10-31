@@ -27,6 +27,8 @@ project-luks : fde
 project-cr-gpg : browser-plugin
 project-https-everywhere : browser-plugin
 
+project-mat : metadata
+
 project-enigmail : mailcient-plugin
 
 project-cr-gpg : email-crypto
