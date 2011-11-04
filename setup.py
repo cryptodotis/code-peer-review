@@ -149,6 +149,9 @@ if __name__ == "__main__":
 				#keyservers
 				sql += """
 				SELECT 6, 'http://www.earth.li/~noodles/bzr/onak/mainline', NULL, 'onak', 'development' UNION"""
+				#otr
+				sql += """
+				SELECT 6, 'http://bazaar.launchpad.net/~afflux/python-otr/purepython', NULL, 'python-otr', 'beta' UNION"""
 				#browser plugins
 				sql += """
 				SELECT 2, 'https://github.com/RC1140/cr-gpg.git', 'https://github.com/RC1140/cr-gpg/commit/%ID', 'cr-gpg', 'development' UNION"""
