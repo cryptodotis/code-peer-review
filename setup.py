@@ -105,6 +105,7 @@ if __name__ == "__main__":
 				SELECT 2, 'git://briar.git.sourceforge.net/gitroot/briar/docs', 'http://briar.git.sourceforge.net/git/gitweb.cgi?p=briar/docs;a=commitdiff;h=%ID', 'briar-docs', 'development' UNION
 				SELECT 2, 'https://git.torproject.org/user/jvoisin/mat.git', 'https://gitweb.torproject.org/user/jvoisin/mat.git/commitdiff/%ID', 'mat', 'beta' UNION
 				SELECT 2, 'https://github.com/secYOUre/Encounter.git', 'https://github.com/secYOUre/Encounter/commit/%ID', 'encounter', 'development' UNION
+				SELECT 2, 'https://github.com/servalproject/batphone.git', 'https://github.com/servalproject/batphone/commit/%ID', 'serval', 'development' UNION
 				SELECT 8, 'http://www.issihosts.com/haveged/', '', 'haveged', 'beta' UNION"""
 				
 				#tor
