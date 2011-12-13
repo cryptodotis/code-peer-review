@@ -7,6 +7,7 @@ from config import Config
 import synonymmapping
 from common import *
 from database import DB
+import gdiff
 re_gitsvn = re.compile('git-svn-id: \w+://.+ \w{4,12}-\w{4,12}-\w{4,12}-\w{4,12}-\w{4,12}')
 
 class Commit:
@@ -20,7 +21,7 @@ class Commit:
 	def __init__(self):
 		pass
 	
-	def loadFromSource(self, repo, m, d, f, uid):
+	def loadFromSource(self, repo, m, d, f, uid, diffs):
 		self.initialized = True
 	
 		self.repo = repo
@@ -30,7 +31,7 @@ class Commit:
 		self.uniqueid = uid
 
 		self.base_paths = self.getBasePath()
-		self.dbkeywords = self.getSynonyms()
+		self.dbkeywords = self.getSynonyms(diffs)
 
 		self.keywords = set(self.dbkeywords)
 		self.keywords.add('project-' + repo.tagname)
@@ -71,11 +72,11 @@ class Commit:
 		l.sort()
 		return l
 
-	def getSynonyms(self):
+	def getSynonyms(self, diffs):
 		if not self.initialized:
 			raise Exception("called getSynonyms on unitialized Commit object")
 			
-		keywords = synonymmapping.getTags(self)
+		keywords = synonymmapping.getTags(self, diffs)
 
 		return keywords
 

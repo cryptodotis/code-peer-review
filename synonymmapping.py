@@ -27,10 +27,10 @@ def getMap():
 		map = pygraph.classes.digraph.digraph()
 
 		for r in rows:
-			keyword = r[DB.keyword.keyword]
+			keyword = r[DB.keyword.keyword].lower()
 			keyword_regex = re.compile('(?<=[^a-zA-Z])' + keyword + '(?![a-zA-Z])') # k is not surrounded by alpha characters.  
 			parent = r[DB.keyword.parent]
-			parent_regex = '' if not parent else re.compile('(?<=[^a-zA-Z])' + parent + '(?![a-zA-Z])') 
+			parent_regex = '' if not parent else re.compile('(?<=[^a-zA-Z])' + parent.lower() + '(?![a-zA-Z])') 
 			type = r[DB.keyword.type]
 
 			if not map.has_node(keyword):
@@ -49,9 +49,9 @@ def getMap():
 		c.execute("SELECT tagname FROM " + DB.repo._table)
 		rows = c.fetchall()
 		for r in rows:
-			keyword = r[0]
+			keyword = r[0].lower()
 			keyword_regex = re.compile('(?<=[^a-zA-Z])' + keyword + '(?![a-zA-Z])') 
-			parent = 'project-' + r[0]
+			parent = 'project-' + keyword
 			parent_regex = re.compile('(?<=[^a-zA-Z])' + parent + '(?![a-zA-Z])') 
 			type = KeywordType.APICALL #apply only the project tag, not the non-project tag
 			
@@ -74,7 +74,7 @@ def getAllChildTags(map, node, sofar=None):
 	return keywords
 
 
-def getTags(commit):
+def getTags(commit, diffs):
 	log = commit.message.lower()
 	paths = []
 	for i in range(len(commit.files)): paths.append(commit.files[i].lower())
@@ -98,13 +98,24 @@ def getTags(commit):
 
 			#Apply all children tags				
 			keywords = keywords.union(getAllChildTags(map, k))
-		
+		#Don't do this expensive check if we added it based on the log message
+		else:
+			for d in diffs:
+				if kregex.search(d[1].lower()):
+					#Do not apply the base tag for KeywordType.APICALL
+					if k_type != KeywordType.APICALL:
+						keywords.add(k)
+				
+					#Apply all children tags
+					keywords = keywords.union(getAllChildTags(map, k))
+
+					
 		#Do not do path search for APICALL keywords
 		if k_type == KeywordType.APICALL:
 			continue
 		
 		for p in paths:
-			# Don't check if we already have this keyword
+			#Don't check if we already have this keyword
 			if k not in keywords and kregex.search(p):
 				keywords.add(k)
 				keywords = keywords.union(getAllChildTags(map, k))

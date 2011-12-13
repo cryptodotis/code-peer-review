@@ -8,3 +8,4 @@ Requirements:
  - PyRSS2Gen - I'm using 1.0.0
  - Jinja - I'm using 2.6
  - Python-Graph - I'm using 1.8.0 http://code.google.com/p/python-graph/
+ - google-diff-match-patch - I'm using 20111010
