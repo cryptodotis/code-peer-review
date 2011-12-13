@@ -19,7 +19,7 @@ class DB:
 				c.execute(sql)
 			else:
 				c.execute(sql, args[0])
-		except MySQLdb.OperationalError as e:
+		except MySQLdb.Error as e:
 			print e
 			print sql
 			if args:

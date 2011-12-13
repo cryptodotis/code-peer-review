@@ -72,7 +72,7 @@ def getAllChildTags(map, node, sofar=None):
 			keywords.add(e)
 			keywords = keywords.union(getAllChildTags(map, e, keywords))
 	return keywords
-		
+
 
 def getTags(commit):
 	log = commit.message.lower()
@@ -81,13 +81,15 @@ def getTags(commit):
 
 	map = getMap()
 	keywords = set()
+
 	for k in map.nodes():
 		k_type = map.node_attributes(k)[0][1]
-		kregex = map.node_attributes(k)[1][1]
 
 		#Don't look for mapping keywords anywhere, they'll be applied by graph travel from another keyword
 		if k_type == KeywordType.MAPPING:
 			continue
+
+		kregex = map.node_attributes(k)[1][1]
 
 		if kregex.search(log):
 			#Do not apply the base tag for KeywordType.APICALL			
@@ -102,10 +104,9 @@ def getTags(commit):
 			continue
 		
 		for p in paths:
-			if kregex.search(p):
-				#Do not apply the base tag for KeywordType.APICALL			
-				if k_type != KeywordType.APICALL:
-					keywords.add(k)
+			# Don't check if we already have this keyword
+			if k not in keywords and kregex.search(p):
+				keywords.add(k)
 				keywords = keywords.union(getAllChildTags(map, k))
 	return keywords
 

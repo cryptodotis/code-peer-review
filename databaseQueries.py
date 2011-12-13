@@ -11,10 +11,44 @@ from keywordsfilter import *
 
 class DBQ:
 	@staticmethod
-	def findByKeywords(keywords):
+	def find(query, components):
 		conn = DB.getConn()
 		c = conn.cursor()
 		
+		c.execute(query, components)
+                commitrows = c.fetchall()
+                commitfiles = []
+
+                if commitrows:
+                        allcommitids = ",".join([str(int(commit[0])) for commit in commitrows])
+
+                        #This is poor practice, but we assured ourselves the value is composed only of ints first
+                        DB.execute(c, "SELECT * from " + DB.commitfile._table + " WHERE commitid IN (" + allcommitids + ")")
+                        commitfiles = c.fetchall()
+
+                        DB.execute(c, "SELECT * from " + DB.commitkeyword._table + " WHERE commitid IN (" + allcommitids + ")")
+                        commitkeywords = c.fetchall()
+
+                commits = []
+                for i in commitrows:
+                        r = Repo()
+                        r.loadFromValues(i[DB.commit._numColumns + 0], i[DB.commit._numColumns + 1], i[DB.commit._numColumns + 2],
+                                i[DB.commit._numColumns + 3], i[DB.commit._numColumns + 4], i[DB.commit._numColumns + 5])
+
+                        files = [file[DB.commitfile.file] for file in commitfiles
+                                if file[DB.commitfile.commitid] == i[DB.commit.id]]
+                        keywords = [keyword[DB.commitkeyword.keyword] for keyword in commitkeywords
+                                    if keyword[DB.commitkeyword.commitid] == i[DB.commit.id]]
+
+                        c = Commit()
+                        c.loadFromDatabase(r, i, files, keywords)
+
+                        commits.append(c)
+
+                return commits
+
+	@staticmethod
+	def findByKeywords(keywords):
 		getcommitsSQL = "SELECT c.*, r.* " + \
 				"FROM " + DB.commit._table + " c " + \
 				"INNER JOIN " + DB.repo._table + " r " + \
@@ -31,38 +65,10 @@ class DBQ:
 		getcommitsSQL += "WHERE " + whereClause
 		getcommitsSQL += "ORDER BY c.date DESC "
 		
-		c.execute(getcommitsSQL, components)
-		commitrows = c.fetchall()
-		commitfiles = []
-		
-		if commitrows:
-			allcommitids = ",".join([str(int(commit[0])) for commit in commitrows])
-		
-			#This is poor practice, but we assured ourselves the value is composed only of ints first
-			c.execute("SELECT * from " + DB.commitfile._table + " WHERE commitid IN (" + allcommitids + ")")
-			commitfiles = c.fetchall()
-
-		commits = []
-		for i in commitrows:
-			r = Repo()
-			r.loadFromValues(i[DB.commit._numColumns + 0], i[DB.commit._numColumns + 1], i[DB.commit._numColumns + 2], 
-				i[DB.commit._numColumns + 3], i[DB.commit._numColumns + 4], i[DB.commit._numColumns + 5])
-			
-			files = [file[DB.commitfile.file] for file in commitfiles 
-				if file[DB.commitfile.commitid] == i[DB.commit.id]]
-			
-			c = Commit()
-			c.loadFromDatabase(r, i, files)
-			
-			commits.append(c)
-
-		return commits
+		return DBQ.find(getcommitsSQL, components)
 
 	@staticmethod
 	def findByIDs(project, uniqueid):
-		conn = DB.getConn()
-		c = conn.cursor()
-		
 		getcommitsSQL = "SELECT c.*, r.* " + \
 				"FROM " + DB.commit._table + " c " + \
 				"INNER JOIN " + DB.repo._table + " r " + \
@@ -77,30 +83,5 @@ class DBQ:
 		getcommitsSQL += "WHERE " + whereClause
 		getcommitsSQL += "ORDER BY c.date DESC "
 		
-		DB.execute(c, getcommitsSQL, components)
-		commitrows = c.fetchall()
-		commitfiles = []
-		
-		if commitrows:
-			allcommitids = ",".join([str(int(commit[0])) for commit in commitrows])
-		
-			#This is poor practice, but we assured ourselves the value is composed only of ints first
-			DB.execute(c, "SELECT * from " + DB.commitfile._table + " WHERE commitid IN (" + allcommitids + ")")
-			commitfiles = c.fetchall()
-
-		commits = []
-		for i in commitrows:
-			r = Repo()
-			r.loadFromValues(i[DB.commit._numColumns + 0], i[DB.commit._numColumns + 1], i[DB.commit._numColumns + 2], 
-				i[DB.commit._numColumns + 3], i[DB.commit._numColumns + 4], i[DB.commit._numColumns + 5])
-			
-			files = [file[DB.commitfile.file] for file in commitfiles 
-				if file[DB.commitfile.commitid] == i[DB.commit.id]]
-			
-			c = Commit()
-			c.loadFromDatabase(r, i, files)
-			
-			commits.append(c)
-
-		return commits
+		return DBQ.find(getcommitsSQL, components)
 

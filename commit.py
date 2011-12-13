@@ -36,7 +36,7 @@ class Commit:
 		self.keywords.add('project-' + repo.tagname)
 		self.keywords.add('maturity-' + repo.tagmaturity)
 	
-	def loadFromDatabase(self, repo, row, files):
+	def loadFromDatabase(self, repo, row, files, keywords):
 		self.initialized = True
 		
 		self.repo = repo
@@ -47,7 +47,7 @@ class Commit:
 
 		self.files = files
 		self.base_paths = self.getBasePath()
-		self.dbkeywords = self.getSynonyms()
+		self.dbkeywords = keywords
 
 		self.keywords = set(self.dbkeywords)
 		self.keywords.add('project-' + repo.tagname)
