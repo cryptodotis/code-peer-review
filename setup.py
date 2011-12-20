@@ -8,6 +8,7 @@ if __name__ == "__main__":
 	parser = argparse.ArgumentParser()
 	parser.add_argument('--wipe', dest='wipe', action='store_true', help='Instead of creating tables if they don\'t exist - empty the database.')
 	parser.add_argument('--populate', dest='populate', action='store_true', help='If a reference data table is created, also populate it with some test data.  Mandatory refdata tables will be populated regardless.')
+	parser.add_argument('--testpopulate', dest='testpopulate', action='store_true', help='Only populate the testcases repo. Use with --populate')
 	parser.add_argument('--keywords', dest='keywords', action='store_true', help='Only reprocess the kwywords table.')
 	args = parser.parse_args()
 	
@@ -92,7 +93,13 @@ if __name__ == "__main__":
 					"""
 			c.execute(sql)
 			
-			if args.populate:
+			if args.testpopulate:
+				print 'Populating Repos...'
+				sql = "INSERT INTO " + DB.repo._table + """(repotypeid, url, viewlink, tagname, maturity)
+				SELECT 2, 'git://github.com/tomrittervg/Code-Audit-Feed-Test-Cases.git', 'https://github.com/tomrittervg/Code-Audit-Feed-Test-Cases/commit/%ID', 'testcases', 'development' """
+
+				DB.execute(c, sql)
+			elif args.populate:
 				print 'Populating Repos...'
 				sql = "INSERT INTO " + DB.repo._table + """(repotypeid, url, viewlink, tagname, maturity)
 				SELECT 2, 'https://github.com/cryptodotis/crypto.is-docs', 'https://github.com/cryptodotis/crypto.is-docs/commit/%ID', 'crypto.is-docs', 'beta' UNION
