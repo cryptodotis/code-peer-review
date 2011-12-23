@@ -101,7 +101,7 @@ def getTags(commit, diffs):
 		#Don't do this expensive check if we added it based on the log message
 		else:
 			for d in diffs:
-				if kregex.search(" " + d[1].lower()):
+				if kregex.search(" " + d):
 					#Do not apply the base tag for KeywordType.APICALL
 					if k_type != KeywordType.APICALL:
 						keywords.add(k)
