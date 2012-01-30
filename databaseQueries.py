@@ -16,36 +16,36 @@ class DBQ:
         c = conn.cursor()
         
         c.execute(query, components)
-                commitrows = c.fetchall()
-                commitfiles = []
+        commitrows = c.fetchall()
+        commitfiles = []
 
-                if commitrows:
-                        allcommitids = ",".join([str(int(commit[0])) for commit in commitrows])
+        if commitrows:
+                allcommitids = ",".join([str(int(commit[0])) for commit in commitrows])
 
-                        #This is poor practice, but we assured ourselves the value is composed only of ints first
-                        DB.execute(c, "SELECT * from " + DB.commitfile._table + " WHERE commitid IN (" + allcommitids + ")")
-                        commitfiles = c.fetchall()
+                #This is poor practice, but we assured ourselves the value is composed only of ints first
+                DB.execute(c, "SELECT * from " + DB.commitfile._table + " WHERE commitid IN (" + allcommitids + ")")
+                commitfiles = c.fetchall()
 
-                        DB.execute(c, "SELECT * from " + DB.commitkeyword._table + " WHERE commitid IN (" + allcommitids + ")")
-                        commitkeywords = c.fetchall()
+                DB.execute(c, "SELECT * from " + DB.commitkeyword._table + " WHERE commitid IN (" + allcommitids + ")")
+                commitkeywords = c.fetchall()
 
-                commits = []
-                for i in commitrows:
-                        r = Repo()
-                        r.loadFromValues(i[DB.commit._numColumns + 0], i[DB.commit._numColumns + 1], i[DB.commit._numColumns + 2],
-                                i[DB.commit._numColumns + 3], i[DB.commit._numColumns + 4], i[DB.commit._numColumns + 5])
+        commits = []
+        for i in commitrows:
+                r = Repo()
+                r.loadFromValues(i[DB.commit._numColumns + 0], i[DB.commit._numColumns + 1], i[DB.commit._numColumns + 2],
+                        i[DB.commit._numColumns + 3], i[DB.commit._numColumns + 4], i[DB.commit._numColumns + 5])
 
-                        files = [file[DB.commitfile.file] for file in commitfiles
-                                if file[DB.commitfile.commitid] == i[DB.commit.id]]
-                        keywords = [keyword[DB.commitkeyword.keyword] for keyword in commitkeywords
-                                    if keyword[DB.commitkeyword.commitid] == i[DB.commit.id]]
+                files = [file[DB.commitfile.file] for file in commitfiles
+                        if file[DB.commitfile.commitid] == i[DB.commit.id]]
+                keywords = [keyword[DB.commitkeyword.keyword] for keyword in commitkeywords
+                            if keyword[DB.commitkeyword.commitid] == i[DB.commit.id]]
 
-                        c = Commit()
-                        c.loadFromDatabase(r, i, files, keywords)
+                c = Commit()
+                c.loadFromDatabase(r, i, files, keywords)
 
-                        commits.append(c)
+                commits.append(c)
 
-                return commits
+        return commits
 
     @staticmethod
     def findByKeywords(keywords):
