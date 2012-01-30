@@ -122,6 +122,7 @@ class Commit:
             
         eol = "\r\n"
         s = ""
+        s += "=========================================%s" % (eol)
         s += "Date:\t\t %s (%s)%s" % (unixToGitDateFormat(self.date), self.date, eol)
         s += "Log Message:\t %s%s" % (self.message, eol)
         s += eol + eol

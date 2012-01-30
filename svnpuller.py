@@ -34,6 +34,7 @@ def getCommits(repo, startdate, enddate):
             diff = svn_diff_newline.sub('', diff)
             diff = svn_diff_property.sub('', diff)
             diff = svn_diff_deletions.sub('', diff)
+            diff = diff.lower()
             
         
         c = Commit()
