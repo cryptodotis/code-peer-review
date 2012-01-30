@@ -31,53 +31,53 @@ def t_error(t):
     
 # Structure ===========================================================
 class Tree:
-	left = None
-	right = None
-	def __init__(self, l, r):
-		self.left = l
-		self.right = r
-	def __repr__(self):
-		s = "(" + repr(self.left) + " " + self.mode + " " + repr(self.right) + ")"
-		return s
-	def _getSQLNode(self, node, keywordcolumn, projectcolumn, maturitycolumn):
-		sql = ""
-		components = []
-		if isinstance(node, str) or isinstance(node, unicode):
-			if node.startswith("project-"):
-				sql += " " + projectcolumn + " = %s"
-				components.append(node.replace('project-', ''))
-			elif node.startswith("maturity-"):
-				sql += " " + maturitycolumn + " = %s"
-				components.append(node.replace('maturity-', ''))
-			else:
-				sql += " " + keywordcolumn + " = %s"
-				components.append(node)		
-		else:
-			innersql, newcomponents = node.getWhereClause(keywordcolumn, projectcolumn, maturitycolumn)
+    left = None
+    right = None
+    def __init__(self, l, r):
+        self.left = l
+        self.right = r
+    def __repr__(self):
+        s = "(" + repr(self.left) + " " + self.mode + " " + repr(self.right) + ")"
+        return s
+    def _getSQLNode(self, node, keywordcolumn, projectcolumn, maturitycolumn):
+        sql = ""
+        components = []
+        if isinstance(node, str) or isinstance(node, unicode):
+            if node.startswith("project-"):
+                sql += " " + projectcolumn + " = %s"
+                components.append(node.replace('project-', ''))
+            elif node.startswith("maturity-"):
+                sql += " " + maturitycolumn + " = %s"
+                components.append(node.replace('maturity-', ''))
+            else:
+                sql += " " + keywordcolumn + " = %s"
+                components.append(node)		
+        else:
+            innersql, newcomponents = node.getWhereClause(keywordcolumn, projectcolumn, maturitycolumn)
 
-			#Don't have a ton of extra parens
-			if len(newcomponents) > 1:			
-				sql += "(" + innersql + ")"
-			else:
-				sql += innersql
-				
-			components.extend(newcomponents)
-		return sql, components
-	def getWhereClause(self, keywordcolumn, projectcolumn, maturitycolumn):
+            #Don't have a ton of extra parens
+            if len(newcomponents) > 1:			
+                sql += "(" + innersql + ")"
+            else:
+                sql += innersql
+                
+            components.extend(newcomponents)
+        return sql, components
+    def getWhereClause(self, keywordcolumn, projectcolumn, maturitycolumn):
 
-		sql, components = self._getSQLNode(self.left, keywordcolumn, projectcolumn, maturitycolumn)
-		#We overload the AndTree to handle the single-node case
-		if self.right:
-			sql += " " + self.mode + " "
+        sql, components = self._getSQLNode(self.left, keywordcolumn, projectcolumn, maturitycolumn)
+        #We overload the AndTree to handle the single-node case
+        if self.right:
+            sql += " " + self.mode + " "
 
-			nextsql, newcomponents = self._getSQLNode(self.right, keywordcolumn, projectcolumn, maturitycolumn)
-			sql += nextsql
-			components.extend(newcomponents)
-		return sql, components
+            nextsql, newcomponents = self._getSQLNode(self.right, keywordcolumn, projectcolumn, maturitycolumn)
+            sql += nextsql
+            components.extend(newcomponents)
+        return sql, components
 class AndTree(Tree):
-	mode = "and"
+    mode = "and"
 class OrTree(Tree):
-	mode = "or"
+    mode = "or"
 
 
 # Yacc ================================================================
@@ -117,133 +117,133 @@ yacc.yacc()
 # Interface ===========================================================
 
 class KeywordsParser:
-	@staticmethod
-	def _isBalanced(keywords):
-		balancedParens = 0
-		for c in keywords:
-			if c == "(":
-				balancedParens += 1
-			elif c == ")":
-				balancedParens -= 1
-			if balancedParens < 0:
-				return False
-		return balancedParens == 0
-	@staticmethod
-	def _trimnonsense(tokens): #get rid of beginning or ending combining words, including inside parens
-		if tokens and tokens[0] in ["and", "or"]:
-			tokens.pop(0)
-		if tokens and tokens[-1] in ["and", "or"]:
-			tokens.pop()
-		for i in range(len(tokens) - 1):
-			thistoken = tokens[i]
-			nexttoken = tokens[i+1]
-			if thistoken == "(": 
-				if nexttoken in ["and", "or"]:
-					tokens.pop(i+1)
-					return KeywordsParser._trimnonsense(tokens)
-		return tokens
-	@staticmethod
-	def _combinenonsense(tokens): #collapse repeated combining words e.g.  'tag1 and and tag2'
-		if len(tokens) > 1:
-			for i in range(len(tokens)-1): #remove successive combination words
-				thistoken = tokens[i]
-				nexttoken = tokens[i+1]
-				if thistoken in ["and", "or"]:
-					if nexttoken in ["and", "or"]:
-						tokens.pop(i+1)
-						return KeywordsParser._combinenonsense(tokens)
-			for i in range(len(tokens)-1): #remove empty parens
-				thistoken = tokens[i]
-				nexttoken = tokens[i+1]
-				if thistoken == "(" and nexttoken == ")": 
-					tokens.pop(i)
-					tokens.pop(i)
-					return KeywordsParser._combinenonsense(tokens)
-		return tokens
-	@staticmethod
-	def _preProcess(keywords):
-		if not KeywordsParser._isBalanced(keywords):
-			keywords = keywords.replace("(", "").replace(")", "")
-		else:
-			keywords = keywords.replace("(", " ( ").replace(")", " ) ")
-		tokens = keywords.lower().split()
-		tokens = KeywordsParser._combinenonsense(tokens)
-		tokens = KeywordsParser._trimnonsense(tokens)
-		tokens = KeywordsParser._combinenonsense(tokens)
-		
-		tokens = synonymmapping.projectizeTags(tokens)
+    @staticmethod
+    def _isBalanced(keywords):
+        balancedParens = 0
+        for c in keywords:
+            if c == "(":
+                balancedParens += 1
+            elif c == ")":
+                balancedParens -= 1
+            if balancedParens < 0:
+                return False
+        return balancedParens == 0
+    @staticmethod
+    def _trimnonsense(tokens): #get rid of beginning or ending combining words, including inside parens
+        if tokens and tokens[0] in ["and", "or"]:
+            tokens.pop(0)
+        if tokens and tokens[-1] in ["and", "or"]:
+            tokens.pop()
+        for i in range(len(tokens) - 1):
+            thistoken = tokens[i]
+            nexttoken = tokens[i+1]
+            if thistoken == "(": 
+                if nexttoken in ["and", "or"]:
+                    tokens.pop(i+1)
+                    return KeywordsParser._trimnonsense(tokens)
+        return tokens
+    @staticmethod
+    def _combinenonsense(tokens): #collapse repeated combining words e.g.  'tag1 and and tag2'
+        if len(tokens) > 1:
+            for i in range(len(tokens)-1): #remove successive combination words
+                thistoken = tokens[i]
+                nexttoken = tokens[i+1]
+                if thistoken in ["and", "or"]:
+                    if nexttoken in ["and", "or"]:
+                        tokens.pop(i+1)
+                        return KeywordsParser._combinenonsense(tokens)
+            for i in range(len(tokens)-1): #remove empty parens
+                thistoken = tokens[i]
+                nexttoken = tokens[i+1]
+                if thistoken == "(" and nexttoken == ")": 
+                    tokens.pop(i)
+                    tokens.pop(i)
+                    return KeywordsParser._combinenonsense(tokens)
+        return tokens
+    @staticmethod
+    def _preProcess(keywords):
+        if not KeywordsParser._isBalanced(keywords):
+            keywords = keywords.replace("(", "").replace(")", "")
+        else:
+            keywords = keywords.replace("(", " ( ").replace(")", " ) ")
+        tokens = keywords.lower().split()
+        tokens = KeywordsParser._combinenonsense(tokens)
+        tokens = KeywordsParser._trimnonsense(tokens)
+        tokens = KeywordsParser._combinenonsense(tokens)
+        
+        tokens = synonymmapping.projectizeTags(tokens)
 
-		return ' '.join(tokens)   
+        return ' '.join(tokens)   
 
-	def __init__(self, keywords):
-		self.keywords = KeywordsParser._preProcess(keywords)
-		if self.keywords:
-			self.result = yacc.parse(self.keywords)
-		else:
-			self.result = False
+    def __init__(self, keywords):
+        self.keywords = KeywordsParser._preProcess(keywords)
+        if self.keywords:
+            self.result = yacc.parse(self.keywords)
+        else:
+            self.result = False
 
-	def getWhereClause(self, keywordcolumn, projectcolumn, maturitycolumn):
-		if self.result:
-			return self.result.getWhereClause(keywordcolumn, projectcolumn, maturitycolumn)
-		else:
-			return ('', [])
+    def getWhereClause(self, keywordcolumn, projectcolumn, maturitycolumn):
+        if self.result:
+            return self.result.getWhereClause(keywordcolumn, projectcolumn, maturitycolumn)
+        else:
+            return ('', [])
 
 if __name__ == "__main__":
 
-	testcases = [
-			"tag1  "
-			,"and  "
-			,"tag1   phantom"
-			,"tag1   and   phantom"
-			,"tag1   or   tag2"
-			,"tag1 phantom maturity-tag3"
-			,"tag1 and and phantom maturity-tag3"
-			,"tag1 phantom and and maturity-tag3"
-			,"tag1 phantom and and maturity-tag3 and and"
-			,"and and tag1 phantom and and maturity-tag3 and and"
-			,"tag1 phantom and maturity-tag3"
-			,"tag1 and phantom maturity-tag3"
-			,"tag1 and phantom or maturity-tag3"
-			,"or"
-			,"tag1 phantom"
-			,"tag1 or phantom"
-			,"tag1 or phantom"
-			,"tag1 phantom maturity-tag3"
-			,"tag1 or or phantom maturity-tag3"
-			,"tag1 phantom or or maturity-tag3"
-			,"tag1 phantom or or maturity-tag3 or or"
-			,"or or tag1 phantom or or maturity-tag3 or or"
-			,"tag1 phantom or maturity-tag3"
-			,"tag1 or phantom maturity-tag3"
-			,"tag1 or phantom or maturity-tag3"
-			,"tag1 and phantom or maturity-tag3 and tag4"
-			,")tag1(  "
-			,"(and)  "
-			,"((tag1)   phantom)"
-			,"(tag1   and   phantom)"
-			,"(((tag1   or   tag2)))"
-			,"(tag1 phantom) maturity-tag3"
-			,"(tag1 and and phantom) maturity-tag3"
-			,"tag1 (phantom and and maturity-tag3)"
-			,"(tag1 phantom) and and maturity-tag3 and and"
-			,"and and (tag1 phantom) and and maturity-tag3 and and"
-			,"(tag1 phantom) and maturity-tag3"
-			,"(())()()()(())tag1 and phantom maturity-tag3"
-			,"(tag1 and phantom) or maturity-tag3"
-			,"tag1 and (phantom or maturity-tag3)"
-			,"(tag1 or phantom) and maturity-tag3"
-			,"tag1 or (phantom and maturity-tag3)"
-			,"(tag1 and phantom) or (maturity-tag3 and tag4)"
-			,"tag1 and (phantom or maturity-tag3) and tag4"
-			,"tag1 and (phantom or maturity-tag3 and tag4)"
-			,"(tag1 and phantom or maturity-tag3) and tag4"
-			,"(tag1 and (phantom or maturity-tag3)) and tag4"
-			,"tag1 and ((phantom or maturity-tag3) and tag4)"
-			]
+    testcases = [
+            "tag1  "
+            ,"and  "
+            ,"tag1   phantom"
+            ,"tag1   and   phantom"
+            ,"tag1   or   tag2"
+            ,"tag1 phantom maturity-tag3"
+            ,"tag1 and and phantom maturity-tag3"
+            ,"tag1 phantom and and maturity-tag3"
+            ,"tag1 phantom and and maturity-tag3 and and"
+            ,"and and tag1 phantom and and maturity-tag3 and and"
+            ,"tag1 phantom and maturity-tag3"
+            ,"tag1 and phantom maturity-tag3"
+            ,"tag1 and phantom or maturity-tag3"
+            ,"or"
+            ,"tag1 phantom"
+            ,"tag1 or phantom"
+            ,"tag1 or phantom"
+            ,"tag1 phantom maturity-tag3"
+            ,"tag1 or or phantom maturity-tag3"
+            ,"tag1 phantom or or maturity-tag3"
+            ,"tag1 phantom or or maturity-tag3 or or"
+            ,"or or tag1 phantom or or maturity-tag3 or or"
+            ,"tag1 phantom or maturity-tag3"
+            ,"tag1 or phantom maturity-tag3"
+            ,"tag1 or phantom or maturity-tag3"
+            ,"tag1 and phantom or maturity-tag3 and tag4"
+            ,")tag1(  "
+            ,"(and)  "
+            ,"((tag1)   phantom)"
+            ,"(tag1   and   phantom)"
+            ,"(((tag1   or   tag2)))"
+            ,"(tag1 phantom) maturity-tag3"
+            ,"(tag1 and and phantom) maturity-tag3"
+            ,"tag1 (phantom and and maturity-tag3)"
+            ,"(tag1 phantom) and and maturity-tag3 and and"
+            ,"and and (tag1 phantom) and and maturity-tag3 and and"
+            ,"(tag1 phantom) and maturity-tag3"
+            ,"(())()()()(())tag1 and phantom maturity-tag3"
+            ,"(tag1 and phantom) or maturity-tag3"
+            ,"tag1 and (phantom or maturity-tag3)"
+            ,"(tag1 or phantom) and maturity-tag3"
+            ,"tag1 or (phantom and maturity-tag3)"
+            ,"(tag1 and phantom) or (maturity-tag3 and tag4)"
+            ,"tag1 and (phantom or maturity-tag3) and tag4"
+            ,"tag1 and (phantom or maturity-tag3 and tag4)"
+            ,"(tag1 and phantom or maturity-tag3) and tag4"
+            ,"(tag1 and (phantom or maturity-tag3)) and tag4"
+            ,"tag1 and ((phantom or maturity-tag3) and tag4)"
+            ]
 
 
-	for t in testcases:
-		tree = KeywordsParser(t)
-		print t
-		print "\t", tree.getWhereClause("ck.keyword", "c.projecttag", "c.maturitytag")
-		print ""
+    for t in testcases:
+        tree = KeywordsParser(t)
+        print t
+        print "\t", tree.getWhereClause("ck.keyword", "c.projecttag", "c.maturitytag")
+        print ""

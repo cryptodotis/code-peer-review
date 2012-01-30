@@ -10,12 +10,12 @@ from commit import Commit
 from keywordsfilter import *
 
 class DBQ:
-	@staticmethod
-	def find(query, components):
-		conn = DB.getConn()
-		c = conn.cursor()
-		
-		c.execute(query, components)
+    @staticmethod
+    def find(query, components):
+        conn = DB.getConn()
+        c = conn.cursor()
+        
+        c.execute(query, components)
                 commitrows = c.fetchall()
                 commitfiles = []
 
@@ -47,41 +47,41 @@ class DBQ:
 
                 return commits
 
-	@staticmethod
-	def findByKeywords(keywords):
-		getcommitsSQL = "SELECT c.*, r.* " + \
-				"FROM " + DB.commit._table + " c " + \
-				"INNER JOIN " + DB.repo._table + " r " + \
-				"	ON r.id = c.repoid "
-		
-		whereClause = " 1=1 "
-		components = []
-		if keywords:
-			keywordsTree = KeywordsParser(keywords)
-			getcommitsSQL += "LEFT OUTER JOIN " + DB.commitkeyword._table + " ck " + \
-							 "	ON c.id = ck.commitid "
-			whereClause, components = keywordsTree.getWhereClause("ck.keyword", "r.tagname", "r.maturity")
-		
-		getcommitsSQL += "WHERE " + whereClause
-		getcommitsSQL += "ORDER BY c.date DESC "
-		
-		return DBQ.find(getcommitsSQL, components)
+    @staticmethod
+    def findByKeywords(keywords):
+        getcommitsSQL = "SELECT c.*, r.* " + \
+                "FROM " + DB.commit._table + " c " + \
+                "INNER JOIN " + DB.repo._table + " r " + \
+                "	ON r.id = c.repoid "
+        
+        whereClause = " 1=1 "
+        components = []
+        if keywords:
+            keywordsTree = KeywordsParser(keywords)
+            getcommitsSQL += "LEFT OUTER JOIN " + DB.commitkeyword._table + " ck " + \
+                             "	ON c.id = ck.commitid "
+            whereClause, components = keywordsTree.getWhereClause("ck.keyword", "r.tagname", "r.maturity")
+        
+        getcommitsSQL += "WHERE " + whereClause
+        getcommitsSQL += "ORDER BY c.date DESC "
+        
+        return DBQ.find(getcommitsSQL, components)
 
-	@staticmethod
-	def findByIDs(project, uniqueid):
-		getcommitsSQL = "SELECT c.*, r.* " + \
-				"FROM " + DB.commit._table + " c " + \
-				"INNER JOIN " + DB.repo._table + " r " + \
-				"	ON r.id = c.repoid "
-		
-		whereClause = " 1=1 "
-		components = []
-		if project and uniqueid:
-			whereClause += "AND r.tagname = %s AND c.uniqueid = %s "
-			components = [project, uniqueid]
-		
-		getcommitsSQL += "WHERE " + whereClause
-		getcommitsSQL += "ORDER BY c.date DESC "
-		
-		return DBQ.find(getcommitsSQL, components)
+    @staticmethod
+    def findByIDs(project, uniqueid):
+        getcommitsSQL = "SELECT c.*, r.* " + \
+                "FROM " + DB.commit._table + " c " + \
+                "INNER JOIN " + DB.repo._table + " r " + \
+                "	ON r.id = c.repoid "
+        
+        whereClause = " 1=1 "
+        components = []
+        if project and uniqueid:
+            whereClause += "AND r.tagname = %s AND c.uniqueid = %s "
+            components = [project, uniqueid]
+        
+        getcommitsSQL += "WHERE " + whereClause
+        getcommitsSQL += "ORDER BY c.date DESC "
+        
+        return DBQ.find(getcommitsSQL, components)
 

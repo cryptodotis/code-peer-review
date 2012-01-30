@@ -11,17 +11,17 @@ from commit import Commit
 from keywordsfilter import *
 
 def browse(keywords):
-	commits = DBQ.findByKeywords(keywords)
-	
-	for c in commits:
-		print "---------"
-		c.pprint()
+    commits = DBQ.findByKeywords(keywords)
+    
+    for c in commits:
+        print "---------"
+        c.pprint()
 
 if __name__ == "__main__":
-	if sys.argv:
-		browse(" ".join(sys.argv[1:]))
-	else:
-		browse('')
+    if sys.argv:
+        browse(" ".join(sys.argv[1:]))
+    else:
+        browse('')
 
-		
-		
+        
+        
