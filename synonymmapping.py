@@ -60,7 +60,7 @@ def getMap():
             if not map.has_node(parent):
                 map.add_node(parent, [('type', KeywordType.STANDARD), ('regex', parent_regex)])
                 map.add_edge((keyword, parent), label=type)
-        return map
+    return map
 
 def getAllChildTags(map, node, sofar=None):
     keywords = set() if not sofar else sofar
