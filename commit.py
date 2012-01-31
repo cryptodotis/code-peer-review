@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import time, re, os, MySQLdb, unicodedata
-from PyRSS2Gen import RSSItem
+from PyRSS2Gen import RSSItem, Guid
 
 from config import Config
 import synonymmapping
@@ -176,7 +176,7 @@ class Commit:
             title = title,
             link = link,
             description = description,
-            guid = Config.rooturl + "/commit/" + self.repo.tagname + "/" + self.uniqueid,
+            guid = Guid(Config.rooturl + "/commit/" + self.repo.tagname + "/" + self.uniqueid, isPermaLink=0),
             pubDate = unixToDatetime(self.date)
             )
         return item
