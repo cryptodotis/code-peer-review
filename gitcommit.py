@@ -3,6 +3,7 @@
 import git as pygit
 import gdiff
 
+from config import *
 from commit import *
 
 class GitCommit(Commit):
@@ -11,9 +12,9 @@ class GitCommit(Commit):
         differ = gdiff.diff_match_patch()
         
         localfolder = urlToFolder(self.repo.url)
-        repoloc = 'git-repos/' + localfolder + '/'
+        repoloc = Config.fsdir + 'git-repos/' + localfolder + '/'
         repo = pygit.Repo(repoloc)
-        
+                
         commit = repo.commit(self.uniqueid)
         for d in commit.diff(commit.__str__()+'^').iter_change_type('M'): #Changed
             left = d.a_blob.data_stream.read()
