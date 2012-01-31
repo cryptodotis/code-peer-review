@@ -63,6 +63,11 @@ maildir :
 oaep : crypto-padding
 oaep : RSA
 
+plaintext : crypto
+ciphertext : crypto
+symmetric-crypto : crypto
+asymmetric-crypto : crypto
+
 RSA : asymmetric-crypto
 elgamal : asymmetric-crypto
 ntru : asymmetric-crypto
@@ -126,6 +131,8 @@ ssl : tls
 BEAST : ssl
 
 openpgp :
+BEGIN PGP SIGNED MESSAGE : openpgp
+BEGIN PGP MESSAGE : openpgp
 web of trust :
 trust on first use :
 
