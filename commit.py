@@ -78,6 +78,7 @@ class Commit:
         differ = gdiff.diff_match_patch()
         
         for d in diffs:
+            differ.diff_cleanupSemantic(d)
             yield differ.diff_prettyHtml(d)
 
     def getSynonyms(self, diffs):
