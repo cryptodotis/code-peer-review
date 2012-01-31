@@ -71,6 +71,14 @@ class Commit:
         l = [p for p in paths if p]
         l.sort()
         return l
+    def getDiffsArray(self):
+        return []
+    def getPrettyDiffs(self):
+        diffs = self.getDiffsArray()
+        differ = gdiff.diff_match_patch()
+        
+        for d in diffs:
+            yield differ.diff_prettyHtml(d)
 
     def getSynonyms(self, diffs):
         if not self.initialized:
@@ -116,13 +124,14 @@ class Commit:
 
         conn.commit()
         
-    def getpprint(self):
+    def getpprint(self, seperator=True):
         if not self.initialized:
             raise Exception("called getpprint on unitialized Commit object")
             
         eol = "\r\n"
         s = ""
-        s += "=========================================%s" % (eol)
+        if seperator:
+            s += "=========================================%s" % (eol)
         s += "Date:\t\t %s (%s)%s" % (unixToGitDateFormat(self.date), self.date, eol)
         s += "Log Message:\t %s%s" % (self.message, eol)
         s += eol + eol

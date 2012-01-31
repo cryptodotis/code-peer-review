@@ -1,1 +1,10 @@
-<pre>{{ commit.getpprint ()}}</pre>
+<strong>Commit</strong>
+<hr />
+<pre>{{ commit.getpprint(false)}}</pre>
+
+<strong>Diffs</strong>
+<hr />
+{% for d in commit.getPrettyDiffs() %}
+ {{ d }}
+ <hr />
+{% endfor %}

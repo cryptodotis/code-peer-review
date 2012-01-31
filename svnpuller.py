@@ -36,7 +36,6 @@ def getCommits(repo, startdate, enddate):
             diff = svn_diff_deletions.sub('', diff)
             diff = diff.lower()
             
-        
         c = Commit()
         c.loadFromSource(repo, message, date, paths, m.data['revision'].number, [diff])
         commits.append(c)

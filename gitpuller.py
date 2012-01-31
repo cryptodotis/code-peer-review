@@ -46,10 +46,10 @@ def getCommits(repo, startdate, enddate):
         for d in m.diff(m.__str__()+'^').iter_change_type('A'): #Added
             addition = d.b_blob.data_stream.read()
             alldiffs.append(addition.lower())
-        for d in m.diff(m.__str__()+'^').iter_change_type('D'): #Deleted
-            pass
-        for d in m.diff(m.__str__()+'^').iter_change_type('R'): #Renamed
-            pass
+        #for d in m.diff(m.__str__()+'^').iter_change_type('D'): #Deleted
+        #    pass
+        #for d in m.diff(m.__str__()+'^').iter_change_type('R'): #Renamed
+        #    pass
         
         c = Commit()
         c.loadFromSource(repo, m.message, m.committed_date, m.stats.files.keys(), m.__str__(), alldiffs)

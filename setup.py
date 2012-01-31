@@ -96,8 +96,8 @@ if __name__ == "__main__":
             if args.testpopulate:
                 print 'Populating Repos...'
                 sql = "INSERT INTO " + DB.repo._table + """(repotypeid, url, viewlink, tagname, maturity)
-                SELECT 2, 'git://github.com/tomrittervg/Code-Audit-Feed-Test-Cases.git', 'https://github.com/tomrittervg/Code-Audit-Feed-Test-Cases/commit/%ID', 'testcases', 'development' UNION
-                SELECT 1, 'http://code-audit-feed-testcases.googlecode.com/svn/trunk/', 'http://code.google.com/p/code-audit-feed-testcases/source/detail?r=%ID', 'testcases', 'development' """
+                SELECT 2, 'git://github.com/tomrittervg/Code-Audit-Feed-Test-Cases.git', 'https://github.com/tomrittervg/Code-Audit-Feed-Test-Cases/commit/%ID', 'testcases-git', 'development' UNION
+                SELECT 1, 'http://code-audit-feed-testcases.googlecode.com/svn/trunk/', 'http://code.google.com/p/code-audit-feed-testcases/source/detail?r=%ID', 'testcases-svn', 'development' """
 
                 DB.execute(c, sql)
             elif args.populate:

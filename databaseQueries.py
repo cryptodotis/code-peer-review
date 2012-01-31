@@ -5,9 +5,12 @@ import MySQLdb
 from common import *
 from config import Config
 from database import DB
+from keywordsfilter import *
+
 from repo import Repo
 from commit import Commit
-from keywordsfilter import *
+from gitcommit import GitCommit
+from svncommit import SVNCommit
 
 class DBQ:
     @staticmethod
@@ -32,15 +35,20 @@ class DBQ:
         commits = []
         for i in commitrows:
                 r = Repo()
-                r.loadFromValues(i[DB.commit._numColumns + 0], i[DB.commit._numColumns + 1], i[DB.commit._numColumns + 2],
-                        i[DB.commit._numColumns + 3], i[DB.commit._numColumns + 4], i[DB.commit._numColumns + 5])
+                r.loadFromValues(i[DB.commit._numColumns + DB.repo.id], i[DB.commit._numColumns + DB.repo.repotypeid], i[DB.commit._numColumns + DB.repo.url],
+                        i[DB.commit._numColumns + DB.repo.viewlink], i[DB.commit._numColumns + DB.repo.tagname], i[DB.commit._numColumns + DB.repo.tagmaturity])
 
                 files = [file[DB.commitfile.file] for file in commitfiles
                         if file[DB.commitfile.commitid] == i[DB.commit.id]]
                 keywords = [keyword[DB.commitkeyword.keyword] for keyword in commitkeywords
                             if keyword[DB.commitkeyword.commitid] == i[DB.commit.id]]
 
-                c = Commit()
+                if i[DB.commit._numColumns + DB.repo.repotypeid] == Repo.Type.GIT:
+                    c = GitCommit()
+                elif i[DB.commit._numColumns + DB.repo.repotypeid] == Repo.Type.SVN:
+                    c = SVNCommit()
+                else:
+                    c = Commit()
                 c.loadFromDatabase(r, i, files, keywords)
 
                 commits.append(c)

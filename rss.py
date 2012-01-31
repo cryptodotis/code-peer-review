@@ -47,7 +47,8 @@ class CommitHandler(tornado.web.RequestHandler):
         if not commit:
             self.write("Could not find commit")
             return
-        commit = commit[0]		
+        commit = commit[0]
+        
 
         template = env.get_template('commit.html')
         html = template.render(commit=commit)	
