@@ -4,6 +4,7 @@ import git as pygit
 import gdiff
 
 from common import *
+from config import *
 from commit import Commit
 from repo import Repo
 
@@ -11,7 +12,7 @@ def getCommits(repo, startdate, enddate):
     localfolder = urlToFolder(repo.url)
     differ = gdiff.diff_match_patch()
 
-    repoloc = 'git-repos/' + localfolder + '/'
+    repoloc = Config.fsdir + 'git-repos/' + localfolder + '/'
     if os.path.exists(repoloc):
         c = pygit.Repo(repoloc)
     else:
