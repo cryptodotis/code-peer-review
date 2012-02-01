@@ -41,14 +41,13 @@ From easiest to most time-intensive
 
 # Requirements
 
-Requirements:
  - pysvn
  - GitPython.  I'm using 0.3.2 RC1, I don't think 0.1 will work
  - PLY (Python Lex-Yacc library), I'm using 3.4
  - MySQL
  - PyRSS2Gen - I'm using 1.0.0
  - Jinja - I'm using 2.6
- - Python-Graph - I'm using 1.8.0 http://code.google.com/p/python-graph/
+ - [Python-Graph](http://code.google.com/p/python-graph/) - I'm using 1.8.0 
  - google-diff-match-patch - I'm using 20111010
 
 # Installation
