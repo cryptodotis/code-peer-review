@@ -99,6 +99,7 @@ kasumi : block-cipher
 threefish : block-cipher
 a5/1 : stream-cipher
 a5/2 : stream-cipher
+a5/3 : stream-cipher
 rijndael : aes
 cast5 : block-cipher
 
@@ -301,3 +302,21 @@ project-torsocks : project-tor
 project-torspec : project-tor
 project-vidalia-plugins : project-vidalia
 project-vidalia : project-tor
+
+myopenid : openid
+
+vorbis : media-encoders
+mp3 :media-encoders
+mpg :media-encoders
+xvid :media-encoders
+divx : media-encoders
+mpeg :media-encoders
+wav : media-encoders
+wma : media-encoders
+h264 : media-encoders
+x264 : media-encoders
+h.261 : media-encoders
+h.262 : media-encoders
+
+
+gsm : 
