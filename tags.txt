@@ -132,6 +132,7 @@ ssl : tls
 BEAST : ssl
 
 openpgp :
+sexp : openpgp
 BEGIN PGP SIGNED MESSAGE : openpgp
 BEGIN PGP MESSAGE : openpgp
 web of trust :
@@ -268,9 +269,12 @@ socks4 : socks
 socka4a : socks
 socks5 : socks
 
+socat :
+
 tahoe : tahoe-lafs
 
 vidalia : project-tor
+torrc : project-tor
 
 prng : random-number-generator
 rng : random-number-generator
@@ -320,3 +324,14 @@ h.262 : media-encoders
 
 
 gsm : 
+
+french : translations
+spanish : translations
+german : translations
+french : translations
+french : translations
+
+cookie: cookies
+
+ant :
+nant :
