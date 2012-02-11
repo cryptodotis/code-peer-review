@@ -72,6 +72,10 @@ RSA : asymmetric-crypto
 elgamal : asymmetric-crypto
 ntru : asymmetric-crypto
 curve25519 : asymmetric-crypto
+privatekey : asymmetric-crypto
+publickey : asymmetric-crypto
+private-key : asymmetric-crypto
+public-key : asymmetric-crypto
 
 curve25519 : eliptic-curve-crypto
 ecdh : eliptic-curve-crypto
@@ -138,10 +142,12 @@ BEGIN PGP MESSAGE : openpgp
 web of trust :
 trust on first use :
 
+pem : x509
 x.509 : x509
 public key infrastructure :
 certificate authority :
-notary : convergence
+notary : 
+convergence :
 diginotar :
 
 hmac : 
@@ -333,5 +339,17 @@ french : translations
 
 cookie: cookies
 
-ant :
+ant : java
 nant :
+jdk : java
+jre : java
+jar : java
+javac  : java
+jdb : java
+
+bluetooth :
+rfid :
+nfc :
+
+regex : regular expressions
+regular expression : regular expressions
