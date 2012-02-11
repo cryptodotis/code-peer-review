@@ -21,7 +21,7 @@ def getCommits(repo, startdate, enddate):
         paths = [p.path for p in m.data['changed_paths']]
 
         c = SVNCommit()
-        alldiffs = c.getChangedTexts(repo)
+        alldiffs = c.getChangedTexts((m.data['revision'].number, repo))
         c.loadFromSource(repo, message, date, paths, m.data['revision'].number, alldiffs)
         commits.append(c)
     return commits
