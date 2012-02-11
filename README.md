@@ -46,6 +46,7 @@ From easiest to most time-intensive
  
  - pysvn
  - GitPython.  I'm using 0.3.2 RC1, I don't think 0.1 will work
+  - [This patch applied](https://github.com/tomrittervg/GitPython/commit/0386f7ba2bedd8ae64040eb5f4d1246f0c4a2a1d) (Or figure out how to do diffing without it)
  - PLY (Python Lex-Yacc library), I'm using 3.4
  - PyRSS2Gen - I'm using 1.0.0
  - Jinja - I'm using 2.6
