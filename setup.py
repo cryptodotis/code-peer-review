@@ -146,7 +146,7 @@ if __name__ == "__main__":
                 #file crypto
                 sql += """
                 SELECT 2, 'git://git.gnupg.org/gnupg.git', 'http://git.gnupg.org/cgi-bin/gitweb.cgi?p=gnupg.git;a=commitdiff;h=%ID', 'gnupg', 'pervasive' UNION
-                SELECT 2, 'https://github.com/dyne/Tomb.git', 'https://github.com/dyne/Tomb/commit/%ID', 'tomb', 'stable' UNION"""
+                SELECT 2, 'git://github.com/dyne/Tomb.git', 'https://github.com/dyne/Tomb/commit/%ID', 'tomb', 'stable' UNION"""
                 #remailer
                 sql += """
                 SELECT 2, 'https://github.com/crooks/aam2mail.git', 'https://github.com/crooks/aam2mail/commit/%ID', 'aam2mail', 'stable' UNION
@@ -154,7 +154,7 @@ if __name__ == "__main__":
                 #fde
                 sql += """
                 SELECT 1, 'http://encfs.googlecode.com/svn/trunk/', 'http://code.google.com/p/encfs/source/detail?r=%ID', 'encfs', 'stable' UNION
-                SELECT 1, 'http://cryptsetup.googlecode.com/svn/trunk/', 'http://code.google.com/p/cryptsetup/source/detail?r=%ID', 'luks', 'pervasive' UNION"""
+                SELECT 2, 'https://code.google.com/p/cryptsetup/', 'http://code.google.com/p/cryptsetup/source/detail?r=%ID', 'luks', 'pervasive' UNION"""
                 #keyservers
                 sql += """
                 SELECT 6, 'http://www.earth.li/~noodles/bzr/onak/mainline', NULL, 'onak', 'development' UNION"""
