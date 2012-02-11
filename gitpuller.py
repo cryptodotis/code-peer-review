@@ -5,7 +5,8 @@ import gdiff
 
 from common import *
 from config import *
-from commit import Commit
+from gitcommit import GitCommit
+#from commit import Commit
 from repo import Repo
 
 def getCommits(repo, startdate, enddate):
@@ -33,26 +34,8 @@ def getCommits(repo, startdate, enddate):
         #   http://git.661346.n2.nabble.com/git-diff-tree-against-the-root-commit-td5685272.html
         if not m.parents: continue
 
-        alldiffs = []
-        for d in m.diff(m.__str__()+'^').iter_change_type('M'): #Changed
-            left = d.a_blob.data_stream.read()
-            right = d.b_blob.data_stream.read()
-            diffs = differ.diff_main(left, right)
-            if diffs: differ.diff_cleanupSemantic(diffs)
-
-            for d in diffs:
-                if d[0] != 0 and d[1].strip():
-                    alldiffs.append(d[1].lower())
-
-        for d in m.diff(m.__str__()+'^').iter_change_type('A'): #Added
-            addition = d.b_blob.data_stream.read()
-            alldiffs.append(addition.lower())
-        #for d in m.diff(m.__str__()+'^').iter_change_type('D'): #Deleted
-        #    pass
-        #for d in m.diff(m.__str__()+'^').iter_change_type('R'): #Renamed
-        #    pass
-        
-        c = Commit()
+        c = GitCommit()
+        alldiffs = c.getChangedTexts(m)
         c.loadFromSource(repo, m.message, m.committed_date, m.stats.files.keys(), m.__str__(), alldiffs)
         commits.append(c)
     return commits

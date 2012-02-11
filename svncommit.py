@@ -28,3 +28,19 @@ class SVNCommit(Commit):
             alldiffs.append(differ.diff_main(left, right))
         
         return alldiffs
+    def getChangedTextMetadata(self):
+        return self.repo
+    def getChangedTexts(self, repo):
+        if int(self.uniqueid) == 1:
+            diff = ''
+        else:
+            client = pysvn.Client()
+            diff = client.diff(tmp_path='./', url_or_path=repo.url, 
+                revision1=pysvn.Revision(pysvn.opt_revision_kind.number, int(self.uniqueid)-1), 
+                revision2=pysvn.Revision(pysvn.opt_revision_kind.number, int(self.uniqueid)))
+            diff = svn_diff_header.sub('', diff)
+            diff = svn_diff_newline.sub('', diff)
+            diff = svn_diff_property.sub('', diff)
+            diff = svn_diff_deletions.sub('', diff)
+            diff = diff.lower()
+        return [diff]

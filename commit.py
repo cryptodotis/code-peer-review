@@ -8,7 +8,13 @@ import synonymmapping
 from common import *
 from database import DB
 import gdiff
+
 re_gitsvn = re.compile('git-svn-id: \w+://.+ \w{4,12}-\w{4,12}-\w{4,12}-\w{4,12}-\w{4,12}')
+
+svn_diff_header = re.compile('Index: .+\s=+\s-{3} .+\s\+{3} .+\s@@\ [0-9\-, \+]+@@\s+')
+svn_diff_newline = re.compile('\\ No newline at end of file\s')
+svn_diff_property = re.compile('Property changes on: .+\s_+\sAdded: .+\s\s+[\-\+]\s.+')
+svn_diff_deletions = re.compile('^-.+$', re.MULTILINE)
 
 class Commit:
     repo = None
@@ -71,8 +77,18 @@ class Commit:
         l = [p for p in paths if p]
         l.sort()
         return l
+    #Implemented in Child Classes
+    #Returns an array of google diff structures used for google diff pretty-outputting
     def getDiffsArray(self):
-        return []
+        pass 
+    #retrieves the metadata the child class needs for getChangedTexts from the populated object
+    # during creation, this metadata is passed in independently and this is not called
+    def getChangedTextMetadata(self):
+        pass
+    #returns an array of text changes used for synonym matching
+    def getChangedTexts(self, metadata):
+        pass
+    #/Implemented in Child Classes
     def getPrettyDiffs(self):
         diffs = self.getDiffsArray()
         differ = gdiff.diff_match_patch()
@@ -168,15 +184,18 @@ class Commit:
         title = unicodedata.normalize('NFKD', unicode(title, 'utf-8')).encode('ascii', 'ignore')
         description = unicodedata.normalize('NFKD', unicode(description, 'utf-8')).encode('ascii', 'ignore')
 
+        guid = Config.rooturl + "/commit/" + self.repo.tagname + "/" + self.uniqueid
         link = ''
         if self.repo.viewlink:
             link = self.repo.viewlink.replace('%ID', self.uniqueid)
+        else:
+            link = guid
 
         item = RSSItem(
             title = title,
             link = link,
             description = description,
-            guid = Guid(Config.rooturl + "/commit/" + self.repo.tagname + "/" + self.uniqueid, isPermaLink=0),
+            guid = Guid(guid, isPermaLink=0),
             pubDate = unixToDatetime(self.date)
             )
         return item
