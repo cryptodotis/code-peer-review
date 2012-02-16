@@ -121,6 +121,7 @@ OMAC : crypto-mode-of-operation
 crypto-mode-of-operation : block-cipher
 
 
+
 tlsv1 : tls
 tls1 : tls
 tlsv1.1 : tls
@@ -134,6 +135,28 @@ ssl2 : ssl
 tls : ssl
 ssl : tls
 BEAST : ssl
+
+server_name : tls-extensions
+max_fragment_length : tls-extensions
+client_certificate_url : tls-extensions
+trusted_ca_keys : tls-extensions
+truncated_hmac : tls-extensions
+status_request : tls-extensions
+signature_algorithms : tls-extensions
+user_mapping : tls-extensions
+client_authz : tls-extensions
+server_authz : tls-extensions
+cert_type : tls-extensions
+elliptic_curves : tls-extensions
+ec_point_formats : tls-extensions
+srp : tls-extensions
+use_srtp : tls-extensions
+heartbeat : tls-extensions
+renegotiation_info : tls-extensions
+SessionTicket : tls-extensions
+tls extensions : tls-extensions
+tls extension : tls-extensions
+tls-extensions : tls
 
 openpgp :
 sexp : openpgp
