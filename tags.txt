@@ -12,6 +12,8 @@ project-onak : keyserver
 project-gnupg : filecrypto
 
 project-aam2mail : remailer
+hsub : remailer
+esub : remailer
 project-nymserv : remailer
 pynchon : remailer
 project-pynchon : remailer
@@ -49,6 +51,12 @@ fedora :
 red hat : 
 rhel : 
 suse : 
+windows : 
+windows xp : windows
+windows vista : windows
+windows 7 : windows
+server 2003 : windows
+server 2008 : windows
 
 pthread : 
 ctypes : 
@@ -120,7 +128,8 @@ CBC-MAC : crypto-mode-of-operation
 OMAC : crypto-mode-of-operation
 crypto-mode-of-operation : block-cipher
 
-
+anonymous : anonymity
+alt.anonymous.messages : anonymity
 
 tlsv1 : tls
 tls1 : tls
@@ -291,12 +300,20 @@ sha1 : sha-family
 sha-0 : sha-family
 sha-1 : sha-family
 
+key derivation : key-derivation
+PBKDF2 : key-derivation
+KDF : key-derivation
+scrypt : key-derivation
+bcrypt : key-derivation
+
 hmac : 
 				
 otr : 
 socks4 : socks
 socka4a : socks
 socks5 : socks
+socks : proxy
+proxies : proxy
 
 socat :
 
@@ -350,6 +367,9 @@ h264 : media-encoders
 x264 : media-encoders
 h.261 : media-encoders
 h.262 : media-encoders
+flac : media-encoders
+
+pdf : 
 
 
 gsm : 
@@ -357,8 +377,21 @@ gsm :
 french : translations
 spanish : translations
 german : translations
-french : translations
-french : translations
+burmese : translations
+bulgarian : translations
+czech : translations
+hebrew : translations
+greek : translations
+indonesian : translations
+korean : translations
+dutch : translations
+japanese : translations
+thai : translations
+albanian : translations
+vietnamese : translations
+chinese : translations
+polish : translations
+catalan : translations
 
 cookie: cookies
 
@@ -376,3 +409,16 @@ nfc :
 
 regex : regular expressions
 regular expression : regular expressions
+
+
+SO_BINDTODEVICE : socket
+SO_BROADCAST : socket
+SO_REUSEADDR : socket
+setsockopt : socket
+getsockopt : socket
+
+ascii : unicode
+utf8 : unicode
+utf7 : unicode
+utf16 : unicode
+utf32 : unicode
