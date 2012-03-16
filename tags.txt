@@ -1,11 +1,13 @@
 project-libgcrypt : crypto-library
-project-libgcrypt : crypto-library
 project-schleuder : mailinglist
 project-sels : mailinglist
 project-secure-list-server : mailinglist
 project-mmreencrypt : mailinglist
 project-shibboleth : mailinglist
 project-crypt-ml : mailinglist
+
+openssl : crypto-library
+gnutls : crypto-library
 
 project-onak : keyserver
 				
@@ -141,6 +143,10 @@ anonymous : anonymity
 alt.anonymous.messages : anonymity
 
 tlsv1 : tls
+tls certificate : tls
+ssl certificate : tls
+tls certificate : ssl certificate
+ssl certificate : tls certificate
 tls1 : tls
 tlsv1.1 : tls
 tls1.1 : tls
