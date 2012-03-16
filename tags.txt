@@ -386,6 +386,23 @@ basque : translations
 slovak : translations
 
 cookie: cookies
+XMLHttpRequest :
+Access-Control-Allow-Origin : CORS
+Access-Control-Expose-Headers : CORS
+Access-Control-Max-Age : CORS
+Access-Control-Allow-Credentials : CORS
+Access-Control-Allow-Methods : CORS
+Access-Control-Allow-Headers : CORS
+Access-Control-Request-Method : CORS
+Access-Control-Request-Headers : CORS
+Strict-Transport-Security : HSTS
+Public-Key-Pins : Key-Pinning
+TACK : Key-Pinning
+WWW-Authenticate :
+X-Frame-Options :
+X-XSS-Protection :
+X-Content-Type-Options :
+
 
 ant : java
 nant :
