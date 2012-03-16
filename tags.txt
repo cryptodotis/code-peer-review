@@ -353,26 +353,16 @@ project-torspec : project-tor
 project-vidalia-plugins : project-vidalia
 project-vidalia : project-tor
 
-myopenid : openid
-
-vorbis : media-encoders
-mp3 :media-encoders
-mpg :media-encoders
-xvid :media-encoders
-divx : media-encoders
-mpeg :media-encoders
-wav : media-encoders
-wma : media-encoders
-h264 : media-encoders
-x264 : media-encoders
-h.261 : media-encoders
-h.262 : media-encoders
-flac : media-encoders
-
-pdf : 
-
-
-gsm : 
+bridgedb : tor-bridgedb 	
+flashproxy : tor-flashproxy 	
+gettor : tor-gettor 		
+jtorctl : tor-jtorctl 		
+obfsproxy : tor-obfsproxy 	
+orbot : tor-orbot 		
+puppetor : tor-puppetor 	
+pytorctl : tor-pytorctl 	
+thandy : tor-thandy 		
+dnsel : tor-dnsel 		
 
 french : translations
 spanish : translations
