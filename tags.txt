@@ -64,6 +64,15 @@ ctypes :
 valgrind : 
 oprofile : 
 
+D_FORTIFY_SOURCE : compile-options
+fstack-protector-all : compile-options
+fwrapv : compile-options
+fPIE : compile-options
+ssp-buffer-size : compile-options
+fno-strict-aliasing : compile-options
+fno-strict-overflow : compile-options
+relro : compile-options
+
 design doc : designdoc
 
 maildir : 
