@@ -382,6 +382,8 @@ vietnamese : translations
 chinese : translations
 polish : translations
 catalan : translations
+basque : translations
+slovak : translations
 
 cookie: cookies
 
