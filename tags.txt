@@ -12,6 +12,7 @@ gnutls : crypto-library
 project-onak : keyserver
 				
 project-gnupg : filecrypto
+gpg : project-gnupg
 
 project-aam2mail : remailer
 hsub : remailer
@@ -65,6 +66,7 @@ ctypes :
 
 valgrind : 
 oprofile : 
+doxygen :
 
 D_FORTIFY_SOURCE : compile-options
 fstack-protector-all : compile-options
@@ -89,6 +91,7 @@ asymmetric-crypto : crypto
 
 RSA : asymmetric-crypto
 elgamal : asymmetric-crypto
+ELG-E : elgamal
 ntru : asymmetric-crypto
 curve25519 : asymmetric-crypto
 privatekey : asymmetric-crypto
@@ -98,6 +101,7 @@ public-key : asymmetric-crypto
 
 curve25519 : eliptic-curve-crypto
 ecdh : eliptic-curve-crypto
+ecdhc : eliptic-curve-crypto
 ecdsa : eliptic-curve-crypto
 
 stream-cipher : symmetric-crypto
@@ -258,6 +262,10 @@ sip :
 snmp :
 webdav :
 xmpp :
+bitcoin :
+namecoin :
+petname :
+
 
 fuse :
 
@@ -269,6 +277,9 @@ vss : visualsourcesafe
 cvs :
 
 
+message digest : hash-functions
+message-digest : hash-functions
+messagedigest : hash-functions
 md2 : hash-functions
 md4 : hash-functions
 md5 : hash-functions
@@ -316,12 +327,16 @@ sha-0 : sha-family
 sha-1 : sha-family
 
 key derivation : key-derivation
+KDF : key-derivation
 PBKDF2 : key-derivation
 KDF : key-derivation
 scrypt : key-derivation
 bcrypt : key-derivation
 
-hmac : 
+hmac : mac
+message authentication code : mac
+messageauthenticationcode : mac
+message-authentication-code : mac
 				
 otr : 
 socks4 : socks
@@ -341,9 +356,15 @@ prng : random-number-generator
 rng : random-number-generator
 random number generator : random-number-generator
 psuedonumber generator : random-number-generator
+psuedonumber : random-number-generator
 lfsr : random-number-generator
 linear feedback shift register : random-number-generator
+getSecureRandom : random-number-generator
+getPseudoRandom : random-number-generator
+SecureRandom : random-number-generator
+Secure Random : random-number-generator
 
+torproject : project-tor
 project-tor-arm : project-tor
 project-tor-bridgedb : project-tor
 project-tor-debian-polipo : project-tor
@@ -399,6 +420,7 @@ polish : translations
 catalan : translations
 basque : translations
 slovak : translations
+i18n : translations
 
 cookie: cookies
 XMLHttpRequest :
@@ -438,6 +460,7 @@ regular expression : regular expressions
 SO_BINDTODEVICE : socket
 SO_BROADCAST : socket
 SO_REUSEADDR : socket
+socket_timeout : socket
 setsockopt : socket
 getsockopt : socket
 
