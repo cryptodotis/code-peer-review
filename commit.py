@@ -166,6 +166,9 @@ class Commit:
 
         s += "Keywords:\t %s%s" % (", ".join(self.keywords), eol)
         s += "ID:\t\t %s%s" % (self.uniqueid, eol)
+        s += "Internal:\t %s%s" % (Config.rooturl + "/commit/" + self.repo.tagname + "/" + self.uniqueid, eol)
+        if self.repo.viewlink:
+            s += "External:\t %s%s" % (self.repo.viewlink.replace('%ID', self.uniqueid), eol)
         return s
     
     def pprint(self):
