@@ -91,7 +91,7 @@ def getTags(commit, diffs):
 
         kregex = map.node_attributes(k)[1][1]
 
-        if kregex.search(" " + log):
+        if k in log and kregex.search(" " + log):
             #Do not apply the base tag for KeywordType.APICALL			
             if k_type != KeywordType.APICALL:
                 keywords.add(k)
@@ -101,7 +101,7 @@ def getTags(commit, diffs):
         #Don't do this expensive check if we added it based on the log message
         else:
             for d in diffs:
-                if kregex.search(" " + d):
+                if k in d and kregex.search(" " + d):
                     #Do not apply the base tag for KeywordType.APICALL
                     if k_type != KeywordType.APICALL:
                         keywords.add(k)
@@ -116,7 +116,7 @@ def getTags(commit, diffs):
         
         for p in paths:
             #Don't check if we already have this keyword
-            if k not in keywords and kregex.search(" " + p):
+            if k not in keywords and k in p and kregex.search(" " + p):
                 keywords.add(k)
                 keywords = keywords.union(getAllChildTags(map, k))
     return keywords
