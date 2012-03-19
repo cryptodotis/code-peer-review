@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-import MySQLdb, argparse, os
+import MySQLdb, argparse, os, re
 from database import DB
 
 
@@ -199,6 +199,8 @@ if __name__ == "__main__":
             if args.populate or args.keywords:
                 print 'Populating Keywords...'
 
+                lexpattern = re.compile('^[-_a-zA-Z0-9. /]+$')
+
                 h = open('tags.txt', 'r')
                 sql = 'INSERT INTO ' + DB.keyword._table + "(keyword, parent, type)\n"
                 components = []
@@ -208,11 +210,19 @@ if __name__ == "__main__":
                     parts = [p.strip() for p in parts if p.strip()]
                     
                     if len(parts) > 1:
-                        sql += "SELECT %s, %s, 1 UNION\n"
-                        components.extend(parts)
+                        if not lexpattern.search(parts[0]):
+                            print "Keyword", parts[0], "doesn't match lexer regex - update lexer and setup"
+                        elif not lexpattern.search(parts[1]):
+                            print "Keyword", parts[1], "doesn't match lexer regex - update lexer and setup"
+                        else:
+                            sql += "SELECT %s, %s, 1 UNION\n"
+                            components.extend(parts)
                     else:
-                        sql += "SELECT %s, NULL, 1 UNION\n"
-                        components.append(parts[0])
+                        if not lexpattern.search(parts[0]):
+                            print "Keyword", parts[0], "doesn't match lexer regex - update lexer and setup"
+                        else:
+                            sql += "SELECT %s, NULL, 1 UNION\n"
+                            components.append(parts[0])
                 sql = sql[0:-6]
                 DB.execute(c, sql, components)
 
