@@ -14,11 +14,19 @@ def regen(keywords):
     commits= DBQ.findByKeywords(keywords)
 
     for c in commits:
-        diffs = c.getChangedTexts(c.getChangedTextMetadata())
-        c.dbkeywords = c.getSynonyms(diffs)
-        c.save()
+        sys.stdout.write("(" + str(c.repo.id) + ":" + c.uniqueid + ":")
+        sys.stdout.flush()
 
-        sys.stdout.write(".")
+        diffs = c.getChangedTexts(c.getChangedTextMetadata())
+        sys.stdout.write("1")
+        sys.stdout.flush()
+
+        c.dbkeywords = c.getSynonyms(diffs)
+        sys.stdout.write("2")
+        sys.stdout.flush()
+
+        c.save()
+        sys.stdout.write("3)")
         sys.stdout.flush()
     print ""
 
