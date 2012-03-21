@@ -320,6 +320,21 @@ if __name__ == "__main__":
                     ) ENGINE=innodb;
                     """
             c.execute(sql)
+        #commitdiffs._table + """ ----------------------------------------
+        c.execute("SHOW TABLES LIKE '" + DB.commitdiffs._table + "'")
+        r = c.fetchone()
+        if r:
+            print "Commit Diffs Table Exists"
+        else:
+            print "Creating Commit Diffs Table..."
+            sql = "CREATE TABLE " + DB.commitdiffs._table + """
+                    (
+                    commitid int NOT NULL,
+                    data LONGBLOB NOT NULL,
+                    PRIMARY KEY(commitid)
+                    ) ENGINE=innodb;
+                    """
+            c.execute(sql)
 
 
     conn.commit()

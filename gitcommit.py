@@ -30,6 +30,11 @@ class GitCommit(Commit):
         commit = repo.commit(self.uniqueid)
         return commit
     def getChangedTexts(self, commitobj):
+        if self.changedTexts != None:
+            return self.changedTexts
+        elif commitobj == None:
+            raise Exception("NULL passed to getChangedTexts when local changedTexts was not set")
+            
         alldiffs = []
         differ = gdiff.diff_match_patch()
         
@@ -50,4 +55,5 @@ class GitCommit(Commit):
         #    pass
         #for d in commitobj.diff(commitobj.__str__()+'^').iter_change_type('R'): #Renamed
         #    pass
-        return alldiffs
+        self.changedTexts = alldiffs
+        return self.changedTexts

@@ -31,6 +31,11 @@ class SVNCommit(Commit):
     def getChangedTextMetadata(self):
         return (self.uniqueid, self.repo)
     def getChangedTexts(self, metadata):
+        if self.changedTexts != None:
+            return self.changedTexts
+        elif metadata == None:
+            raise Exception("NULL passed to getChangedTexts when local changedTexts was not set")
+            
         uniqueid, repo = metadata
         if int(uniqueid) == 1:
             diff = ''
@@ -44,4 +49,5 @@ class SVNCommit(Commit):
             diff = svn_diff_property.sub('', diff)
             diff = svn_diff_deletions.sub('', diff)
             diff = diff.lower()
-        return [diff]
+        self.changedTexts = [diff]
+        return self.changedTexts

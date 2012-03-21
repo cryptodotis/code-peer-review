@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-import time, re, os, MySQLdb, unicodedata
+import time, re, os, MySQLdb, unicodedata, cPickle, zlib
 from PyRSS2Gen import RSSItem, Guid
 
 from config import Config
@@ -43,7 +43,7 @@ class Commit:
         self.keywords.add('project-' + repo.tagname)
         self.keywords.add('maturity-' + repo.tagmaturity)
     
-    def loadFromDatabase(self, repo, row, files, keywords):
+    def loadFromDatabase(self, repo, row, files, keywords, data):
         self.initialized = True
         
         self.repo = repo
@@ -59,6 +59,10 @@ class Commit:
         self.keywords = set(self.dbkeywords)
         self.keywords.add('project-' + repo.tagname)
         self.keywords.add('maturity-' + repo.tagmaturity)
+        
+        data = zlib.decompress(data)
+        data = cPickle.loads(data)
+        self.changedTexts = data
 
     @staticmethod
     def cleanUpCommitMessage(msg):
@@ -88,6 +92,8 @@ class Commit:
     #returns an array of text changes used for synonym matching
     def getChangedTexts(self, metadata):
         pass
+    #backing variable of previous function
+    changedTexts = None
     #/Implemented in Child Classes
     def getPrettyDiffs(self):
         diffs = self.getDiffsArray()
@@ -119,6 +125,19 @@ class Commit:
         if self.commitid <= 0:
             self.commitid = conn.insert_id()
 
+        data = self.getChangedTexts(None)
+        print type(data)
+        data = cPickle.dumps(data)
+        data = zlib.compress(data)
+
+            
+        sql = "DELETE FROM " + DB.commitdiffs._table + " WHERE commitid = " + str(self.commitid)
+        c.execute(sql)
+
+        sql = "INSERT INTO " + DB.commitdiffs._table + "(commitid, data) "
+        sql += "VALUES(" + str(self.commitid) + ", %s)"
+        c.execute(sql, [data])
+        
         if self.files:
             sql = "DELETE FROM " + DB.commitfile._table + " WHERE commitid = " + str(self.commitid)
             c.execute(sql)

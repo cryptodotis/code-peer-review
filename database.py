@@ -73,4 +73,8 @@ class DB:
         commitid = 0
         keyword = 1
         _numColumns = 2
-
+    class commitdiffs:
+        _table = "commitdiffs_tbl"
+        commitid = 0
+        data = 1
+        _numColumns = 2
