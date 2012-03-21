@@ -72,9 +72,7 @@ class DBQ:
         components = []
         if keywords:
             keywordsTree = KeywordsParser(keywords)
-            getcommitsSQL += "LEFT OUTER JOIN " + DB.commitkeyword._table + " ck " + \
-                             "	ON c.id = ck.commitid "
-            whereClause, components = keywordsTree.getWhereClause("ck.keyword", "r.tagname", "r.maturity")
+            whereClause, components = keywordsTree.getWhereClause("(SELECT ck.keyword FROM "+ DB.commitkeyword._table +" as ck WHERE ck.commitid = c.id)", "r.tagname", "r.maturity")
         
         getcommitsSQL += "WHERE " + whereClause
         getcommitsSQL += "ORDER BY c.date DESC "
@@ -112,7 +110,7 @@ class DBQ:
             keywordsTree = KeywordsParser(keywords)
             getcommitsSQL += "LEFT OUTER JOIN " + DB.commitkeyword._table + " ck " + \
                              "	ON c.id = ck.commitid "
-            whereClause, components = keywordsTree.getWhereClause("ck.keyword", "r.tagname", "r.maturity")
+            whereClause, components = keywordsTree.getWhereClause("(SELECT ck.keyword FROM "+ DB.commitkeyword._table +" as ck WHERE ck.commitid = c.id)", "r.tagname", "r.maturity")
         
         getcommitsSQL += "WHERE " + whereClause
         getcommitsSQL += "ORDER BY c.date DESC "

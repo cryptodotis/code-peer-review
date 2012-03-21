@@ -5,6 +5,7 @@ import ply.yacc as yacc
 import ply.lex as lex
 
 import synonymmapping
+from database import DB
 
 # Lex =================================================================
 reserved = {
@@ -50,7 +51,7 @@ class Tree:
                 sql += " " + maturitycolumn + " = %s"
                 components.append(node.replace('maturity-', ''))
             else:
-                sql += " " + keywordcolumn + " = %s"
+                sql += "%s IN " + keywordcolumn
                 components.append(node)		
         else:
             innersql, newcomponents = node.getWhereClause(keywordcolumn, projectcolumn, maturitycolumn)
@@ -245,5 +246,5 @@ if __name__ == "__main__":
     for t in testcases:
         tree = KeywordsParser(t)
         print t
-        print "\t", tree.getWhereClause("ck.keyword", "c.projecttag", "c.maturitytag")
+        print "\t", tree.getWhereClause("(SELECT ck.keyword FROM "+ DB.commitkeyword._table +" as ck WHERE ck.commitid = c.id)", "c.projecttag", "c.maturitytag")
         print ""
