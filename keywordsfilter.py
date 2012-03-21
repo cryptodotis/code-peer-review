@@ -13,14 +13,20 @@ reserved = {
     'or' : 'OR'
     }
 tokens = [
-    'NAME',
-    'LPAREN','RPAREN',
+    'NAME', 'MULTINAME',
+    'LPAREN','RPAREN'
     ] + list(reserved.values())
 t_LPAREN  = r'\('
 t_RPAREN  = r'\)'
 
+
+def t_MULTINAME(t):
+     r'"[-_a-zA-Z0-9./]+ [-_a-zA-Z0-9./ ]+"'
+     t.type = reserved.get(t.value, 'MULTINAME')
+     return t
+     
 def t_NAME(t):
-     r'[-_a-zA-Z0-9./]+'
+     r'"?[-_a-zA-Z0-9./]+"?'
      t.type = reserved.get(t.value, 'NAME')
      return t
 
@@ -83,16 +89,11 @@ class OrTree(Tree):
 
 # Yacc ================================================================
 
-#expression : NAME
-#   | expression AND expression
-#   | expression expression
-#   | expression OR expression
-#   | ( expression )
-
 def p_expression_name(p):
-    'expression : NAME'
-    p[0] = AndTree(p[1], None)
-
+    '''expression : NAME 
+                  | MULTINAME'''
+    p[0] = AndTree(p[1].replace('"', ''), None)
+    
 def p_expression_names(p):
     'expression : expression expression'
     p[0] = AndTree(p[1], p[2])
@@ -110,7 +111,7 @@ def p_expression_parens(p):
     p[0] = AndTree(p[2], None)
 
 def p_error(p):
-    print "Syntax error in input!"
+    print "Syntax error in input: " + str(p) + "!"
 
 lex.lex()
 yacc.yacc()
@@ -193,11 +194,13 @@ if __name__ == "__main__":
 
     testcases = [
             "tag1  "
+            , "\"tag1\"  "
             ,"and  "
             ,"tag1   phantom"
             ,"tag1   and   phantom"
             ,"tag1   or   tag2"
             ,"tag1 phantom maturity-tag3"
+            ,'"tag1 phantom" maturity-tag3'
             ,"tag1 and and phantom maturity-tag3"
             ,"tag1 phantom and and maturity-tag3"
             ,"tag1 phantom and and maturity-tag3 and and"
