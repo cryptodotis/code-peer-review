@@ -8,6 +8,14 @@ project-crypt-ml : mailinglist
 
 openssl : crypto-library
 gnutls : crypto-library
+botan : crypto-library
+bouncycastle : crypto-library
+borzoi : crypto-library
+cryptlib : crypto-library
+cryptix : crypto-library
+libgcrypt : crypto-library
+libtomcrypt : crypto-library
+nss : crypto-library
 
 project-onak : keyserver
 				
