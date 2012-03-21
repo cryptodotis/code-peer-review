@@ -126,7 +126,6 @@ class Commit:
             self.commitid = conn.insert_id()
 
         data = self.getChangedTexts(None)
-        print type(data)
         data = cPickle.dumps(data)
         data = zlib.compress(data)
 
