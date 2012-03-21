@@ -17,17 +17,33 @@ from repo import Repo
 from commit import Commit
 from keywordsfilter import *
 
-class RSSHandler(tornado.web.RequestHandler):
-    def get(self, keywords):
-        commits = DBQ.findByKeywords(keywords)
-        
-        feed = RSS2(
+def getFeed():
+    feed = RSS2(
             title = "Crypto.is Code Audit Feed",
             description = "Just a thing, right?",
             link = "https://crypto.is",
             lastBuildDate = datetime.datetime.utcnow()
             )
-            
+    return feed
+
+class RSSHandler(tornado.web.RequestHandler):
+    def get(self, keywords):
+        commits = DBQ.findByKeywordsAndFulltext(keywords)
+        feed = getFeed()
+
+        for c in commits:
+            feed.items.append(c.toRSSItem())
+        
+        self.set_header('Content-Type', 'application/rss+xml')
+        
+        xml = feed.to_xml()
+        self.write(xml)
+        return
+
+class KeywordsHandler(tornado.web.RequestHandler):
+    def get(self, keywords):
+        commits = DBQ.findByKeywords(keywords)
+        feed = getFeed()
 
         for c in commits:
             feed.items.append(c.toRSSItem())
@@ -48,7 +64,6 @@ class CommitHandler(tornado.web.RequestHandler):
             self.write("Could not find commit")
             return
         commit = commit[0]
-        
 
         template = env.get_template('commit.html')
         html = template.render(commit=commit)	
@@ -58,6 +73,7 @@ class CommitHandler(tornado.web.RequestHandler):
 
 application = tornado.web.Application([
     (r"/rss/(.*)", RSSHandler),
+    (r"/keywords/(.*)", KeywordsHandler),
     (r"/commit/(.*)/(.*)", CommitHandler),
 ])
 tornado.options.parse_command_line() 

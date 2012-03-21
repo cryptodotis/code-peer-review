@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-import sys
+import sys, re
 import ply.yacc as yacc
 import ply.lex as lex
 
@@ -19,7 +19,9 @@ tokens = [
 t_LPAREN  = r'\('
 t_RPAREN  = r'\)'
 
-
+#Be very, VERY careful about adding symbols to these regexes.
+# Adding a single or double quote could allow arbitrary code execution thanks to a eval function
+# Any changes must also be made to regex in setup and the regex in _stripIllegalCharacters
 def t_MULTINAME(t):
      r'"[-_a-zA-Z0-9./]+ [-_a-zA-Z0-9./ ]+"'
      t.type = reserved.get(t.value, 'MULTINAME')
@@ -39,48 +41,114 @@ def t_error(t):
 # Structure ===========================================================
 class Tree:
     left = None
+    leftType = 'keyword'
     right = None
+    rightType = 'keyword'
     def __init__(self, l, r):
         self.left = l
         self.right = r
+        
+        doLeft = doRight = False
+        if isinstance(self.left, str) or isinstance(self.left, unicode):
+            doLeft = True
+            self.leftType = 'keyword'
+        else:
+            self.leftType = 'tree'
+            
+        if isinstance(self.right, str) or isinstance(self.right, unicode):
+            doRight = True        
+            self.rightType = 'keyword'            
+        elif self.right is None:
+            self.rightType = 'None'
+        else:
+            self.rightType = 'tree'
+            
+        if not (doLeft or doRight):
+            return
+            
+        if doLeft: self.leftType = 'fulltext'
+        if doRight: self.rightType = 'fulltext'
+        for n in synonymmapping.getMap():
+            if doLeft and n.__str__() == self.left:
+                self.leftType = 'keyword'
+            if doRight and n.__str__() == self.right:
+                self.rightType = 'keyword'
     def __repr__(self):
         s = "(" + repr(self.left) + " " + self.mode + " " + repr(self.right) + ")"
         return s
-    def _getSQLNode(self, node, keywordcolumn, projectcolumn, maturitycolumn):
-        sql = ""
+    def _getEvalNode(self, type, node, nodeType, keywordphrase, projectphrase, maturityphrase):
+        evalstring = ""
         components = []
-        if isinstance(node, str) or isinstance(node, unicode):
+        if nodeType == 'keyword':
             if node.startswith("project-"):
-                sql += " " + projectcolumn + " = %s"
+                if type == 'sql':       evalstring += " " + projectphrase + " = %s"
+                elif type == 'eval':    evalstring += " " + projectphrase + " == '%s'"
                 components.append(node.replace('project-', ''))
             elif node.startswith("maturity-"):
-                sql += " " + maturitycolumn + " = %s"
+                if type == 'sql':       evalstring += " " + maturityphrase + " = %s"
+                elif type == 'eval':    evalstring += " " + maturityphrase + " == '%s'"
                 components.append(node.replace('maturity-', ''))
             else:
-                sql += "%s IN " + keywordcolumn
+                if type == 'sql':       evalstring += "%s IN " + keywordphrase
+                elif type == 'eval':    evalstring += "'%s' in " + keywordphrase
                 components.append(node)		
+        elif nodeType == 'fulltext':
+            if type == 'sql':       evalstring += " 1 = 1 "
+            elif type == 'eval':    
+                evalstring += "c.testFulltext('%s')"
+                components.append(node)
         else:
-            innersql, newcomponents = node.getWhereClause(keywordcolumn, projectcolumn, maturitycolumn)
+            innersql, newcomponents = node.getEvaluationString(type, keywordphrase, projectphrase, maturityphrase)
 
-            #Don't have a ton of extra parens
-            if len(newcomponents) > 1:			
-                sql += "(" + innersql + ")"
-            else:
-                sql += innersql
+            if node.right: evalstring += "(" + innersql + ")"
+            else:          evalstring += innersql
                 
             components.extend(newcomponents)
-        return sql, components
-    def getWhereClause(self, keywordcolumn, projectcolumn, maturitycolumn):
+        return evalstring, components
+    def anyTree(self):
+        if self.leftType == 'tree':
+            return True
+        if self.rightType == 'tree':
+            return True
+        return False
+    def anyFulltext(self):
+        if self.leftType == 'fulltext':
+            return True
+        if self.rightType == 'fulltext':
+            return True
+        if self.leftType == 'tree':
+            if self.left.anyFulltext(): return True
+        if self.rightType == 'tree':
+            if self.right.anyFulltext(): return True
+           
+        return False
+    def getEvaluationString(self, type, keywordphrase, projectphrase, maturityphrase):
 
-        sql, components = self._getSQLNode(self.left, keywordcolumn, projectcolumn, maturitycolumn)
+        evalstring, components = self._getEvalNode(type, self.left, self.leftType, keywordphrase, projectphrase, maturityphrase)
         #We overload the AndTree to handle the single-node case
         if self.right:
-            sql += " " + self.mode + " "
+            evalstring += " " + self.mode + " "
 
-            nextsql, newcomponents = self._getSQLNode(self.right, keywordcolumn, projectcolumn, maturitycolumn)
-            sql += nextsql
+            nextsql, newcomponents = self._getEvalNode(type, self.right, self.rightType, keywordphrase, projectphrase, maturityphrase)
+            evalstring += nextsql
             components.extend(newcomponents)
-        return sql, components
+        return evalstring, components
+    def printTree(self, indent):
+        if not self.right:
+            if self.leftType == 'tree':
+                self.left.printTree(indent)
+            else:
+                print indent + self.left
+        else:
+            print indent + self.mode
+            if self.leftType == 'tree':
+                self.left.printTree(indent + "\t")
+            else:
+                print indent + self.left
+            if self.rightType == 'tree':
+                self.right.printTree(indent + "\t")
+            else:
+                print indent + self.right
 class AndTree(Tree):
     mode = "and"
 class OrTree(Tree):
@@ -145,7 +213,7 @@ class KeywordsParser:
                     return KeywordsParser._trimnonsense(tokens)
         return tokens
     @staticmethod
-    def _combinenonsense(tokens): #collapse repeated combining words e.g.  'tag1 and and tag2'
+    def _combinenonsense(tokens): #collapse repeated combining words e.g.  'slackware and and sha256'
         if len(tokens) > 1:
             for i in range(len(tokens)-1): #remove successive combination words
                 thistoken = tokens[i]
@@ -163,11 +231,17 @@ class KeywordsParser:
                     return KeywordsParser._combinenonsense(tokens)
         return tokens
     @staticmethod
+    def _stripIllegalCharacters(tokens): #Violently remove characters not permitted by t_NAME regex
+        unallowed = re.compile('[^-_a-zA-Z0-9./ ()]')
+        tokens = unallowed.sub('', tokens)
+        return tokens
+    @staticmethod
     def _preProcess(keywords):
         if not KeywordsParser._isBalanced(keywords):
             keywords = keywords.replace("(", "").replace(")", "")
         else:
             keywords = keywords.replace("(", " ( ").replace(")", " ) ")
+        keywords = KeywordsParser._stripIllegalCharacters(keywords)
         tokens = keywords.lower().split()
         tokens = KeywordsParser._combinenonsense(tokens)
         tokens = KeywordsParser._trimnonsense(tokens)
@@ -184,70 +258,89 @@ class KeywordsParser:
         else:
             self.result = False
 
-    def getWhereClause(self, keywordcolumn, projectcolumn, maturitycolumn):
+    def getEvaluationString(self, type, keywordcolumn, projectcolumn, maturitycolumn):
         if self.result:
-            return self.result.getWhereClause(keywordcolumn, projectcolumn, maturitycolumn)
+            return self.result.getEvaluationString(type, keywordcolumn, projectcolumn, maturitycolumn)
         else:
             return ('', [])
+    def anyFulltext(self):
+        return self.result.anyFulltext()
+    def dump(self):
+        if self.result:
+            evalstr, evalcomponents = self.result.getEvaluationString('eval', "c.dbkeywords", "'project-' + repo.tagname", "'maturity-' + repo.tagmaturity")
+            print "\t", evalstr % tuple(evalcomponents)
+            
+            evalstr, evalcomponents = self.result.getEvaluationString('sql', "(SELECT ck.keyword FROM "+ DB.commitkeyword._table +" as ck WHERE ck.commitid = c.id)", "c.projecttag", "c.maturitytag")
+            print "\t", evalstr, evalcomponents
+            
+            #self.result.printTree("\t")
+        else:
+            print ""
 
 if __name__ == "__main__":
 
     testcases = [
-            "tag1  "
-            , "\"tag1\"  "
+            "slackware  "
+            , "tag1  "
+            , "\"slackware\"  "
             ,"and  "
-            ,"tag1   phantom"
-            ,"tag1   and   phantom"
-            ,"tag1   or   tag2"
-            ,"tag1 phantom maturity-tag3"
-            ,'"tag1 phantom" maturity-tag3'
-            ,"tag1 and and phantom maturity-tag3"
-            ,"tag1 phantom and and maturity-tag3"
-            ,"tag1 phantom and and maturity-tag3 and and"
-            ,"and and tag1 phantom and and maturity-tag3 and and"
-            ,"tag1 phantom and maturity-tag3"
-            ,"tag1 and phantom maturity-tag3"
-            ,"tag1 and phantom or maturity-tag3"
+            ,"slackware   testcases-git"
+            ,"slackware or (tag1 and doxygen)"
+            ,"slackware   and   testcases-git"
+            ,"slackware   or   sha256"
+            ,"slackware testcases-git maturity-suse"
+            ,'"slackware testcases-git" maturity-suse'
+            ,"slackware and and testcases-git maturity-suse"
+            ,"slackware testcases-git and and maturity-suse"
+            ,"slackware testcases-git and and maturity-suse and and"
+            ,"and and slackware testcases-git and and maturity-suse and and"
+            ,"slackware testcases-git and maturity-suse"
+            ,"slackware and testcases-git maturity-suse"
+            ,"slackware and testcases-git or maturity-suse"
             ,"or"
-            ,"tag1 phantom"
-            ,"tag1 or phantom"
-            ,"tag1 or phantom"
-            ,"tag1 phantom maturity-tag3"
-            ,"tag1 or or phantom maturity-tag3"
-            ,"tag1 phantom or or maturity-tag3"
-            ,"tag1 phantom or or maturity-tag3 or or"
-            ,"or or tag1 phantom or or maturity-tag3 or or"
-            ,"tag1 phantom or maturity-tag3"
-            ,"tag1 or phantom maturity-tag3"
-            ,"tag1 or phantom or maturity-tag3"
-            ,"tag1 and phantom or maturity-tag3 and tag4"
-            ,")tag1(  "
+            ,"slackware testcases-git"
+            ,"slackware or testcases-git"
+            ,"slackware or testcases-git"
+            ,"slackware testcases-git maturity-suse"
+            ,"slackware or or testcases-git maturity-suse"
+            ,"slackware testcases-git or or maturity-suse"
+            ,"slackware testcases-git or or maturity-suse or or"
+            ,"or or slackware testcases-git or or maturity-suse or or"
+            ,"slackware testcases-git or maturity-suse"
+            ,"slackware or testcases-git maturity-suse"
+            ,"slackware or testcases-git or maturity-suse"
+            ,"slackware and testcases-git or maturity-suse and tag4"
+            ,")slackware(  "
             ,"(and)  "
-            ,"((tag1)   phantom)"
-            ,"(tag1   and   phantom)"
-            ,"(((tag1   or   tag2)))"
-            ,"(tag1 phantom) maturity-tag3"
-            ,"(tag1 and and phantom) maturity-tag3"
-            ,"tag1 (phantom and and maturity-tag3)"
-            ,"(tag1 phantom) and and maturity-tag3 and and"
-            ,"and and (tag1 phantom) and and maturity-tag3 and and"
-            ,"(tag1 phantom) and maturity-tag3"
-            ,"(())()()()(())tag1 and phantom maturity-tag3"
-            ,"(tag1 and phantom) or maturity-tag3"
-            ,"tag1 and (phantom or maturity-tag3)"
-            ,"(tag1 or phantom) and maturity-tag3"
-            ,"tag1 or (phantom and maturity-tag3)"
-            ,"(tag1 and phantom) or (maturity-tag3 and tag4)"
-            ,"tag1 and (phantom or maturity-tag3) and tag4"
-            ,"tag1 and (phantom or maturity-tag3 and tag4)"
-            ,"(tag1 and phantom or maturity-tag3) and tag4"
-            ,"(tag1 and (phantom or maturity-tag3)) and tag4"
-            ,"tag1 and ((phantom or maturity-tag3) and tag4)"
+            ,"((slackware)   testcases-git)"
+            ,"(slackware   and   testcases-git)"
+            ,"(((slackware   or   sha256)))"
+            ,"(slackware testcases-git) maturity-suse"
+            ,"(slackware and and testcases-git) maturity-suse"
+            ,"slackware (testcases-git and and maturity-suse)"
+            ,"(slackware testcases-git) and and maturity-suse and and"
+            ,"and and (slackware testcases-git) and and maturity-suse and and"
+            ,"(slackware testcases-git) and maturity-suse"
+            ,"(())()()()(())slackware and testcases-git maturity-suse"
+            ,"(slackware and testcases-git) or maturity-suse"
+            ,"slackware and (testcases-git or maturity-suse)"
+            ,"(slackware or testcases-git) and maturity-suse"
+            ,"slackware or (testcases-git and maturity-suse)"
+            ,"(slackware and testcases-git) or (maturity-suse and tag4)"
+            ,"slackware and (testcases-git or maturity-suse) and tag4"
+            ,"slackware and (testcases-git or maturity-suse and tag4)"
+            ,"(slackware and testcases-git or maturity-suse) and tag4"
+            ,"(slackware and (testcases-git or maturity-suse)) and tag4"
+            ,"slackware and ((testcases-git or maturity-suse) and tag4)"
+            
+            ,"tag1"
+            ,"tag1' x"
+            ,"tag1' or 1==1 '"
             ]
 
 
     for t in testcases:
         tree = KeywordsParser(t)
         print t
-        print "\t", tree.getWhereClause("(SELECT ck.keyword FROM "+ DB.commitkeyword._table +" as ck WHERE ck.commitid = c.id)", "c.projecttag", "c.maturitytag")
+        tree.dump()
         print ""

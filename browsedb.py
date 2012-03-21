@@ -11,7 +11,7 @@ from commit import Commit
 from keywordsfilter import *
 
 def browse(keywords):
-    commits = DBQ.findByKeywords(keywords)
+    commits = DBQ.findByKeywordsAndFulltext(keywords)
     
     for c in commits:
         print "---------"

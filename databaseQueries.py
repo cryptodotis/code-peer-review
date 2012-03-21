@@ -72,7 +72,7 @@ class DBQ:
         components = []
         if keywords:
             keywordsTree = KeywordsParser(keywords)
-            whereClause, components = keywordsTree.getWhereClause("(SELECT ck.keyword FROM "+ DB.commitkeyword._table +" as ck WHERE ck.commitid = c.id)", "r.tagname", "r.maturity")
+            whereClause, components = keywordsTree.getEvaluationString('sql', "(SELECT ck.keyword FROM "+ DB.commitkeyword._table +" as ck WHERE ck.commitid = c.id)", "r.tagname", "r.maturity")
         
         getcommitsSQL += "WHERE " + whereClause
         getcommitsSQL += "ORDER BY c.date DESC "
@@ -98,7 +98,7 @@ class DBQ:
         return DBQ.find(getcommitsSQL, components)
 
     @staticmethod
-    def findByKeywordsLimitByFulltext(keywords, fulltext):
+    def findByKeywordsAndFulltext(keywords):
         getcommitsSQL = "SELECT c.*, r.* " + \
                 "FROM " + DB.commit._table + " c " + \
                 "INNER JOIN " + DB.repo._table + " r " + \
@@ -108,26 +108,23 @@ class DBQ:
         components = []
         if keywords:
             keywordsTree = KeywordsParser(keywords)
-            getcommitsSQL += "LEFT OUTER JOIN " + DB.commitkeyword._table + " ck " + \
-                             "	ON c.id = ck.commitid "
-            whereClause, components = keywordsTree.getWhereClause("(SELECT ck.keyword FROM "+ DB.commitkeyword._table +" as ck WHERE ck.commitid = c.id)", "r.tagname", "r.maturity")
+            whereClause, components = keywordsTree.getEvaluationString('sql', "(SELECT ck.keyword FROM "+ DB.commitkeyword._table +" as ck WHERE ck.commitid = c.id)", "r.tagname", "r.maturity")
         
         getcommitsSQL += "WHERE " + whereClause
         getcommitsSQL += "ORDER BY c.date DESC "
         
         prelim_commits = DBQ.find(getcommitsSQL, components)
-        if fulltext:
-            fulltext = fulltext.split()
+        if keywords and keywordsTree.anyFulltext():
             final_commits = []
+            
+            evalstr, evalcomponents = keywordsTree.getEvaluationString('eval', "c.dbkeywords", "'project-' + repo.tagname", "'maturity-' + repo.tagmaturity")
+            evalstr = evalstr % tuple(evalcomponents)
+            
             for c in prelim_commits:
-                added = False
-                for f in fulltext:
-                    for d in c.getChangedTexts(None):
-                        if f in d:
-                            final_commits.append(c)
-                            added = True
-                            break
-                    if added: break
+                testResult = eval(evalstr)
+                if testResult:
+                    final_commits.append(c)
+                
             return final_commits
         else:
             return prelim_commits

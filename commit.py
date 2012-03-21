@@ -96,6 +96,15 @@ class Commit:
         pass
     #backing variable of previous function
     changedTexts = None
+    def testFulltext(self, fulltext):
+        if self.changedTexts == None:
+            raise Exception("called testFulltext prior to changedTexts being initialized")
+        
+        for d in self.getChangedTexts(None):
+            if fulltext in d.lower(): return True
+        
+        return False
+        
     #/Implemented in Child Classes
     def getPrettyDiffs(self):
         diffs = self.getDiffsArray()
