@@ -1,0 +1,6 @@
+{% for c in commits %}
+<strong>Commit</strong>
+<hr />
+<pre>{{ c.getpprint(true)}}</pre>
+<hr />
+{% endfor %}

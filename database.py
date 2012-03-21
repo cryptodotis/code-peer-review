@@ -43,12 +43,13 @@ class DB:
     class repo:
         _table = "repo_tbl"
         id = 0
-        repotypeid = 1
-        url = 2
-        viewlink = 3
-        tagname = 4
-        tagmaturity = 5
-        _numColumns = 6
+        name = 1
+        repotypeid = 2
+        url = 3
+        viewlink = 4
+        tagname = 5
+        tagmaturity = 6
+        _numColumns = 7
     class keyword:
         _table = "keyword_tbl"
         keyword = 0

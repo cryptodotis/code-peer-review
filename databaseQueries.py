@@ -39,7 +39,7 @@ class DBQ:
         commits = []
         for i in commitrows:
                 r = Repo()
-                r.loadFromValues(i[DB.commit._numColumns + DB.repo.id], i[DB.commit._numColumns + DB.repo.repotypeid], i[DB.commit._numColumns + DB.repo.url],
+                r.loadFromValues(i[DB.commit._numColumns + DB.repo.id], i[DB.commit._numColumns + DB.repo.name], i[DB.commit._numColumns + DB.repo.repotypeid], i[DB.commit._numColumns + DB.repo.url],
                         i[DB.commit._numColumns + DB.repo.viewlink], i[DB.commit._numColumns + DB.repo.tagname], i[DB.commit._numColumns + DB.repo.tagmaturity])
 
                 files = [file[DB.commitfile.file] for file in commitfiles

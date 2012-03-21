@@ -170,15 +170,18 @@ class Commit:
 
         conn.commit()
         
-    def getpprint(self, seperator=True):
+    def getpprint(self, link=False):
         if not self.initialized:
             raise Exception("called getpprint on unitialized Commit object")
             
         eol = "\r\n"
         s = ""
-        if seperator:
-            s += "=========================================%s" % (eol)
-        s += "Date:\t\t %s (%s)%s" % (unixToGitDateFormat(self.date), self.date, eol)
+        s += "Project:\t %s%s" % (self.repo.name, eol)
+        if link:
+            s += "Project URL:\t <a href=\"%s\">%s</a>%s" % (self.repo.url, self.repo.url, eol)
+        else:
+            s += "Project URL:\t %s %s" % (self.repo.url, eol)
+        s += "Commit Date:\t %s (%s)%s" % (unixToGitDateFormat(self.date), self.date, eol)
         s += "Log Message:\t %s%s" % (self.message, eol)
         s += eol + eol
         if self.files:
@@ -195,13 +198,23 @@ class Commit:
 
         s += "Keywords:\t %s%s" % (", ".join(self.keywords), eol)
         s += "ID:\t\t %s%s" % (self.uniqueid, eol)
-        s += "Internal:\t %s%s" % (Config.rooturl + "/commit/" + self.repo.tagname + "/" + self.uniqueid, eol)
+        
+        internallink = Config.rooturl + "/commit/" + self.repo.tagname + "/" + self.uniqueid
+        if link:
+            s += "Internal:\t <a href=\"%s\">%s</a>%s" % (internallink, internallink, eol)
+        else:
+            s += "Internal:\t %s%s" % (internallink, eol)
+        
         if self.repo.viewlink:
-            s += "External:\t %s%s" % (self.repo.viewlink.replace('%ID', self.uniqueid), eol)
+            externallink = self.repo.viewlink.replace('%ID', self.uniqueid)
+            if link:
+                s += "External:\t <a href=\"%s\">%s</a>%s" % (externallink, externallink, eol)
+            else:
+                s += "External:\t %s%s" % (externallink, eol)
         return s
     
     def pprint(self):
-        print self.getpprint()
+        print self.getpprint(false)
     
     def toRSSItem(self):
         title = self.repo.tagname
@@ -210,7 +223,7 @@ class Commit:
         if self.dbkeywords: title += " - " + ",".join(self.dbkeywords)
         
         description  = "<pre>"
-        description += self.getpprint()
+        description += self.getpprint(True)
         description += "</pre>"
         
         title = unicodedata.normalize('NFKD', unicode(title, 'utf-8')).encode('ascii', 'ignore')

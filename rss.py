@@ -70,11 +70,33 @@ class CommitHandler(tornado.web.RequestHandler):
         
         self.write(html)
         return
+env = Environment(loader=FileSystemLoader(Config.fsdir + 'templates'))
+class SearchHandler(tornado.web.RequestHandler):
+    def get(self, keywords):
+        commits = []
+        if not keywords:
+            template = env.get_template('search.html')
+        else:
+            commits = DBQ.findByKeywordsAndFulltext(keywords)
+            template = env.get_template('searchresults.html')
+        
+        html = template.render(commits=commits)	
+        self.write(html)
+        return
+    def post(self, keywords):
+        keywords = self.request.arguments['terms'][0]
+        commits = DBQ.findByKeywordsAndFulltext(keywords)
+        template = env.get_template('searchresults.html')
+        
+        html = template.render(commits=commits)	
+        self.write(html)
+        return
 
 application = tornado.web.Application([
     (r"/rss/(.*)", RSSHandler),
     (r"/keywords/(.*)", KeywordsHandler),
     (r"/commit/(.*)/(.*)", CommitHandler),
+    (r"/search/(.*)", SearchHandler),
 ])
 tornado.options.parse_command_line() 
 

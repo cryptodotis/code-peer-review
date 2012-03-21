@@ -17,34 +17,39 @@ class Repo:
         self.initialized = True
         
         self.id = row[DB.repo.id]
+        self.name = row[DB.repo.name]
         self.type = row[DB.repo.repotypeid]
         self.url = row[DB.repo.url]
         self.viewlink = row[DB.repo.viewlink]
         self.tagname = row[DB.repo.tagname]
         self.tagmaturity = row[DB.repo.tagmaturity]
         
-    def loadFromValues(self, i, t, u, vl, tagn, tagm):
+    def loadFromValues(self, i, n, t, u, vl, tagn, tagm):
         self.initialized = True
         
         self.id = i
+        self.name = n
         self.type = t
         self.url = u
         self.viewlink = vl
         self.tagname = tagn
         self.tagmaturity = tagm
         
-    def pprint(self):
+    def getpprint(self):
         if not self.initialized:
             raise Exception("called getBasePath on unitialized Commit object")
             
-        s = "(" + str(self.id) + ", "
+        s = "(" + str(self.id) + ", " + self.name + ", "
         
         for i in dir(Repo.Type):
             if self.type == getattr(Repo.Type, i):
                 s += i
         
         s+= ", " + self.url + ", project-" + self.tagname + ", maturity-" + self.tagmaturity + ")"
-        print s
+        return s
+    def pprint(self):
+        print self.getpprint()
+        
                 
     class Type:
         SVN = 1
