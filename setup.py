@@ -199,7 +199,7 @@ if __name__ == "__main__":
             if args.populate or args.keywords:
                 print 'Populating Keywords...'
 
-                lexpattern = re.compile('^[-_a-zA-Z0-9. /]+$')
+                lexpattern = re.compile('^[-_a-zA-Z0-9./]+$')
 
                 h = open('tags.txt', 'r')
                 sql = 'INSERT INTO ' + DB.keyword._table + "(keyword, parent, type)\n"

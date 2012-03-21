@@ -19,7 +19,7 @@ t_LPAREN  = r'\('
 t_RPAREN  = r'\)'
 
 def t_NAME(t):
-     r'[-_a-zA-Z0-9. /]+'
+     r'[-_a-zA-Z0-9./]+'
      t.type = reserved.get(t.value, 'NAME')
      return t
 
