@@ -27,13 +27,14 @@ class Commit:
     def __init__(self):
         pass
     
-    def loadFromSource(self, repo, m, d, f, uid, diffs):
+    def loadFromSource(self, repo, m, d, files, uid, diffs):
         self.initialized = True
     
         self.repo = repo
-        self.message = Commit.cleanUpCommitMessage(m)
+        self.rawmessage = Commit.cleanUpCommitMessage(m)
+        self.message = self.rawmessage.replace("&", "&amp;").replace('"', "&quot;").replace("<", "&lt;").replace(">", "&gt;")
         self.date = d
-        self.files = f
+        self.files = [f.replace("&", "&amp;").replace('"', "&quot;").replace("<", "&lt;").replace(">", "&gt;") for f in files]
         self.uniqueid = uid
 
         self.base_paths = self.getBasePath()
@@ -48,11 +49,12 @@ class Commit:
         
         self.repo = repo
         self.commitid = row[DB.commit.id]
-        self.message = row[DB.commit.message]
+        self.rawmessage = row[DB.commit.message]
+        self.message = self.rawmessage.replace("&", "&amp;").replace('"', "&quot;").replace("<", "&lt;").replace(">", "&gt;")
         self.date = row[DB.commit.date]
         self.uniqueid = row[DB.commit.uniqueid]
 
-        self.files = files
+        self.files = [f.replace("&", "&amp;").replace('"', "&quot;").replace("<", "&lt;").replace(">", "&gt;") for f in files]
         self.base_paths = self.getBasePath()
         self.dbkeywords = keywords
 
@@ -194,8 +196,8 @@ class Commit:
     
     def toRSSItem(self):
         title = self.repo.tagname
-        if self.message and len(self.message) > 50: title += " - " + self.message[:50] + "..."
-        elif self.message: title += " - " + self.message
+        if self.rawmessage and len(self.rawmessage) > 50: title += " - " + self.rawmessage[:50] + "..."
+        elif self.rawmessage: title += " - " + self.rawmessage
         if self.dbkeywords: title += " - " + ",".join(self.dbkeywords)
         
         description  = "<pre>"
