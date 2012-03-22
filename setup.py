@@ -43,6 +43,14 @@ if __name__ == "__main__":
             c.execute("DROP TABLE " + DB.commitfile._table)
         except:
             pass
+        try:
+            c.execute("DROP TABLE " + DB.commitdiffs._table)
+        except:
+            pass
+        try:
+            c.execute("DROP TABLE " + DB.searchqueries._table)
+        except:
+            pass
 
     else:
         #repotype._table + """ -------------------------------------------
@@ -336,6 +344,21 @@ if __name__ == "__main__":
                     ) ENGINE=innodb;
                     """
             c.execute(sql)
+        #searchqueries._table + """ ----------------------------------------
+        c.execute("SHOW TABLES LIKE '" + DB.searchqueries._table + "'")
+        r = c.fetchone()
+        if r:
+            print "Search Queries Table Exists"
+        else:
+            print "Creating Search Queries Table..."
+            sql = "CREATE TABLE " + DB.searchqueries._table + """
+                    (
+                    timestamp int NOT NULL,
+                    ip int NOT NULL,
+                    terms varchar(512) NOT NULL
+                    ) ENGINE=innodb;
+                    """
+            DB.execute(c, sql)
 
 
     conn.commit()

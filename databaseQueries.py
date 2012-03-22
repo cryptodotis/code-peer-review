@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-import MySQLdb
+import MySQLdb, time
 
 from common import *
 from config import Config
@@ -128,4 +128,12 @@ class DBQ:
             return final_commits
         else:
             return prelim_commits
+    @staticmethod
+    def logTerms(ip, keywords):
+        insertSQL = "INSERT INTO " + DB.searchqueries._table + "(timestamp, ip, terms) " + \
+                        "VALUES(%s, INET_ATON(%s), %s) "
+        conn = DB.getConn()
+        c = conn.cursor()
+        
+        DB.execute(c, insertSQL, (int(time.time()), ip, keywords))
         

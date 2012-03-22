@@ -77,6 +77,7 @@ class SearchHandler(tornado.web.RequestHandler):
         if not keywords:
             template = env.get_template('search.html')
         else:
+            DBQ.logTerms(self.request.remote_ip, keywords)
             commits = DBQ.findByKeywordsAndFulltext(keywords)
             template = env.get_template('searchresults.html')
         
@@ -85,6 +86,7 @@ class SearchHandler(tornado.web.RequestHandler):
         return
     def post(self, keywords):
         keywords = self.request.arguments['terms'][0]
+        DBQ.logTerms(self.request.remote_ip, keywords)
         commits = DBQ.findByKeywordsAndFulltext(keywords)
         template = env.get_template('searchresults.html')
         

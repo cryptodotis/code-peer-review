@@ -79,3 +79,9 @@ class DB:
         commitid = 0
         data = 1
         _numColumns = 2
+    class searchqueries:
+        _table = "searchqueries_tbl"
+        timestamp = 0
+        ip = 1
+        terms = 2
+        _numColumns = 3
