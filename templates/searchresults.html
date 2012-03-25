@@ -1,6 +1,10 @@
+{% if commits %}
 {% for c in commits %}
 <strong>Commit</strong>
 <hr />
 <pre>{{ c.getpprint(true)}}</pre>
 <hr />
 {% endfor %}
+{% else %}
+No results found. <a href="/search">Search again.</a>
+{% endif %}
