@@ -74,7 +74,7 @@ class DBQ:
             keywordsTree = KeywordsParser(keywords)
             whereClause, components = keywordsTree.getEvaluationString('sql', "(SELECT ck.keyword FROM "+ DB.commitkeyword._table +" as ck WHERE ck.commitid = c.id)", "r.tagname", "r.maturity")
         
-        getcommitsSQL += "WHERE " + whereClause
+        getcommitsSQL += "WHERE " + whereClause + " "
         getcommitsSQL += "ORDER BY c.date DESC "
         
         return DBQ.find(getcommitsSQL, components)
