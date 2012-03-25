@@ -55,6 +55,13 @@ class KeywordsHandler(tornado.web.RequestHandler):
         return
 
 env = Environment(loader=FileSystemLoader(Config.fsdir + 'templates'))
+class HallOfFameHandler(tornado.web.RequestHandler):
+    def get(self):
+        template = env.get_template('halloffame.html')
+        html = template.render()	
+        self.write(html)
+        return
+env = Environment(loader=FileSystemLoader(Config.fsdir + 'templates'))
 class CommitHandler(tornado.web.RequestHandler):
     def get(self, project, uniqueid):
         commit = DBQ.findByIDs(project, uniqueid)
@@ -98,7 +105,8 @@ application = tornado.web.Application([
     (r"/rss/(.*)", RSSHandler),
     (r"/keywords/(.*)", KeywordsHandler),
     (r"/commit/(.*)/(.*)", CommitHandler),
-    (r"/search/(.*)", SearchHandler),
+    (r"/search/?(.*)", SearchHandler),
+    (r"/halloffame", HallOfFameHandler),
 ])
 tornado.options.parse_command_line() 
 
