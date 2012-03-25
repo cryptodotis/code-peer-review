@@ -28,6 +28,7 @@ def getMap():
 
         for r in rows:
             keyword = r[DB.keyword.keyword].lower()
+            keyword = keyword.replace(".", "\.") # Any regex metacharacters in the keyword need to be escaped.
             keyword_regex = re.compile('(?<=[^a-zA-Z])' + keyword + '(?![a-zA-Z])') # k is not surrounded by alpha characters.  
             parent = r[DB.keyword.parent]
             parent_regex = '' if not parent else re.compile('(?<=[^a-zA-Z])' + parent.lower() + '(?![a-zA-Z])') 
