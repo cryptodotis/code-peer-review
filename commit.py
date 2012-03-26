@@ -16,6 +16,8 @@ svn_diff_newline = re.compile('\\ No newline at end of file\s')
 svn_diff_property = re.compile('Property changes on: .+\s_+\sAdded: .+\s\s+[\-\+]\s.+')
 svn_diff_deletions = re.compile('^-.+$', re.MULTILINE)
 
+punctuation = re.compile('[^a-zA-Z0-9 ]')
+
 class Commit:
     repo = None
     message = ''
@@ -167,6 +169,22 @@ class Commit:
                 sql += "SELECT " + str(self.commitid) + ", %s UNION "
             sql = sql[:-6]
             c.execute(sql, [x for x in self.dbkeywords])
+
+        sql = "DELETE FROM " + DB.commitwordmap._table + " WHERE commitid = " + str(self.commitid)
+        c.execute(sql)
+
+        words = []
+        data = self.getChangedTexts(None)
+        data = [punctuation.sub(' ', d) for d in data]
+        sql = "INSERT INTO " + DB.commitwordmap._table + "(commitid, word) "
+        for d in data:
+            for w in d.split():
+                if w not in words:
+                    sql += "SELECT " + str(self.commitid) + ", %s UNION "
+                    words.append(w)
+        sql = sql[:-6]
+        if words:
+            DB.execute(c, sql, words)
 
         conn.commit()
         

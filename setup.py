@@ -344,6 +344,21 @@ if __name__ == "__main__":
                     ) ENGINE=innodb;
                     """
             c.execute(sql)
+        #commitwordmap._table + """ ----------------------------------------
+        c.execute("SHOW TABLES LIKE '" + DB.commitwordmap._table + "'")
+        r = c.fetchone()
+        if r:
+            print "Commit Wordmap Table Exists"
+        else:
+            print "Creating Commit Wordmap Table..."
+            sql = "CREATE TABLE " + DB.commitwordmap._table + """
+                    (
+                    commitid int NOT NULL,
+                    word varchar(50) NOT NULL,
+                    PRIMARY KEY(commitid, word)
+                    ) ENGINE=innodb;
+                    """
+            c.execute(sql)
         #searchqueries._table + """ ----------------------------------------
         c.execute("SHOW TABLES LIKE '" + DB.searchqueries._table + "'")
         r = c.fetchone()

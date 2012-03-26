@@ -79,6 +79,11 @@ class DB:
         commitid = 0
         data = 1
         _numColumns = 2
+    class commitwordmap:
+        _table = "commitwordmap_tbl"
+        commitid = 0
+        word = 1
+        _numColumns = 2
     class searchqueries:
         _table = "searchqueries_tbl"
         timestamp = 0
