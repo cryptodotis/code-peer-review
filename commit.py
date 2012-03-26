@@ -179,6 +179,7 @@ class Commit:
         sql = "INSERT INTO " + DB.commitwordmap._table + "(commitid, word) "
         for d in data:
             for w in d.split():
+                w = w[:50]
                 if w not in words:
                     sql += "SELECT " + str(self.commitid) + ", %s UNION "
                     words.append(w)
