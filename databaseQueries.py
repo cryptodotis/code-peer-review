@@ -72,7 +72,7 @@ class DBQ:
         components = []
         if keywords:
             keywordsTree = KeywordsParser(keywords)
-            whereClause, components = keywordsTree.getEvaluationString('sql', "(SELECT ck.keyword FROM "+ DB.commitkeyword._table +" as ck WHERE ck.commitid = c.id)", "(SELECT wm.word FROM "+ DB.commitwordmap._table +" as wm WHERE wm.commitid = c.id)", "r.tagname", "r.maturity")
+            whereClause, components = keywordsTree.getEvaluationString('sql')
         
         getcommitsSQL += "WHERE " + whereClause + " "
         getcommitsSQL += "ORDER BY c.date DESC "
@@ -108,7 +108,7 @@ class DBQ:
         components = []
         if keywords:
             keywordsTree = KeywordsParser(keywords)
-            whereClause, components = keywordsTree.getEvaluationString('sql', "(SELECT ck.keyword FROM "+ DB.commitkeyword._table +" as ck WHERE ck.commitid = c.id)", "(SELECT wm.word FROM "+ DB.commitwordmap._table +" as wm WHERE wm.commitid = c.id)", "r.tagname", "r.maturity")
+            whereClause, components = keywordsTree.getEvaluationString('sql')
         
         getcommitsSQL += "WHERE " + whereClause
         getcommitsSQL += "ORDER BY c.date DESC "
@@ -117,7 +117,7 @@ class DBQ:
         if keywords and keywordsTree.anyFulltext():
             final_commits = []
             
-            evalstr, evalcomponents = keywordsTree.getEvaluationString('eval', "c.dbkeywords", "", "'project-' + repo.tagname", "'maturity-' + repo.tagmaturity")
+            evalstr, evalcomponents = keywordsTree.getEvaluationString('eval')
             evalstr = evalstr % tuple(evalcomponents)
             
             for c in prelim_commits:
