@@ -76,7 +76,7 @@ class Tree:
     def __repr__(self):
         s = "(" + repr(self.left) + " " + self.mode + " " + repr(self.right) + ")"
         return s
-    def _getEvalNode(self, type, node, nodeType, keywordphrase, projectphrase, maturityphrase):
+    def _getEvalNode(self, type, node, nodeType, keywordphrase, fulltextphrase, projectphrase, maturityphrase):
         evalstring = ""
         components = []
         if nodeType == 'keyword':
@@ -93,12 +93,11 @@ class Tree:
                 elif type == 'eval':    evalstring += "'%s' in " + keywordphrase
                 components.append(node)		
         elif nodeType == 'fulltext':
-            if type == 'sql':       evalstring += " 1 = 1 "
-            elif type == 'eval':    
-                evalstring += "c.testFulltext('%s')"
-                components.append(node)
+            if type == 'sql':       evalstring += "%s IN " + fulltextphrase
+            elif type == 'eval':    evalstring += "c.testFulltext('%s')"
+            components.append(node)
         else:
-            innersql, newcomponents = node.getEvaluationString(type, keywordphrase, projectphrase, maturityphrase)
+            innersql, newcomponents = node.getEvaluationString(type, keywordphrase, fulltextphrase, projectphrase, maturityphrase)
 
             if node.right: evalstring += "(" + innersql + ")"
             else:          evalstring += innersql
@@ -122,14 +121,14 @@ class Tree:
             if self.right.anyFulltext(): return True
            
         return False
-    def getEvaluationString(self, type, keywordphrase, projectphrase, maturityphrase):
+    def getEvaluationString(self, type, keywordphrase, fulltextphrase, projectphrase, maturityphrase):
 
-        evalstring, components = self._getEvalNode(type, self.left, self.leftType, keywordphrase, projectphrase, maturityphrase)
+        evalstring, components = self._getEvalNode(type, self.left, self.leftType, keywordphrase, fulltextphrase, projectphrase, maturityphrase)
         #We overload the AndTree to handle the single-node case
         if self.right:
             evalstring += " " + self.mode + " "
 
-            nextsql, newcomponents = self._getEvalNode(type, self.right, self.rightType, keywordphrase, projectphrase, maturityphrase)
+            nextsql, newcomponents = self._getEvalNode(type, self.right, self.rightType, keywordphrase, fulltextphrase, projectphrase, maturityphrase)
             evalstring += nextsql
             components.extend(newcomponents)
         return evalstring, components
@@ -258,19 +257,19 @@ class KeywordsParser:
         else:
             self.result = False
 
-    def getEvaluationString(self, type, keywordcolumn, projectcolumn, maturitycolumn):
+    def getEvaluationString(self, type, keywordcolumn, fulltextphrase, projectcolumn, maturitycolumn):
         if self.result:
-            return self.result.getEvaluationString(type, keywordcolumn, projectcolumn, maturitycolumn)
+            return self.result.getEvaluationString(type, keywordcolumn, fulltextphrase, projectcolumn, maturitycolumn)
         else:
             return ('', [])
     def anyFulltext(self):
         return self.result.anyFulltext()
     def dump(self):
         if self.result:
-            evalstr, evalcomponents = self.result.getEvaluationString('eval', "c.dbkeywords", "'project-' + repo.tagname", "'maturity-' + repo.tagmaturity")
+            evalstr, evalcomponents = self.result.getEvaluationString('eval', "c.dbkeywords", "", "'project-' + repo.tagname", "'maturity-' + repo.tagmaturity")
             print "\t", evalstr % tuple(evalcomponents)
             
-            evalstr, evalcomponents = self.result.getEvaluationString('sql', "(SELECT ck.keyword FROM "+ DB.commitkeyword._table +" as ck WHERE ck.commitid = c.id)", "c.projecttag", "c.maturitytag")
+            evalstr, evalcomponents = self.result.getEvaluationString('sql', "(SELECT ck.keyword FROM "+ DB.commitkeyword._table +" as ck WHERE ck.commitid = c.id)", "(SELECT wm.word FROM "+ DB.commitwordmap._table +" as wm WHERE wm.commitid = c.id)", "c.projecttag", "c.maturitytag")
             print "\t", evalstr, evalcomponents
             
             #self.result.printTree("\t")
