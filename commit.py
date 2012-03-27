@@ -173,19 +173,29 @@ class Commit:
         sql = "DELETE FROM " + DB.commitwordmap._table + " WHERE commitid = " + str(self.commitid)
         c.execute(sql)
 
-        words = []
         data = self.getChangedTexts(None)
         data = [punctuation.sub(' ', d) for d in data]
-        sql = "INSERT INTO " + DB.commitwordmap._table + "(commitid, word) "
+
+
+        allwords = set()
         for d in data:
-            for w in d.split():
-                w = w[:50]
-                if w not in words:
-                    sql += "SELECT " + str(self.commitid) + ", %s UNION "
-                    words.append(w)
-        sql = sql[:-6]
-        if words:
-            DB.execute(c, sql, words)
+            dWords = d.split()
+            dTotalIndex = 0
+            while dTotalIndex < len(dWords):
+                words = []
+                dThisIndex = 0
+                sql = "INSERT INTO " + DB.commitwordmap._table + "(commitid, word) "                
+                while dThisIndex < 500 and dTotalIndex < len(dWords):
+                    w = dWords[dThisIndex][:50]
+                    if len(w) > 2 and w not in allwords:
+                        sql += "SELECT " + str(self.commitid) + ", %s UNION "
+                        words.append(w)
+                        allwords.add(w)
+                    dThisIndex += 1
+                    dTotalIndex += 1
+                sql = sql[:-6]
+                if words:
+                    DB.execute(c, sql, words)
 
         conn.commit()
         
