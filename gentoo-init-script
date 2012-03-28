@@ -7,7 +7,7 @@ depend() {
 start() {
         ebegin "Starting tornado"
         start-stop-daemon --start -i --user apache:apache --quiet --background --make-pidfile -                                 
--pidfile /var/run/tornado.pid  --exec /usr/bin/python /web/crypto.is/rss.py
+-pidfile /var/run/tornado.pid  --exec /usr/bin/python /web/crypto.is/webserver.py
         eend $?
 }
 
