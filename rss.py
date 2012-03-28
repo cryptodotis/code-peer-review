@@ -55,6 +55,14 @@ class KeywordsHandler(tornado.web.RequestHandler):
         return
 
 env = Environment(loader=FileSystemLoader(Config.fsdir + 'templates'))
+class LandingHandler(tornado.web.RequestHandler):
+    def get(self):
+        commits=[]
+        template = env.get_template('search.html')
+        html = template.render(commits=commits)	
+        self.write(html)
+        return
+env = Environment(loader=FileSystemLoader(Config.fsdir + 'templates'))
 class HallOfFameHandler(tornado.web.RequestHandler):
     def get(self):
         template = env.get_template('halloffame.html')
@@ -102,11 +110,12 @@ class SearchHandler(tornado.web.RequestHandler):
         return
 
 application = tornado.web.Application([
-    (r"/rss/(.*)", RSSHandler),
-    (r"/keywords/(.*)", KeywordsHandler),
-    (r"/commit/(.*)/(.*)", CommitHandler),
+    (r"/", LandingHandler),
     (r"/search/?(.*)", SearchHandler),
+    (r"/commit/(.*)/(.*)", CommitHandler),
     (r"/halloffame", HallOfFameHandler),
+    (r"/keywords/(.*)", KeywordsHandler),#Obsolete, For testing only
+    (r"/rss/(.*)", RSSHandler),
 ])
 tornado.options.parse_command_line() 
 
@@ -115,7 +124,7 @@ if __name__ == "__main__":
     logging.getLogger().addHandler(tlog)
     logging.debug('Starting up...')
     
-    application.listen(8888)
+    application.listen(Config.tornadoport)
     tornado.ioloop.IOLoop.instance().start()
 
         
