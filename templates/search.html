@@ -46,7 +46,7 @@ h1 {
     left:50%;
     position:absolute;
     margin-left:-300px;
-    margin-top:-100px;
+    margin-top:-160px;
     text-align:center;
 }
 input {
@@ -81,7 +81,7 @@ function toggle(id) {
     <br />
     <input type="checkbox" name="record" id="recordSearch" checked="checked" /> <label for="recordSearch">Record my search</label> <a href="#" style="font-size:small" onclick="toggle('recordDetails')">What's this?!</a>
     <p id="recordDetails" style="display:none">
-        When you search, the Code Peer Review system will perform two types of searches: a tag search, and a full-text search.  A tag search is very efficient, because it pre-tagged commits with tags overnight, tags like 'SHA1' or 'MD5' - things we predicted people would search for.  A Full-Text search however is very, <em>very</em> slow - we're searching every commit's diff for your search terms. When this checkbox is checked, we record the search term in a database table, along with the time, and a hash of your IP address. We're going to use this data to find the terms that the most number of people are interested in, and create tags from them, so the searches will be faster in the future.
+        When you search, the Code Peer Review system will perform two types of searches: a tag search, and a full-text search.  A tag search is very efficient, because it pre-tagged commits with tags overnight, tags like 'SHA1' or 'MD5' - things we predicted people would search for.  A Full-Text search however is very, <em>very</em> slow - we're searching every commit's diff for your search terms. When this checkbox is checked, we record the search term in a database table, along with the time, and your IP address. We're going to use this data to find the terms that the most number of (unique) people are interested in, and create tags from them, so the searches will be faster in the future.
         <br /> <br />
         Honest to goodness, we're really interesting in using this data to make the service better - and that's not lip service.  <a href="https://github.com/cryptodotis/code-audit-feed/issues/12">It's a long-standing bug.</a>  We'd appreciate your help.
     </p>
