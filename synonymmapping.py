@@ -30,8 +30,8 @@ def getMap():
             keyword = r[DB.keyword.keyword].lower()
             keyword = keyword.replace(".", "\.") # Any regex metacharacters in the keyword need to be escaped.
             
-            parent = r[DB.keyword.parent].lower()
-            parent = parent.replace(".", "\.") # Any regex metacharacters in the parent also need to be escaped.
+            parent = r[DB.keyword.parent]
+            parent = parent.lower().replace(".", "\.") if parent else None
             
             type = r[DB.keyword.type]
 
