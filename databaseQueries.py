@@ -114,20 +114,21 @@ class DBQ:
         getcommitsSQL += "ORDER BY c.date DESC "
         
         prelim_commits = DBQ.find(getcommitsSQL, components)
-        if keywords and keywordsTree.anyFulltext():
-            final_commits = []
-            
-            evalstr, evalcomponents = keywordsTree.getEvaluationString('eval')
-            evalstr = evalstr % tuple(evalcomponents)
-            
-            for c in prelim_commits:
-                testResult = eval(evalstr)
-                if testResult:
-                    final_commits.append(c)
-                
-            return final_commits
-        else:
-            return prelim_commits
+        #This test is done well enough by the database for now. Maybe eventually we'll need to turn it back on
+        #if keywords and keywordsTree.anyFulltext():
+        #    final_commits = []
+        #    
+        #    evalstr, evalcomponents = keywordsTree.getEvaluationString('eval')
+        #    evalstr = evalstr % tuple(evalcomponents)
+        #    
+        #    for c in prelim_commits:
+        #        testResult = eval(evalstr)
+        #        if testResult:
+        #            final_commits.append(c)
+        #        
+        #    return final_commits
+        #else:
+        return prelim_commits
     @staticmethod
     def logTerms(ip, keywords):
         insertSQL = "INSERT INTO " + DB.searchqueries._table + "(timestamp, ip, terms) " + \
