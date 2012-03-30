@@ -30,8 +30,11 @@ def getMap():
             keyword = r[DB.keyword.keyword].lower()
             keyword = keyword.replace(".", "\.") # Any regex metacharacters in the keyword need to be escaped.
             keyword_regex = re.compile('(?<=[^a-zA-Z])' + keyword + '(?![a-zA-Z])') # k is not surrounded by alpha characters.  
-            parent = r[DB.keyword.parent]
-            parent_regex = '' if not parent else re.compile('(?<=[^a-zA-Z])' + parent.lower() + '(?![a-zA-Z])') 
+            
+            parent = r[DB.keyword.parent].lower()
+            parent = parent.replace(".", "\.") # Any regex metacharacters in the parent also need to be escaped.
+            parent_regex = '' if not parent else re.compile('(?<=[^a-zA-Z])' + parent + '(?![a-zA-Z])') 
+            
             type = r[DB.keyword.type]
 
             if not map.has_node(keyword):
