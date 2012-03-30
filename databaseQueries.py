@@ -137,4 +137,4 @@ class DBQ:
         c = conn.cursor()
         
         DB.execute(c, insertSQL, (int(time.time()), ip, keywords))
-        
+        conn.commit()
