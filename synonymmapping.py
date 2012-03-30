@@ -29,21 +29,21 @@ def getMap():
         for r in rows:
             keyword = r[DB.keyword.keyword].lower()
             keyword = keyword.replace(".", "\.") # Any regex metacharacters in the keyword need to be escaped.
-            keyword_regex = re.compile('(?<=[^a-zA-Z])' + keyword + '(?![a-zA-Z])') # k is not surrounded by alpha characters.  
             
             parent = r[DB.keyword.parent].lower()
             parent = parent.replace(".", "\.") # Any regex metacharacters in the parent also need to be escaped.
-            parent_regex = '' if not parent else re.compile('(?<=[^a-zA-Z])' + parent + '(?![a-zA-Z])') 
             
             type = r[DB.keyword.type]
 
             if not map.has_node(keyword):
+                keyword_regex = re.compile('(?<=[^a-zA-Z])' + keyword + '(?![a-zA-Z])') # k is not surrounded by alpha characters.  
                 map.add_node(keyword, [('type', type), ('regex', keyword_regex)])
             else:
                 pass #We take the first type defined, on the assumption that an APICALL will not also be something else
                 #	And that a MAPPING will not also be standard
 
             if parent and not map.has_node(parent):
+                parent_regex = '' if not parent else re.compile('(?<=[^a-zA-Z])' + parent + '(?![a-zA-Z])') 
                 map.add_node(parent, [('type', KeywordType.STANDARD), ('regex', parent_regex)])
                 #We define a parent tag as being standard. Really it should be max(existing, type) but that requires a logical definition of 
                 # increasing values of type - which we don't do
@@ -54,14 +54,14 @@ def getMap():
         rows = c.fetchall()
         for r in rows:
             keyword = r[0].lower()
-            keyword_regex = re.compile('(?<=[^a-zA-Z])' + keyword + '(?![a-zA-Z])') 
             parent = 'project-' + keyword
-            parent_regex = re.compile('(?<=[^a-zA-Z])' + parent + '(?![a-zA-Z])') 
             type = KeywordType.APICALL #apply only the project tag, not the non-project tag
             
             if not map.has_node(keyword):
+                keyword_regex = re.compile('(?<=[^a-zA-Z])' + keyword + '(?![a-zA-Z])') 
                 map.add_node(keyword, [('type', type), ('regex', keyword_regex)])
             if not map.has_node(parent):
+                parent_regex = re.compile('(?<=[^a-zA-Z])' + parent + '(?![a-zA-Z])') 
                 map.add_node(parent, [('type', KeywordType.STANDARD), ('regex', parent_regex)])
                 map.add_edge((keyword, parent), label=type)
     return map
