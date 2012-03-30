@@ -191,6 +191,7 @@ lex.lex()
 yacc.yacc()
 
 # Interface ===========================================================
+unallowed_characters = re.compile('[^-_a-zA-Z0-9./ ()]')
 
 class KeywordsParser:
     @staticmethod
@@ -238,8 +239,7 @@ class KeywordsParser:
         return tokens
     @staticmethod
     def _stripIllegalCharacters(tokens): #Violently remove characters not permitted by t_NAME regex
-        unallowed = re.compile('[^-_a-zA-Z0-9./ ()]')
-        tokens = unallowed.sub('', tokens)
+        tokens = unallowed_characters.sub('', tokens)
         return tokens
     @staticmethod
     def _preProcess(keywords):
