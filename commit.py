@@ -24,7 +24,9 @@ class Commit:
     date = 0
     files = []
     commitid = -1
-    
+    changedTexts = None
+    changedTexts_data = None
+
     initialized = False
     def __init__(self):
         pass
@@ -64,9 +66,7 @@ class Commit:
         self.keywords.add('project-' + repo.tagname)
         self.keywords.add('maturity-' + repo.tagmaturity)
         
-        data = zlib.decompress(data)
-        data = cPickle.loads(data)
-        self.changedTexts = data
+        self.changedTexts_data = data
 
     @staticmethod
     def cleanUpCommitMessage(msg):
@@ -96,11 +96,16 @@ class Commit:
     #returns an array of text changes used for synonym matching
     def getChangedTexts(self, metadata):
         pass
+    def _loadChangedTextFromBackingVar(self):
+        data = zlib.decompress(self.changedTexts_data)
+        data = cPickle.loads(data)
+        self.changedTexts = data
     #backing variable of previous function
-    changedTexts = None
     def testFulltext(self, fulltext):
         if self.changedTexts == None:
-            raise Exception("called testFulltext prior to changedTexts being initialized")
+            if self.changedTexts_data == None:
+                raise Exception("called testFulltext prior to changedTexts_data being initialized")
+            self._loadChangedTextFromBackingVar()
         
         for d in self.getChangedTexts(None):
             if fulltext in d.lower(): return True

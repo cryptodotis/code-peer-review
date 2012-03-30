@@ -32,6 +32,8 @@ class GitCommit(Commit):
     def getChangedTexts(self, commitobj):
         if self.changedTexts != None:
             return self.changedTexts
+        elif self.changedTexts_data != None:
+            self._loadChangedTextFromBackingVar()
         elif commitobj == None:
             raise Exception("NULL passed to getChangedTexts when local changedTexts was not set")
             

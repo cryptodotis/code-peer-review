@@ -33,6 +33,8 @@ class SVNCommit(Commit):
     def getChangedTexts(self, metadata):
         if self.changedTexts != None:
             return self.changedTexts
+        elif self.changedTexts_data != None:
+            self._loadChangedTextFromBackingVar()
         elif metadata == None:
             raise Exception("NULL passed to getChangedTexts when local changedTexts was not set")
             
