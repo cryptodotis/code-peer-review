@@ -248,7 +248,7 @@ class Commit:
         return s
     
     def pprint(self):
-        print self.getpprint(false)
+        print self.getpprint(False)
     
     def toRSSItem(self):
         title = self.repo.tagname
