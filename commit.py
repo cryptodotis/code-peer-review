@@ -179,8 +179,9 @@ class Commit:
         c.execute(sql)
 
         data = self.getChangedTexts(None)
+        data.append(self.rawmessage.lower())
+        data.extend([f.lower() for f in self.files])
         data = [punctuation.sub(' ', d) for d in data]
-
 
         allwords = set()
         for d in data:
