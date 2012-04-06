@@ -5,7 +5,7 @@ import tornado.web
 import tornado.options
 import logging
 
-import MySQLdb, argparse, datetime, unicodedata
+import MySQLdb, argparse, datetime, unicodedata, time
 from PyRSS2Gen import RSS2
 from jinja2 import Environment, FileSystemLoader
 
@@ -28,7 +28,8 @@ def getFeed():
 
 class RSSHandler(tornado.web.RequestHandler):
     def get(self, keywords):
-        commits = DBQ.findByKeywordsAndFulltext(keywords)
+        fiveDaysAgo = time.time() - (5 * 24 * 60 * 60)
+        commits = DBQ.findByKeywordsAndFulltext(keywords, fiveDaysAgo)
         feed = getFeed()
 
         for c in commits:

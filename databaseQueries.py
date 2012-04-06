@@ -62,7 +62,7 @@ class DBQ:
         return commits
 
     @staticmethod
-    def findByKeywords(keywords):
+    def findByKeywords(keywords, moreRecentThan=0):
         getcommitsSQL = "SELECT c.*, r.* " + \
                 "FROM " + DB.commit._table + " c " + \
                 "INNER JOIN " + DB.repo._table + " r " + \
@@ -74,13 +74,16 @@ class DBQ:
             keywordsTree = KeywordsParser(keywords)
             whereClause, components = keywordsTree.getEvaluationString('sql')
         
-        getcommitsSQL += "WHERE " + whereClause + " "
+        
+        getcommitsSQL += "WHERE " 
+        if moreRecentThan > 0: getcommitsSQL += " c.date > " + str(int(moreRecentThan)) + " AND "
+        getcommitsSQL += whereClause + " "
         getcommitsSQL += "ORDER BY c.date DESC "
         
         return DBQ.find(getcommitsSQL, components)
 
     @staticmethod
-    def findByIDs(project, uniqueid):
+    def findByIDs(project, uniqueid, moreRecentThan=0):
         getcommitsSQL = "SELECT c.*, r.* " + \
                 "FROM " + DB.commit._table + " c " + \
                 "INNER JOIN " + DB.repo._table + " r " + \
@@ -92,13 +95,15 @@ class DBQ:
             whereClause += "AND r.tagname = %s AND c.uniqueid = %s "
             components = [project, uniqueid]
         
-        getcommitsSQL += "WHERE " + whereClause
+        getcommitsSQL += "WHERE " 
+        if moreRecentThan > 0: getcommitsSQL += " c.date > " + str(int(moreRecentThan)) + " AND "
+        getcommitsSQL += whereClause + " "
         getcommitsSQL += "ORDER BY c.date DESC "
         
         return DBQ.find(getcommitsSQL, components)
 
     @staticmethod
-    def findByKeywordsAndFulltext(keywords):
+    def findByKeywordsAndFulltext(keywords, moreRecentThan=0):
         getcommitsSQL = "SELECT c.*, r.* " + \
                 "FROM " + DB.commit._table + " c " + \
                 "INNER JOIN " + DB.repo._table + " r " + \
@@ -110,7 +115,9 @@ class DBQ:
             keywordsTree = KeywordsParser(keywords)
             whereClause, components = keywordsTree.getEvaluationString('sql')
         
-        getcommitsSQL += "WHERE " + whereClause
+        getcommitsSQL += "WHERE " 
+        if moreRecentThan > 0: getcommitsSQL += " c.date > " + str(int(moreRecentThan)) + " AND "
+        getcommitsSQL += whereClause + " "
         getcommitsSQL += "ORDER BY c.date DESC "
         
         prelim_commits = DBQ.find(getcommitsSQL, components)
