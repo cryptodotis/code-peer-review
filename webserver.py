@@ -97,7 +97,7 @@ class SearchHandler(tornado.web.RequestHandler):
             commits = DBQ.findByKeywordsAndFulltext(keywords)
             template = env.get_template('searchresults.html')
         
-        html = template.render(commits=commits)	
+        html = template.render(commits=commits, rsssearchparams=keywords)	
         self.write(html)
         return
     def post(self, keywords):
@@ -106,7 +106,7 @@ class SearchHandler(tornado.web.RequestHandler):
         commits = DBQ.findByKeywordsAndFulltext(keywords)
         template = env.get_template('searchresults.html')
         
-        html = template.render(commits=commits)	
+        html = template.render(commits=commits, rsssearchparams=keywords)	
         self.write(html)
         return
 

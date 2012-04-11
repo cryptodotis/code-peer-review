@@ -30,6 +30,8 @@ h1 {
 	margin-top: 20px;
 	margin-bottom: 20px;
 }
+h1, h2 { display: inline-block; }
+h2 { padding-left:5px; }
 #main {
     margin-left:20px
 }
@@ -37,8 +39,9 @@ h1 {
 </head>
 <body>
 <div id="main">
-<h1>Search Results</h1>
+<h1>Search Results </h1><h2> <a href="/rss/{{ rsssearchparams }}">RSS Feed For This Search</a></h2>
 
+<div>
 {% if commits %}
 {% for c in commits %}
 <strong>Commit</strong>
@@ -49,7 +52,7 @@ h1 {
 {% else %}
 No results found. <a href="/search">Search again.</a>
 {% endif %}
-
+</div>
 
 </body>
 </html>
