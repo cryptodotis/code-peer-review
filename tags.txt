@@ -477,3 +477,21 @@ utf8 : unicode
 utf7 : unicode
 utf16 : unicode
 utf32 : unicode
+
+fuck : profanity
+shit : profanity
+crap : profanity
+bastard : profanity
+asshole : profanity
+dumb : profanity
+stupid : profanity
+
+mvc :
+mmvc :
+
+pickle :
+cPickle : pickle
+
+SAML :
+oAuth :
+OpenId :
