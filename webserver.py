@@ -63,14 +63,14 @@ class LandingHandler(tornado.web.RequestHandler):
         html = template.render(commits=commits)	
         self.write(html)
         return
-env = Environment(loader=FileSystemLoader(Config.fsdir + 'templates'))
+
 class HallOfFameHandler(tornado.web.RequestHandler):
     def get(self):
         template = env.get_template('halloffame.html')
         html = template.render()	
         self.write(html)
         return
-env = Environment(loader=FileSystemLoader(Config.fsdir + 'templates'))
+
 class CommitHandler(tornado.web.RequestHandler):
     def get(self, project, uniqueid):
         commit = DBQ.findByIDs(project, uniqueid)
@@ -86,7 +86,7 @@ class CommitHandler(tornado.web.RequestHandler):
         
         self.write(html)
         return
-env = Environment(loader=FileSystemLoader(Config.fsdir + 'templates'))
+
 class SearchHandler(tornado.web.RequestHandler):
     def get(self, keywords):
         commits = []

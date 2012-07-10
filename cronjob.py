@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-import MySQLdb, argparse
+import MySQLdb, argparse, time
 
 from common import *
 from config import Config
@@ -16,6 +16,8 @@ if __name__ == "__main__":
     args = parser.parse_args()
     
     args.startdate, args.enddate = fixDates(args.startdate, args.enddate)
+
+    print "Searching between", time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime(args.startdate)), "-", time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime(args.enddate))
     
     conn = DB.getConn()
     c = conn.cursor()
