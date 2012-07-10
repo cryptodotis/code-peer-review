@@ -1,3 +1,7 @@
+#About
+
+You're a developer. And you've spent the last 2 years working with Java sockets in an uninteresting trading app. But you also happen to support anonymity - but have no idea how to get involved. Or you're a security researcher who's spent the last two months understanding the padding oracle backwards and forwards. Wouldn't it be nice to see a personalized RSS feed of cryptography, anonymity, and privacy projects containing the keywords "java.net.Socket" or "CBC Mode"? Then you could skim commits, and if something interesting came up, you may be able to lend your expertise. That's exactly what the Code Audit Feed is for.
+
 # How You Can Help Test the Code Audit Feed
 
 From easiest to most time-intensive
