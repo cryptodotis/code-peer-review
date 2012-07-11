@@ -10,7 +10,8 @@ class DB:
         conn = MySQLdb.connect (host = Config.host,
                                     user = Config.username,
                                     passwd = Config.password,
-                                    db = Config.database)
+                                    db = Config.database,
+				    charset='utf8')
         return conn
     @staticmethod
     def execute(c, sql, *args):
