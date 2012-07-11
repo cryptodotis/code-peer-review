@@ -261,8 +261,12 @@ class Commit:
         description += self.getpprint(True)
         description += "</pre>"
         
-        title = unicodedata.normalize('NFKD', unicode(title, 'utf-8')).encode('ascii', 'ignore')
-        description = unicodedata.normalize('NFKD', unicode(description, 'utf-8')).encode('ascii', 'ignore')
+	if type(title) != unicode:
+		title = unicode(title, 'utf-8')
+	if type(description) != unicode:
+		description = unicode(description, 'utf-8')
+        title = unicodedata.normalize('NFKD', title).encode('ascii', 'ignore')
+        description = unicodedata.normalize('NFKD', description).encode('ascii', 'ignore')
 
         guid = Config.rooturl + "/commit/" + self.repo.tagname + "/" + self.uniqueid
         link = ''
