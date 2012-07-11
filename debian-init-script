@@ -1,0 +1,13 @@
+#!/bin/sh
+
+case "$1" in
+	start)
+        	echo "Starting tornado"
+	        start-stop-daemon --start --user www-data --group www-data --quiet --background --make-pidfile --pidfile /var/run/cpr.pid  --exec /usr/bin/python /var/www/htdocs/cpr/webserver.py
+	;;
+	stop)
+	        echo "Stopping tornado"
+	        start-stop-daemon --stop --pidfile /var/run/cpr.pid
+	;;
+esac
+
