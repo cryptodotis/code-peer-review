@@ -52,6 +52,11 @@ if __name__ == "__main__":
         except:
             pass
 
+        try:
+            c.execute("DROP TABLE " + DB.commitwordmap._table)
+        except:
+            pass
+
     else:
         #repotype._table + """ -------------------------------------------
         c.execute("SHOW TABLES LIKE '" + DB.repotype._table + "'")
@@ -64,7 +69,7 @@ if __name__ == "__main__":
                         (
                         id smallint NOT NULL PRIMARY KEY,
                         type varchar(10) NOT NULL UNIQUE
-                        ) ENGINE=innodb;
+                        ) COLLATE utf8_general_ci ENGINE=innodb;
                         """
             c.execute(repotype)
             
@@ -98,7 +103,7 @@ if __name__ == "__main__":
                     viewlink varchar(512) NULL,
                     tagname varchar(30) NOT NULL,
                     maturity varchar(20) NOT NULL
-                    ) ENGINE=innodb;
+                    ) COLLATE utf8_general_ci ENGINE=innodb;
                     """
             c.execute(sql)
             
@@ -201,7 +206,7 @@ if __name__ == "__main__":
                     keyword varchar(50) NOT NULL,
                     parent varchar(50), 
                     type tinyint NOT NULL DEFAULT 1
-                    ) ENGINE=innodb;
+                    ) COLLATE utf8_general_ci ENGINE=innodb;
                     """
             c.execute(sql)
             
@@ -297,7 +302,7 @@ if __name__ == "__main__":
                     message text,
                     uniqueid varchar(64) NOT NULL,
                     UNIQUE (repoid, uniqueid)
-                    ) ENGINE=innodb;
+                    ) COLLATE utf8_general_ci ENGINE=innodb;
                     """
             c.execute(sql)
         #commitfile._table + """ ----------------------------------------
@@ -311,7 +316,7 @@ if __name__ == "__main__":
                     (
                     commitid int NOT NULL,
                     file varchar(512)
-                    ) ENGINE=innodb;
+                    ) COLLATE utf8_general_ci ENGINE=innodb;
                     """
             c.execute(sql)
         #commitkeyword._table + """ ----------------------------------------
@@ -326,7 +331,7 @@ if __name__ == "__main__":
                     commitid int NOT NULL,
                     keyword varchar(50) NOT NULL,
                     PRIMARY KEY(commitid, keyword)
-                    ) ENGINE=innodb;
+                    ) COLLATE utf8_general_ci ENGINE=innodb;
                     """
             c.execute(sql)
         #commitdiffs._table + """ ----------------------------------------
@@ -341,7 +346,7 @@ if __name__ == "__main__":
                     commitid int NOT NULL,
                     data LONGBLOB NOT NULL,
                     PRIMARY KEY(commitid)
-                    ) ENGINE=innodb;
+                    ) COLLATE utf8_general_ci ENGINE=innodb;
                     """
             c.execute(sql)
         #commitwordmap._table + """ ----------------------------------------
@@ -356,7 +361,7 @@ if __name__ == "__main__":
                     commitid int NOT NULL,
                     word varchar(50) NOT NULL,
                     PRIMARY KEY(commitid, word)
-                    ) ENGINE=innodb;
+                    ) COLLATE utf8_general_ci ENGINE=innodb;
                     """
             c.execute(sql)
         #searchqueries._table + """ ----------------------------------------
@@ -371,7 +376,7 @@ if __name__ == "__main__":
                     timestamp int NOT NULL,
                     ip int NOT NULL,
                     terms varchar(512) NOT NULL
-                    ) ENGINE=innodb;
+                    ) COLLATE utf8_general_ci ENGINE=innodb;
                     """
             DB.execute(c, sql)
 
