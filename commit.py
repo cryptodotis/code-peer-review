@@ -96,6 +96,7 @@ class Commit:
     #returns an array of text changes used for synonym matching
     def getChangedTexts(self, metadata):
         pass
+    #/Implemented in Child Classes
     def _loadChangedTextFromBackingVar(self):
         data = zlib.decompress(self.changedTexts_data)
         data = cPickle.loads(data)
@@ -111,15 +112,19 @@ class Commit:
             if fulltext in d.lower(): return True
         
         return False
-        
-    #/Implemented in Child Classes
+       
     def getPrettyDiffs(self):
         diffs = self.getDiffsArray()
         differ = gdiff.diff_match_patch()
         
         for d in diffs:
             differ.diff_cleanupSemantic(d)
-            yield differ.diff_prettyHtml(d)
+            str = differ.diff_prettyHtml(d)
+            if not isinstance(str, unicode):
+               str = unicode(str, 'utf-8')
+            else:
+               str = str.encode('utf-8')
+            yield str
 
     def getSynonyms(self, diffs):
         if not self.initialized:
