@@ -32,7 +32,7 @@ class DBQ:
                 DB.execute(c, "SELECT * from " + DB.commitkeyword._table + " WHERE commitid IN (" + allcommitids + ")")
                 commitkeywords = c.fetchall()
                 
-                DB.execute(c, "SELECT * from " + DB.commitdiffs._table + " WHERE commitid IN (" + allcommitids + ")")
+                DB.execute(c, "SELECT commitid, case when length(data) < 307200 then data else 'TOOLARGE' end as data from " + DB.commitdiffs._table + " WHERE commitid IN (" + allcommitids + ")")
                 commitdata = c.fetchall()
                 
 
@@ -127,7 +127,7 @@ class DBQ:
         #    
         #    evalstr, evalcomponents = keywordsTree.getEvaluationString('eval')
         #    evalstr = evalstr % tuple(evalcomponents)
-        #    
+        #
         #    for c in prelim_commits:
         #        testResult = eval(evalstr)
         #        if testResult:

@@ -26,10 +26,12 @@ class Commit:
     commitid = -1
     changedTexts = None
     changedTexts_data = None
+    diffIsReallyBig = False
 
     initialized = False
     def __init__(self):
-        pass
+        self.changedTexts = None
+        self.diffIsReallyBig = False
     
     def loadFromSource(self, repo, m, d, files, uid, diffs):
         self.initialized = True
@@ -50,7 +52,6 @@ class Commit:
     
     def loadFromDatabase(self, repo, row, files, keywords, data):
         self.initialized = True
-        
         self.repo = repo
         self.commitid = row[DB.commit.id]
         self.rawmessage = row[DB.commit.message]
@@ -67,6 +68,8 @@ class Commit:
         self.keywords.add('maturity-' + repo.tagmaturity)
         
         self.changedTexts_data = data
+        if self.changedTexts_data == 'TOOLARGE':
+           self.diffIsReallyBig = True
 
     @staticmethod
     def cleanUpCommitMessage(msg):
@@ -93,20 +96,25 @@ class Commit:
     # during creation, this metadata is passed in independently and this is not called
     def getChangedTextMetadata(self):
         pass
-    #returns an array of text changes used for synonym matching
+    #Returns an array of changed texts used for synonym matching, not google's diff format
     def getChangedTexts(self, metadata):
         pass
     #/Implemented in Child Classes
     def _loadChangedTextFromBackingVar(self):
-        data = zlib.decompress(self.changedTexts_data)
-        data = cPickle.loads(data)
-        self.changedTexts = data
-    #backing variable of previous function
+        if self.changedTexts != None:
+           return self.changedTexts
+        elif self.changedTexts_data == 'TOOLARGE':
+           self.diffIsReallyBig = True
+           self.changedTexts = []
+        else:
+           data = zlib.decompress(self.changedTexts_data)
+           data = cPickle.loads(data)
+           self.changedTexts = data
+        return self.changedTexts
     def testFulltext(self, fulltext):
-        if self.changedTexts == None:
-            if self.changedTexts_data == None:
-                raise Exception("called testFulltext prior to changedTexts_data being initialized")
-            self._loadChangedTextFromBackingVar()
+        #We don't want to fall back on an expensive operation in the subsequent function
+        if self.changedTexts == None and self.changedTexts_data == None:
+            raise Exception("called testFulltext prior to changedTexts_data being initialized")
         
         for d in self.getChangedTexts(None):
             if fulltext in d.lower(): return True

@@ -43,11 +43,14 @@ h1 {
 
 <strong>Diffs</strong>
 <hr />
+{% if commit.diffIsReallyBig %}
+Diff is too large to display.
+{% else %}
 {% for d in commit.getPrettyDiffs() %}
  {{ d }}
  <hr />
 {% endfor %}
-
+{% endif %}
 
 
 </body>

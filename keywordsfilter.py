@@ -48,8 +48,10 @@ class Tree:
     _keywordphrase = "(SELECT ck.keyword FROM "+ DB.commitkeyword._table +" as ck WHERE ck.commitid = c.id)"
     _fulltextphrase_sql = "(SELECT wm.word FROM "+ DB.commitwordmap._table +" as wm WHERE wm.commitid = c.id)"
     _fulltextphrase_eval = "c.testFulltext('%s')"
-    _projectphrase = "r.tagname"
-    _maturityphrase = "r.maturity"
+    _projectphrase_sql = "r.tagname"
+    _projectphrase_eval = "c.repo.tagname"
+    _maturityphrase_sql = "r.maturity"
+    _maturityphrase_eval = "c.repo.maturity"
     
     def __init__(self, l, r):
         self.left = l
@@ -88,17 +90,17 @@ class Tree:
         components = []
         if nodeType == 'keyword':
             if node.startswith("project-"):
-                if type == 'sql':       evalstring += " " + self._projectphrase + " = %s"
-                elif type == 'eval':    evalstring += " " + self._projectphrase + " == '%s'"
+                if type == 'sql':       evalstring += " " + self._projectphrase_sql + " = %s"
+                elif type == 'eval':    evalstring += " " + self._projectphrase_eval + " == '%s'"
                 components.append(node.replace('project-', ''))
             elif node.startswith("maturity-"):
-                if type == 'sql':       evalstring += " " + self._maturityphrase + " = %s"
-                elif type == 'eval':    evalstring += " " + self._maturityphrase + " == '%s'"
+                if type == 'sql':       evalstring += " " + self._maturityphrase_sql + " = %s"
+                elif type == 'eval':    evalstring += " " + self._maturityphrase_eval + " == '%s'"
                 components.append(node.replace('maturity-', ''))
             else:
                 if type == 'sql':       evalstring += "%s IN " + self._keywordphrase
                 elif type == 'eval':    evalstring += "'%s' in " + self._keywordphrase
-                components.append(node)		
+                components.append(node)	
         elif nodeType == 'fulltext':
             if type == 'sql':       evalstring += "%s IN " + self._fulltextphrase_sql
             elif type == 'eval':    evalstring += self._fulltextphrase_eval
@@ -108,7 +110,7 @@ class Tree:
 
             if node.right: evalstring += "(" + innersql + ")"
             else:          evalstring += innersql
-                
+
             components.extend(newcomponents)
         return evalstring, components
     def anyTree(self):

@@ -7,6 +7,8 @@ from commit import *
 
 class SVNCommit(Commit):
     def getDiffsArray(self):
+        if self.diffIsReallyBig: return []
+    
         alldiffs = []
         differ = gdiff.diff_match_patch()
         client = pysvn.Client()
@@ -34,7 +36,7 @@ class SVNCommit(Commit):
         if self.changedTexts != None:
             return self.changedTexts
         elif self.changedTexts_data != None:
-            self._loadChangedTextFromBackingVar()
+            return self._loadChangedTextFromBackingVar()
         elif metadata == None:
             raise Exception("NULL passed to getChangedTexts when local changedTexts was not set")
             
