@@ -495,3 +495,11 @@ cPickle : pickle
 SAML :
 oAuth :
 OpenId :
+
+setuid : 
+setgid : setuid
+seteuid : setuid
+setegid : setuid
+setfsuid : setuid
+setreuid : setuid
+setregid : setuid
