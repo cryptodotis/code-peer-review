@@ -186,7 +186,27 @@ if __name__ == "__main__":
                 SELECT 8, 'Crypt-ML', 'http://www.synacklabs.net/projects/crypt-ml/', NULL, 'crypt-ml', 'development' UNION
                 SELECT 3, 'Shibboleth', 'shibboleth.cvs.sourceforge.net', NULL, 'shibboleth', 'development' UNION
                 SELECT 3, 'Mmreencrypt', 'mmreencrypt.cvs.sourceforge.net', NULL, 'mmreencrypt', 'development'"""
-                
+                #guardian project
+                sql += """
+                SELECT 2, 'IOCipher', 'https://github.com/guardianproject/IOCipher.git', 'https://github.com/guardianproject/IOCipher/commit/%ID', 'iocipher', 'development' UNION
+                SELECT 2, 'libsqlfs', 'https://github.com/guardianproject/libsqlfs.git', 'https://github.com/guardianproject/libsqlfs/commit/%ID', 'libsqlfs', 'development' UNION
+                SELECT 2, 'Gibberbot', 'https://github.com/guardianproject/Gibberbot.git', 'https://github.com/guardianproject/Gibberbot/commit/%ID', 'gibberbot', 'stable' UNION
+                SELECT 2, 'OnionKit', 'https://github.com/guardianproject/OnionKit.git', 'https://github.com/guardianproject/OnionKit/commit/%ID', 'onionkit', 'beta' UNION
+                SELECT 2, 'InformaCam', 'https://github.com/guardianproject/InformaCam.git', 'https://github.com/guardianproject/InformaCam/commit/%ID', 'informacam', 'rc1' UNION
+                SELECT 2, 'InformaCam-Server', 'https://github.com/guardianproject/InformaCam-Server.git', 'https://github.com/guardianproject/InformaCam-Server/commit/%ID', 'informacam-server', 'development' UNION
+                SELECT 2, 'gnupg-for-android', 'https://github.com/guardianproject/gnupg-for-android.git', 'https://github.com/guardianproject/gnupg-for-android/commit/%ID', 'gnupg-for-android', 'development' UNION
+                SELECT 2, 'Storymaker', 'https://github.com/guardianproject/mrapp.git', 'https://github.com/guardianproject/mrapp/commit/%ID', 'storymaker', 'beta' UNION
+                SELECT 2, 'otrfileconverter', 'https://github.com/guardianproject/otrfileconverter.git', 'https://github.com/guardianproject/otrfileconverter/commit/%ID', 'otrfileconverter', 'development' UNION
+                SELECT 2, 'Android cacert keystore', 'https://github.com/guardianproject/cacert.git', 'https://github.com/guardianproject/cacert/commit/%ID', 'cacert', 'stable' UNION
+                SELECT 2, 'Orweb', 'https://github.com/guardianproject/Orweb.git', 'https://github.com/guardianproject/Orweb/commit/%ID', 'orweb', 'stable' UNION
+                SELECT 2, 'ProxyMob', 'https://github.com/guardianproject/ProxyMob.git', 'https://github.com/guardianproject/ProxyMob/commit/%ID', 'ProxyMob', 'stable' UNION
+                SELECT 2, 'ObscuraCam', 'https://github.com/guardianproject/SecureSmartCam.git', 'https://github.com/guardianproject/SecureSmartCam/commit/%ID', 'obscuracam', 'stable' UNION
+                SELECT 2, 'InTheClear', 'https://github.com/guardianproject/InTheClear.git', 'https://github.com/guardianproject/InTheClear/commit/%ID', 'InTheClear', 'stable' UNION
+                SELECT 2, 'android-ffmpeg', 'https://github.com/guardianproject/android-ffmpeg.git', 'https://github.com/guardianproject/android-ffmpeg/commit/%ID', 'android-ffmpeg', 'beta' UNION
+                SELECT 2, 'android-ffmpeg-java', 'https://github.com/guardianproject/android-ffmpeg-java.git', 'https://github.com/guardianproject/android-ffmpeg-java/commit/%ID', 'android-ffmpeg-java', 'development' UNION
+                SELECT 2, 'ODKFormParser', 'https://github.com/guardianproject/ODKFormParser.git', 'https://github.com/guardianproject/ODKFormParser/commit/%ID', 'odkformparser', 'development' UNION
+                SELECT 2, 'rss-epub-archiver', 'https://github.com/guardianproject/rss-epub-archiver.git', 'https://github.com/guardianproject/rss-epub-archiver/commit/%ID', 'rss-epub-archiver', 'development'"""
+
                 DB.execute(c, sql)
 
         #keyword._table + """ ---------------------------------------------
