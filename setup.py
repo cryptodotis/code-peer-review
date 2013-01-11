@@ -160,7 +160,8 @@ if __name__ == "__main__":
                 #file crypto
                 sql += """
                 SELECT 2, 'GnuPG', 'git://git.gnupg.org/gnupg.git', 'http://git.gnupg.org/cgi-bin/gitweb.cgi?p=gnupg.git;a=commitdiff;h=%ID', 'gnupg', 'pervasive' UNION
-                SELECT 2, 'Tomb', 'git://github.com/dyne/Tomb.git', 'https://github.com/dyne/Tomb/commit/%ID', 'tomb', 'stable' UNION"""
+                SELECT 2, 'Tomb', 'git://github.com/dyne/Tomb.git', 'https://github.com/dyne/Tomb/commit/%ID', 'tomb', 'stable' UNION
+                SELECT 2, 'SQLCipher', 'git://github.com/sqlcipher/sqlcipher.git', 'https://github.com/sqlcipher/sqlcipher/commit/%ID', 'sqlcipher', 'stable' UNION"""
                 #remailer
                 sql += """
                 SELECT 2, 'AAM2Mail', 'https://github.com/crooks/aam2mail.git', 'https://github.com/crooks/aam2mail/commit/%ID', 'aam2mail', 'stable' UNION
