@@ -193,7 +193,7 @@ if __name__ == "__main__":
                 SELECT 2, 'libsqlfs', 'https://github.com/guardianproject/libsqlfs.git', 'https://github.com/guardianproject/libsqlfs/commit/%ID', 'libsqlfs', 'development' UNION
                 SELECT 2, 'Gibberbot', 'https://github.com/guardianproject/Gibberbot.git', 'https://github.com/guardianproject/Gibberbot/commit/%ID', 'gibberbot', 'stable' UNION
                 SELECT 2, 'OnionKit', 'https://github.com/guardianproject/OnionKit.git', 'https://github.com/guardianproject/OnionKit/commit/%ID', 'onionkit', 'beta' UNION
-                SELECT 2, 'InformaCam', 'https://github.com/guardianproject/InformaCam.git', 'https://github.com/guardianproject/InformaCam/commit/%ID', 'informacam', 'rc1' UNION
+                SELECT 2, 'InformaCam', 'https://github.com/guardianproject/InformaCam.git', 'https://github.com/guardianproject/InformaCam/commit/%ID', 'informacam', 'beta' UNION
                 SELECT 2, 'InformaCam-Server', 'https://github.com/guardianproject/InformaCam-Server.git', 'https://github.com/guardianproject/InformaCam-Server/commit/%ID', 'informacam-server', 'development' UNION
                 SELECT 2, 'gnupg-for-android', 'https://github.com/guardianproject/gnupg-for-android.git', 'https://github.com/guardianproject/gnupg-for-android/commit/%ID', 'gnupg-for-android', 'development' UNION
                 SELECT 2, 'Storymaker', 'https://github.com/guardianproject/mrapp.git', 'https://github.com/guardianproject/mrapp/commit/%ID', 'storymaker', 'beta' UNION

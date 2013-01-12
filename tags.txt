@@ -21,6 +21,31 @@ project-onak : keyserver
 				
 project-gnupg : filecrypto
 gpg : project-gnupg
+project-gnupg-for-android : gpg
+
+project-gnugpg-for-android : android
+project-android-ffmpeg : android
+project-android-ffmpeg-java : android
+
+project-sqlcipher : guardian-project
+project-iocipher : guardian-project
+project-libsqlfs : guardian-project
+project-gibberbot : guardian-project
+project-onionkit : guardian-project
+project-informacam : guardian-project
+project-informacam-server : guardian-project
+project-gnupg-for-android : guardian-project
+project-storymaker : guardian-project
+project-otrfileconverter : guardian-project
+project-cacert : guardian-project
+project-orweb : guardian-project
+project-ProxyMob : guardian-project
+project-obscuracam : guardian-project
+project-InTheClear : guardian-project
+project-android-ffmpeg : guardian-project
+project-android-ffmpeg-java : guardian-project
+project-odkformparser : guardian-project
+project-rss-epub-archiver : guardian-project
 
 project-aam2mail : remailer
 hsub : remailer
@@ -345,7 +370,8 @@ hmac : mac
 message authentication code : mac
 messageauthenticationcode : mac
 message-authentication-code : mac
-				
+
+project-gibberbot : otr
 otr : 
 socks4 : socks
 socka4a : socks
@@ -357,6 +383,7 @@ socat :
 
 tahoe : tahoe-lafs
 
+project-orweb : project-tor
 vidalia : project-tor
 torrc : project-tor
 
