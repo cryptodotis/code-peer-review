@@ -186,7 +186,7 @@ if __name__ == "__main__":
                 SELECT 2, 'Schleuder', 'git://git.immerda.ch/schleuder.git', NULL, 'schleuder', 'development' UNION
                 SELECT 8, 'Crypt-ML', 'http://www.synacklabs.net/projects/crypt-ml/', NULL, 'crypt-ml', 'development' UNION
                 SELECT 3, 'Shibboleth', 'shibboleth.cvs.sourceforge.net', NULL, 'shibboleth', 'development' UNION
-                SELECT 3, 'Mmreencrypt', 'mmreencrypt.cvs.sourceforge.net', NULL, 'mmreencrypt', 'development'"""
+                SELECT 3, 'Mmreencrypt', 'mmreencrypt.cvs.sourceforge.net', NULL, 'mmreencrypt', 'development' UNION"""
                 #guardian project
                 sql += """
                 SELECT 2, 'IOCipher', 'https://github.com/guardianproject/IOCipher.git', 'https://github.com/guardianproject/IOCipher/commit/%ID', 'iocipher', 'development' UNION
