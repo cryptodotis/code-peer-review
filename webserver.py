@@ -125,7 +125,11 @@ if __name__ == "__main__":
     logging.getLogger().addHandler(tlog)
     logging.debug('Starting up...')
     
-    application.listen(Config.tornadoport)
+    import socket
+    if socket.has_ipv6:
+        application.listen(Config.tornadoport)
+    else:
+        application.listen(Config.tornadoport, address="0.0.0.0")
     tornado.ioloop.IOLoop.instance().start()
 
         
