@@ -55,7 +55,6 @@ class KeywordsHandler(tornado.web.RequestHandler):
         self.write(xml)
         return
 
-env = Environment(loader=FileSystemLoader(Config.fsdir + 'templates'))
 class LandingHandler(tornado.web.RequestHandler):
     def get(self):
         commits=[]
@@ -109,6 +108,9 @@ class SearchHandler(tornado.web.RequestHandler):
         html = template.render(commits=commits, rsssearchparams=keywords)	
         self.write(html)
         return
+
+env = Environment(autoescape=True,
+                  loader=FileSystemLoader(Config.fsdir + 'templates'))
 
 application = tornado.web.Application([
     (r"/", LandingHandler),
