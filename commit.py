@@ -2,6 +2,7 @@
 
 import time, re, os, MySQLdb, unicodedata, cPickle, zlib
 from PyRSS2Gen import RSSItem, Guid
+from jinja2 import Markup
 
 from config import Config
 import synonymmapping
@@ -37,10 +38,9 @@ class Commit:
         self.initialized = True
     
         self.repo = repo
-        self.rawmessage = Commit.cleanUpCommitMessage(m)
-        self.message = self.rawmessage.replace("&", "&amp;").replace('"', "&quot;").replace("<", "&lt;").replace(">", "&gt;")
+        self.message = Commit.cleanUpCommitMessage(m)
         self.date = d
-        self.files = [f.replace("&", "&amp;").replace('"', "&quot;").replace("<", "&lt;").replace(">", "&gt;") for f in files]
+        self.files = files 
         self.uniqueid = uid
 
         self.base_paths = self.getBasePath()
@@ -54,12 +54,11 @@ class Commit:
         self.initialized = True
         self.repo = repo
         self.commitid = row[DB.commit.id]
-        self.rawmessage = row[DB.commit.message]
-        self.message = self.rawmessage.replace("&", "&amp;").replace('"', "&quot;").replace("<", "&lt;").replace(">", "&gt;")
+        self.message = row[DB.commit.message]
         self.date = row[DB.commit.date]
         self.uniqueid = row[DB.commit.uniqueid]
 
-        self.files = [f.replace("&", "&amp;").replace('"', "&quot;").replace("<", "&lt;").replace(">", "&gt;") for f in files]
+        self.files = files
         self.base_paths = self.getBasePath()
         self.dbkeywords = keywords
 
@@ -121,7 +120,10 @@ class Commit:
         
         return False
        
-    def getPrettyDiffs(self):
+    def getPrettyDiffs(self, htmlize=True):
+        if not htmlize:
+            raise Exception("Do not know how to not htmlize prettyDiffs")
+
         diffs = self.getDiffsArray()
         differ = gdiff.diff_match_patch()
         
@@ -132,7 +134,7 @@ class Commit:
                str = unicode(str, 'utf-8')
             else:
                str = str.encode('utf-8')
-            yield str
+            yield Markup(str)
 
     def getSynonyms(self, diffs):
         if not self.initialized:
@@ -192,7 +194,7 @@ class Commit:
         c.execute(sql)
 
         data = self.getChangedTexts(None)
-        data.append(self.rawmessage.lower())
+        data.append(self.message.lower())
         data.extend([f.lower() for f in self.files])
         data = [punctuation.sub(' ', d) for d in data]
 
@@ -218,60 +220,70 @@ class Commit:
 
         conn.commit()
         
-    def getpprint(self, link=False):
+    def getpprint(self, htmlize=False):
         if not self.initialized:
             raise Exception("called getpprint on unitialized Commit object")
+
+        if htmlize:
+            process = lambda x : Markup.escape(x)
+        else:
+            process = lambda x : x
             
         eol = "\r\n"
         s = ""
         s += "Project:\t %s%s" % (self.repo.name, eol)
-        if link:
+        if htmlize:
             s += "Project URL:\t <a href=\"%s\">%s</a>%s" % (self.repo.url, self.repo.url, eol)
         else:
             s += "Project URL:\t %s %s" % (self.repo.url, eol)
         s += "Commit Date:\t %s (%s)%s" % (unixToGitDateFormat(self.date), self.date, eol)
-        s += "Log Message:\t %s%s" % (self.message, eol)
+        s += "Log Message:\t %s%s" % (process(self.message), eol)
         s += eol + eol
         if self.files:
-            s += "Files:\t\t %s%s" % (self.files[0], eol)
+            s += "Files:\t\t %s%s" % (process(self.files[0]), eol)
             for p in self.files[1:14]:
-                s += "\t\t %s%s" % (p, eol)
+                s += "\t\t %s%s" % (process(p), eol)
             if len(self.files) > 15:
                 s += "\t\t ...%s" % (eol)
         if self.base_paths:
             plural = len(self.base_paths) > 1
-            s += "Base Path%s:\t %s%s" % ("s" if plural else "", self.base_paths[0], eol)
+            s += "Base Path%s:\t %s%s" % ("s" if plural else "", process(self.base_paths[0]), eol)
             for p in self.base_paths[1:]:
-                s += "\t\t %s%s" % (p, eol)
+                s += "\t\t %s%s" % (process(p), eol)
 
         s += "Keywords:\t %s%s" % (", ".join(self.keywords), eol)
         s += "ID:\t\t %s%s" % (self.uniqueid, eol)
         
         internallink = Config.rooturl + "/commit/" + self.repo.tagname + "/" + self.uniqueid
-        if link:
+        if htmlize:
             s += "Internal:\t <a href=\"%s\">%s</a>%s" % (internallink, internallink, eol)
         else:
             s += "Internal:\t %s%s" % (internallink, eol)
         
         if self.repo.viewlink:
             externallink = self.repo.viewlink.replace('%ID', self.uniqueid)
-            if link:
+            if htmlize:
                 s += "External:\t <a href=\"%s\">%s</a>%s" % (externallink, externallink, eol)
             else:
                 s += "External:\t %s%s" % (externallink, eol)
-        return s
+        if htmlize:
+            return Markup(s)
+        else:
+            return s
     
     def pprint(self):
         print self.getpprint(False)
     
     def toRSSItem(self):
         title = self.repo.tagname
-        if self.rawmessage and len(self.rawmessage) > 50: title += " - " + self.rawmessage[:50] + "..."
-        elif self.rawmessage: title += " - " + self.rawmessage
+
+        if self.message and len(self.message) > 50: title += " - " + str(Markup.escape(self.message[:50])) + "..."
+        elif self.message: title += " - " + str(Markup.escape(self.message))
+
         if self.dbkeywords: title += " - " + ",".join(self.dbkeywords)
         
         description  = "<pre>"
-        description += self.getpprint(True)
+        description += str(self.getpprint(True))
         description += "</pre>"
         
 	if type(title) != unicode:

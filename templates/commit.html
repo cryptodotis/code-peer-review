@@ -46,7 +46,7 @@ h1 {
 {% if commit.diffIsReallyBig %}
 Diff is too large to display.
 {% else %}
-{% for d in commit.getPrettyDiffs() %}
+{% for d in commit.getPrettyDiffs(True) %}
  {{ d }}
  <hr />
 {% endfor %}
